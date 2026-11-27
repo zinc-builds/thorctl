@@ -1,0 +1,11 @@
+# Private, per-device notes and state (see README "Private Notes")
+local/
+# Backups of device files; can hold secrets
+snapshots/
+# Built binaries (attached to GitHub releases)
+device-bin/sqlite3
+device/cocoon-ui/cocoon-ui.jar
+__pycache__/
+*.pyc
+.DS_Store
+device/cocoon-sync/test.log
