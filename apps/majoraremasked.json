@@ -1,0 +1,357 @@
+{
+ "name": "majoraremasked",
+ "package": "io.github.otpr26.dekuifork",
+ "aliases": [
+  "majora",
+  "mm3d",
+  "remasked",
+  "dekui"
+ ],
+ "category": "recomp",
+ "version_checked": "0.4.6",
+ "stop_before_write": true,
+ "files": {
+  "config": {
+   "path": "/sdcard/mm3dport/config/config.ini",
+   "format": "ini",
+   "notes": "Azahar config (ini4j, 'key = value' under [Section]); bools true/false. Same keys as the azahar adapter. The root is /sdcard/mm3dport only after the app switches to shared storage (shared_prefs/dekui-storage.xml shared-v1 = true, needs All files access); before that it is /data/data/io.github.otpr26.dekuifork/files/dekui. Created on first start."
+  },
+  "presentation": {
+   "path": "/sdcard/mm3dport/config/mm3d-local/presentation.json",
+   "format": "json",
+   "notes": "DekUI's own settings (frame rate mode, FOV, draw distance, gameplay options). JSON object with \"version\": 1 (other versions are refused). Written atomically by the settings screen and shared with the in-game menu. Created on first start."
+  }
+ },
+ "per_game": null,
+ "keys": {
+  "interpolation_60fps": {
+   "file": "presentation",
+   "key": "interpolation_60fps",
+   "label": "Graphics > frame rate (60 FPS on/off)",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "true",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "The UI's three buttons write two keys: Original 30 FPS = false/(any); 60 FPS CPU interpolation = true/true; 60 FPS GPU interpolation = true/false (interpolation_cpu_vertices). Choosing 60 FPS also forces config use_vsync=true and use_hw_shader=true."
+  },
+  "interpolation_cpu_vertices": {
+   "file": "presentation",
+   "key": "interpolation_cpu_vertices",
+   "label": "Graphics > 60 FPS CPU (true) or GPU (false) interpolation",
+   "type": "bool",
+   "values": {
+    "true": "CPU interpolation",
+    "false": "GPU interpolation"
+   },
+   "default": "true",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Only used when interpolation_60fps is true."
+  },
+  "fov": {
+   "file": "presentation",
+   "key": "game_camera_fov",
+   "label": "Graphics > Field of View",
+   "type": "float",
+   "default": "65.0",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "45-70, step 0.5."
+  },
+  "camera_distance": {
+   "file": "presentation",
+   "key": "camera_distance",
+   "label": "Graphics > Camera Distance (x)",
+   "type": "float",
+   "default": "1.0",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "0.5-3.0, step 0.05."
+  },
+  "actor_draw_distance": {
+   "file": "presentation",
+   "key": "actor_draw_distance",
+   "label": "Graphics > Enemy / NPC draw distance",
+   "type": "float",
+   "default": "1.0",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "1.0-3.0, step 0.05."
+  },
+  "prop_draw_distance": {
+   "file": "presentation",
+   "key": "prop_draw_distance",
+   "label": "Graphics > Vegetation / prop draw distance",
+   "type": "float",
+   "default": "1.0",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "1.0-3.0, step 0.05."
+  },
+  "fix_bloom": {
+   "file": "presentation",
+   "key": "fix_bloom",
+   "label": "Graphics > Fix bloom",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "true",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": ""
+  },
+  "show_performance": {
+   "file": "presentation",
+   "key": "show_performance",
+   "label": "General > Show frame rate",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": ""
+  },
+  "accurate_hle_audio": {
+   "file": "presentation",
+   "key": "accurate_hle_audio",
+   "label": "Audio > Accurate HLE audio",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "true",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": ""
+  },
+  "mute_music": {
+   "file": "presentation",
+   "key": "mute_music",
+   "label": "Audio > Mute music",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": ""
+  },
+  "damage_multiplier": {
+   "file": "presentation",
+   "key": "damage_multiplier",
+   "label": "Difficulty > Damage taken",
+   "type": "float",
+   "default": "1.0",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "1-16."
+  },
+  "walk_speed": {
+   "file": "presentation",
+   "key": "walk_speed",
+   "label": "Quality of life > Walk speed (x)",
+   "type": "float",
+   "default": "1.0",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "0.5-3.0, step 0.25. climb_speed and swim_speed work the same way."
+  },
+  "disable_low_health_beep": {
+   "file": "presentation",
+   "key": "disable_low_health_beep",
+   "label": "Quality of life > Disable low-heart beeping",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": ""
+  },
+  "disable_tatl_reminders": {
+   "file": "presentation",
+   "key": "disable_tatl_reminders",
+   "label": "Quality of life > Disable Tatl reminders",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": ""
+  },
+  "resolution": {
+   "file": "config",
+   "key": "Renderer/resolution_factor",
+   "label": "Graphics > Internal resolution",
+   "type": "enum",
+   "values": {
+    "0": "Auto (Screen Size)",
+    "1": "Native (400x240)",
+    "2": "2x Native (800x480)",
+    "3": "3x Native (1200x720)",
+    "4": "4x Native (1600x960)",
+    "5": "5x Native (2000x1200)",
+    "6": "6x Native (2400x1440)",
+    "7": "7x Native (2800x1680)",
+    "8": "8x Native (3200x1920)",
+    "9": "9x Native (3600x2160)"
+   },
+   "default": "1",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "The DekUI slider offers 1-9; Azahar accepts 0-18."
+  },
+  "vsync": {
+   "file": "config",
+   "key": "Renderer/use_vsync",
+   "label": "Graphics > VSync",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Forced on when a 60 FPS mode is chosen."
+  },
+  "hw_shader": {
+   "file": "config",
+   "key": "Renderer/use_hw_shader",
+   "label": "Graphics > Hardware shaders",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "true",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Hidden and forced on in the 60 FPS modes."
+  },
+  "disk_shader_cache": {
+   "file": "config",
+   "key": "Renderer/use_disk_shader_cache",
+   "label": "Graphics > Remember compiled shaders",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "true",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": ""
+  },
+  "async_shaders": {
+   "file": "config",
+   "key": "Renderer/async_shader_compilation",
+   "label": "Graphics > Async shader compilation",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": ""
+  },
+  "custom_textures": {
+   "file": "config",
+   "key": "Utility/custom_textures",
+   "label": "Graphics > Use custom textures",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Folder chosen with 'Choose texture folder'; changes apply on the next launch."
+  },
+  "texture_filter": {
+   "file": "config",
+   "key": "Renderer/texture_filter",
+   "label": "Texture filter (Azahar)",
+   "type": "enum",
+   "values": {
+    "0": "None",
+    "1": "Anime4K",
+    "2": "Bicubic",
+    "3": "ScaleForce",
+    "4": "xBRZ",
+    "5": "MMPX"
+   },
+   "default": "0",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Not on the DekUI pages; Azahar's own settings screen."
+  },
+  "graphics_api": {
+   "file": "config",
+   "key": "Renderer/graphics_api",
+   "label": "Graphics API (Azahar)",
+   "type": "enum",
+   "values": {
+    "1": "OpenGLES",
+    "2": "Vulkan"
+   },
+   "default": "2",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": ""
+  },
+  "swap_screen": {
+   "file": "config",
+   "key": "Layout/swap_screen",
+   "label": "Touch/Controls > Swap screens",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": ""
+  },
+  "secondary_display_layout": {
+   "file": "config",
+   "key": "Layout/secondary_display_layout",
+   "label": "Second display layout (Azahar)",
+   "type": "enum",
+   "values": {
+    "4": "Opposite Screen",
+    "1": "Top Screen",
+    "2": "Bottom Screen",
+    "3": "Side by Side Screens",
+    "5": "Original",
+    "6": "Hybrid Screens",
+    "7": "Large Screen"
+   },
+   "default": "4",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "What the Thor's bottom screen shows; not tested."
+  }
+ }
+}

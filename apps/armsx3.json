@@ -1,0 +1,973 @@
+{
+ "name": "armsx3",
+ "package": "com.armsx3",
+ "aliases": [
+  "ps3",
+  "rpcs3"
+ ],
+ "category": "emulator",
+ "version_checked": "1.7.2",
+ "stop_before_write": true,
+ "files": {
+  "prefs": {
+   "path": "/data/data/com.armsx3/shared_prefs/ARMSX2.xml",
+   "format": "prefs",
+   "notes": "Source of truth (ARMSX3 is built on the ARMSX2 app, so the file keeps that name). config.global = one JSON object with every setting (ps3* keys for RPCS3, plus inert PS2-era keys such as eeCycleRate, mtvu, upscale tweaks that the PS3 core ignores, except upscaleFloat/renderer/customDriverId/fpsLimit/frameLimitEnable/aspectRatio/audioVolume/audioMuted which ARE used). config.game.<SERIAL> = sparse per-game JSON. config.coreOverrides and config.coreOverrides.game.<SERIAL> = JSON objects mapping 'Section@@Key' (RPCS3 YAML path joined with @@) to a YAML scalar string; these are replayed after the settings above, so they win, and they can set ANY RPCS3 key. configDb.ignore.<SERIAL> = JSON array of config_db keys the user switched off. Mode 660; keep the file's owner (the app uid) and mode when writing."
+  },
+  "core_yaml": {
+   "path": "/sdcard/Android/data/com.armsx3/files/config/config.yml",
+   "format": "yaml",
+   "notes": "RPCS3 global config written by the native core from the values ARMSX3 pushes with settingsSet at each boot/settings change. Do not edit: overwritten from prefs. Read it to see what the last session actually ran with (on the test device it matched config.global, e.g. Resolution, Resolution Scale, Shader Mode)."
+  },
+  "config_db": {
+   "path": "/sdcard/Android/data/com.armsx3/files/config/config_db/{game}.yml",
+   "format": "yaml",
+   "notes": "Community per-game configs downloaded from https://api.rpcs3.net/config/?api=v1 (2288 titles when checked) plus ~60 built-in ARMSX3 fixes merged in (d41.a). The whole folder is deleted and rewritten on every database refresh, so hand edits are lost; it moves to config_db_off/ when the feature is disabled (pref configDb.enabled). Keys the user overrides per game are listed in config/config_db_user/<SERIAL>.keys so the DB does not override them."
+  },
+  "input": {
+   "path": "/sdcard/Android/data/com.armsx3/files/config/input_configs/global/Default.yml",
+   "format": "yaml",
+   "notes": "RPCS3 pad mappings."
+  },
+  "patches": {
+   "path": "/sdcard/Android/data/com.armsx3/files/config/patches/armsx3_patch.yml",
+   "format": "yaml",
+   "notes": "RPCS3 patch file (patch engine)."
+  }
+ },
+ "per_game": {
+  "path": "/data/data/com.armsx3/shared_prefs/ARMSX2.xml",
+  "format": "prefs",
+  "game_id": "PS3 title serial (four letters and five digits, e.g. BLUS3xxxx), from gamesCache in ARMSX2.xml. Also the folder names under config/dev_hdd0/game and the disc-icons/<SERIAL>.png files.",
+  "create": true,
+  "key_map": {
+   "from": "config.global#",
+   "to": "config.game.{game}#"
+  },
+  "notes": "Two per-game layers, both in ARMSX2.xml: (1) config.game.{game} = sparse JSON object with the same keys as config.global (e.g. {renderer: vulkan, customDriverId: <driver id>}); merge is per key, game value if present else global. (2) config.coreOverrides.game.{game} = JSON map of 'Section@@Key' -> YAML scalar string for any RPCS3 key; replayed after the global config.coreOverrides. Create either entry as a <string> holding {} if missing. Order at boot (k07.c): merged global+game JSON pushed with settingsSet, then Vblank Rate 60 and GETLLAR 100 forced, then built-in hard-coded game fixes (xt2), then coreOverrides global+game (pa1.h), then config_db_user/<SERIAL>.keys rewritten. The community config_db/<SERIAL>.yml is also applied for the game except keys listed in configDb.ignore.<SERIAL> or in config_db_user/<SERIAL>.keys (order relative to the settingsSet pushes not traced). Removing a key returns it to global."
+ },
+ "keys": {
+  "renderer": {
+   "file": "prefs",
+   "key": "config.global#renderer",
+   "label": "Settings > Renderer (Graphics API)",
+   "type": "enum",
+   "values": {
+    "\"auto\"": "Auto (= Vulkan)",
+    "\"vulkan\"": "Vulkan",
+    "\"opengl\"": "OpenGL"
+   },
+   "default": "\"auto\"",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Applied at game boot as RPCS3 YAML Video/Renderer. Mapping (ym6.f): opengl/gl/gles/angle -> OpenGL, null/none -> Null, anything else (auto, vulkan, software) -> Vulkan."
+  },
+  "gpu_driver": {
+   "file": "prefs",
+   "key": "config.global#customDriverId",
+   "label": "Backend > GPU Driver",
+   "type": "string",
+   "values": {
+    "\"\"": "System driver",
+    "\"purpleturnip-vturnip_mrpurple_t30-toasted.adpkg-turnip_mrpurple_t30-toasted.adpkg\"": "Mr. Purple Turnip T30 (installed)",
+    "\"local-1000064545\"": "ARMSX2 Turnip axfl2-003 (Mesa 27.0.0-devel, installed)"
+   },
+   "default": "\"\"",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Applied at game boot as RPCS3 YAML (none: passed to native setCustomDriver). Directory name under /data/data/com.armsx3/files/drivers/; \"\" = system driver. Only used by the Vulkan renderer."
+  },
+  "resolution_scale": {
+   "file": "prefs",
+   "key": "config.global#upscaleFloat",
+   "label": "Renderer > Internal Resolution",
+   "type": "float",
+   "values": {
+    "0.5": "50%",
+    "1": "100% (native 720p output)",
+    "1.5": "150%",
+    "2": "200%",
+    "3": "300%",
+    "4": "400%"
+   },
+   "default": "1",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Applied at game boot as RPCS3 YAML Video/Resolution Scale (= value x 100, clamped 25-800). The legacy key ps3ResolutionScale (int) is saved but NOT applied; the boot code uses upscaleFloat. 1 -> YAML Resolution Scale: 100 (verified on the test device)."
+  },
+  "ps3_output_resolution": {
+   "file": "prefs",
+   "key": "config.global#ps3Resolution",
+   "label": "Renderer > PS3 Output Resolution",
+   "type": "enum",
+   "values": {
+    "0": "1920x1080",
+    "1": "1920x1080i",
+    "2": "1280x720",
+    "3": "720x480",
+    "4": "720x480i",
+    "5": "720x576",
+    "6": "720x576i",
+    "7": "1600x1080",
+    "8": "1440x1080",
+    "9": "1280x1080",
+    "10": "960x1080"
+   },
+   "default": "2",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Applied at game boot as RPCS3 YAML Video/Resolution. Index into the list shown. 2 -> 1280x720 (verified in config.yml on the test device). Most games only accept 720p/1080p/480p."
+  },
+  "frame_limit": {
+   "file": "prefs",
+   "key": "config.global#fpsLimit",
+   "label": "Performance > Display FPS Cap",
+   "type": "int",
+   "values": {
+    "-1": "PS3 Native",
+    "0": "Auto",
+    "30": "30",
+    "50": "50",
+    "60": "60",
+    "120": "120",
+    "45": "Any other N: Frame limit Off + Second Frame Limit = N"
+   },
+   "default": "0",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Applied at game boot as RPCS3 YAML Video/Frame limit (+ Video/Second Frame Limit). Clamped -1..1000. 30/50/60/120 map to the named RPCS3 values; other positive numbers set Frame limit: Off and Second Frame Limit: N. frameLimitEnable=false overrides this with Frame limit: Off. 0 -> Auto (verified on the test device)."
+  },
+  "frame_limit_enable": {
+   "file": "prefs",
+   "key": "config.global#frameLimitEnable",
+   "label": "Performance > Frame limiter",
+   "type": "bool",
+   "values": {
+    "true": "Limiter on (uses fpsLimit)",
+    "false": "Unlimited (Frame limit: Off)"
+   },
+   "default": "true",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Applied at game boot as RPCS3 YAML Video/Frame limit."
+  },
+  "shader_mode": {
+   "file": "prefs",
+   "key": "config.global#ps3ShaderMode",
+   "label": "Renderer > Shader Mode",
+   "type": "enum",
+   "values": {
+    "0": "Legacy Recompiler (single-threaded)",
+    "1": "Async Recompiler (multi-threaded)",
+    "2": "Async Recompiler with Shader Interpreter",
+    "3": "Shader Interpreter only"
+   },
+   "default": "1",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Applied at game boot as RPCS3 YAML Video/Shader Mode. 1 verified on the test device."
+  },
+  "msaa": {
+   "file": "prefs",
+   "key": "config.global#ps3MsaaMode",
+   "label": "Renderer > MSAA",
+   "type": "enum",
+   "values": {
+    "0": "Disabled",
+    "1": "Auto"
+   },
+   "default": "0",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Applied at game boot as RPCS3 YAML Video/MSAA."
+  },
+  "anisotropic_filter": {
+   "file": "prefs",
+   "key": "config.global#ps3AnisoFilter",
+   "label": "Renderer > Anisotropic Filtering",
+   "type": "int",
+   "values": {
+    "0": "Auto (game decides)",
+    "2": "2x",
+    "4": "4x",
+    "8": "8x",
+    "16": "16x"
+   },
+   "default": "0",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Applied at game boot as RPCS3 YAML Video/Anisotropic Filter Override. Clamped 0-16."
+  },
+  "aspect_ratio": {
+   "file": "prefs",
+   "key": "config.global#aspectRatio",
+   "label": "Renderer > Screen Aspect Ratio",
+   "type": "enum",
+   "values": {
+    "0": "Stretch to display",
+    "1": "16:9",
+    "2": "4:3"
+   },
+   "default": "1",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Applied at game boot as RPCS3 YAML Video/Stretch To Display Area + Video/Aspect ratio. 0 -> Stretch true; 2 -> 4:3; any other value (1, 3-8) -> 16:9. Shared with the PS2-era aspect enum, so values 3-8 exist in the UI code but all mean 16:9 for PS3."
+  },
+  "write_color_buffers": {
+   "file": "prefs",
+   "key": "config.global#ps3WriteColorBuffers",
+   "label": "Renderer > Write Color Buffers",
+   "type": "bool",
+   "values": {
+    "true": "On (fixes some effects, slower)",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Applied at game boot as RPCS3 YAML Video/Write Color Buffers."
+  },
+  "read_color_buffers": {
+   "file": "prefs",
+   "key": "config.global#ps3ReadColorBuffers",
+   "label": "Renderer > Read Color Buffers",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Applied at game boot as RPCS3 YAML Video/Read Color Buffers."
+  },
+  "write_depth_buffer": {
+   "file": "prefs",
+   "key": "config.global#ps3WriteDepthBuffer",
+   "label": "Renderer > Write Depth Buffer",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Applied at game boot as RPCS3 YAML Video/Write Depth Buffer."
+  },
+  "read_depth_buffer": {
+   "file": "prefs",
+   "key": "config.global#ps3ReadDepthBuffer",
+   "label": "Renderer > Read Depth Buffer",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Applied at game boot as RPCS3 YAML Video/Read Depth Buffer."
+  },
+  "strict_rendering": {
+   "file": "prefs",
+   "key": "config.global#ps3StrictRendering",
+   "label": "Renderer > Strict Rendering Mode",
+   "type": "bool",
+   "values": {
+    "true": "On (accurate, slow)",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Applied at game boot as RPCS3 YAML Video/Strict Rendering Mode."
+  },
+  "multithreaded_rsx": {
+   "file": "prefs",
+   "key": "config.global#ps3MultithreadedRsx",
+   "label": "Renderer > Multithreaded RSX",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Applied at game boot as RPCS3 YAML Video/Multithreaded RSX."
+  },
+  "disable_zcull": {
+   "file": "prefs",
+   "key": "config.global#ps3DisableZcull",
+   "label": "Renderer > Disable ZCull Occlusion Queries",
+   "type": "bool",
+   "values": {
+    "true": "On (faster, can break effects)",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Applied at game boot as RPCS3 YAML Video/Disable ZCull Occlusion Queries."
+  },
+  "relaxed_zcull": {
+   "file": "prefs",
+   "key": "config.global#ps3RelaxedZcull",
+   "label": "Renderer > Relaxed ZCULL Sync",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Applied at game boot as RPCS3 YAML Video/Relaxed ZCULL Sync."
+  },
+  "gpu_texture_scaling": {
+   "file": "prefs",
+   "key": "config.global#ps3GpuTextureScaling",
+   "label": "Renderer > GPU texture scaling",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Applied at game boot as RPCS3 YAML Video/Use GPU texture scaling."
+  },
+  "force_cpu_blit": {
+   "file": "prefs",
+   "key": "config.global#ps3ForceCpuBlit",
+   "label": "Renderer > Force CPU Blit",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Applied at game boot as RPCS3 YAML Video/Force CPU Blit."
+  },
+  "blending": {
+   "file": "prefs",
+   "key": "config.global#ps3BlendingMode",
+   "label": "Renderer > Blending",
+   "type": "enum",
+   "values": {
+    "0": "Full (hardware + programmable)",
+    "1": "Disable Hardware Blending",
+    "2": "Disable Programmable Blending"
+   },
+   "default": "0",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Applied at game boot as RPCS3 YAML Video/Disable Hardware Blending + Video/Disable Programmable Blending."
+  },
+  "vram_limit_mb": {
+   "file": "prefs",
+   "key": "config.global#ps3VramLimitMb",
+   "label": "Renderer > VRAM Allocation Limit",
+   "type": "int",
+   "values": {
+    "1024": "1 GB",
+    "2048": "2 GB",
+    "3072": "3 GB",
+    "4096": "4 GB"
+   },
+   "default": "2048",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Applied at game boot as RPCS3 YAML Video/Vulkan/VRAM allocation limit (MB). Clamped 256-65536."
+  },
+  "async_texture_streaming": {
+   "file": "prefs",
+   "key": "config.global#ps3AsyncTexStream",
+   "label": "Renderer > Asynchronous Texture Streaming",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Applied at game boot as RPCS3 YAML Video/Vulkan/Asynchronous Texture Streaming."
+  },
+  "shader_compiler_threads": {
+   "file": "prefs",
+   "key": "config.global#ps3ShaderCompThreads",
+   "label": "Renderer > Shader Compiler Threads",
+   "type": "int",
+   "values": {
+    "0": "Auto"
+   },
+   "default": "0",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Applied at game boot as RPCS3 YAML Video/Shader Compiler Threads. Clamped 0-16."
+  },
+  "texture_lod_bias": {
+   "file": "prefs",
+   "key": "config.global#ps3TextureLodBias",
+   "label": "Renderer > Texture LOD Bias",
+   "type": "int",
+   "values": {
+    "0": "None"
+   },
+   "default": "0",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Applied at game boot as RPCS3 YAML Video/Texture LOD Bias Addend. Clamped -16..16."
+  },
+  "frame_generation": {
+   "file": "prefs",
+   "key": "config.global#ps3FrameGeneration",
+   "label": "Frame Generation",
+   "type": "enum",
+   "values": {
+    "0": "Off",
+    "1": "x2",
+    "2": "x3",
+    "3": "x4"
+   },
+   "default": "0",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Applied at game boot as RPCS3 YAML Video/Frame Generation. The Play Store build says frame generation is only in the GitHub build."
+  },
+  "gpu_turbo": {
+   "file": "prefs",
+   "key": "config.global#ps3GpuTurbo",
+   "label": "Renderer > GPU Turbo (Adreno)",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Applied at game boot as RPCS3 YAML (native setGpuTurbo)."
+  },
+  "ppu_decoder": {
+   "file": "prefs",
+   "key": "config.global#ps3PpuDecoder",
+   "label": "PS3 CPU > PPU Decoder",
+   "type": "enum",
+   "values": {
+    "0": "Interpreter (static)",
+    "1": "Recompiler (LLVM)"
+   },
+   "default": "1",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Applied at game boot as RPCS3 YAML Core/PPU Decoder."
+  },
+  "spu_decoder": {
+   "file": "prefs",
+   "key": "config.global#ps3SpuDecoder",
+   "label": "PS3 CPU > SPU Decoder",
+   "type": "enum",
+   "values": {
+    "0": "Interpreter (static)",
+    "1": "Interpreter (dynamic)",
+    "2": "Recompiler (ASMJIT)",
+    "3": "Recompiler (LLVM)"
+   },
+   "default": "3",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Applied at game boot as RPCS3 YAML Core/SPU Decoder."
+  },
+  "spu_block_size": {
+   "file": "prefs",
+   "key": "config.global#ps3SpuBlockSize",
+   "label": "PS3 CPU > SPU Block Size",
+   "type": "enum",
+   "values": {
+    "0": "Safe",
+    "1": "Mega",
+    "2": "Giga"
+   },
+   "default": "0",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Applied at game boot as RPCS3 YAML Core/SPU Block Size."
+  },
+  "ppu_threads": {
+   "file": "prefs",
+   "key": "config.global#ps3PpuThreads",
+   "label": "PS3 CPU > PPU Threads",
+   "type": "int",
+   "values": {
+    "1": "1",
+    "2": "2"
+   },
+   "default": "2",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Applied at game boot as RPCS3 YAML Core/PPU Threads. Clamped 1-8."
+  },
+  "llvm_threads": {
+   "file": "prefs",
+   "key": "config.global#ps3LlvmThreads",
+   "label": "PS3 CPU > Max LLVM Compile Threads",
+   "type": "int",
+   "values": {
+    "0": "Auto (all cores)"
+   },
+   "default": "2",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Applied at game boot as RPCS3 YAML Core/Max LLVM Compile Threads."
+  },
+  "preferred_spu_threads": {
+   "file": "prefs",
+   "key": "config.global#ps3PreferredSpuThreads",
+   "label": "PS3 CPU > Preferred SPU Threads",
+   "type": "int",
+   "values": {
+    "0": "Auto"
+   },
+   "default": "0",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Applied at game boot as RPCS3 YAML Core/Preferred SPU Threads. Clamped 0-6."
+  },
+  "max_spurs_threads": {
+   "file": "prefs",
+   "key": "config.global#ps3MaxSpursThreads",
+   "label": "PS3 CPU > Max SPURS Threads",
+   "type": "int",
+   "values": {
+    "6": "6 (accurate)",
+    "4": "4",
+    "3": "3"
+   },
+   "default": "6",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Applied at game boot as RPCS3 YAML Core/Max SPURS Threads. Clamped 1-6."
+  },
+  "spu_loop_detection": {
+   "file": "prefs",
+   "key": "config.global#ps3SpuLoopDetection",
+   "label": "PS3 CPU > SPU Loop Detection",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Applied at game boot as RPCS3 YAML Core/SPU loop detection."
+  },
+  "spu_cache": {
+   "file": "prefs",
+   "key": "config.global#ps3SpuCache",
+   "label": "PS3 CPU > SPU Cache",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "true",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Applied at game boot as RPCS3 YAML Core/SPU Cache."
+  },
+  "llvm_precompile": {
+   "file": "prefs",
+   "key": "config.global#ps3LlvmPrecompile",
+   "label": "PS3 CPU > LLVM Precompilation",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "true",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Applied at game boot as RPCS3 YAML Core/LLVM Precompilation."
+  },
+  "accurate_spu_dma": {
+   "file": "prefs",
+   "key": "config.global#ps3AccurateSpuDma",
+   "label": "PS3 CPU > Accurate SPU DMA",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Applied at game boot as RPCS3 YAML Core/Accurate SPU DMA."
+  },
+  "clocks_scale": {
+   "file": "prefs",
+   "key": "config.global#ps3ClocksScale",
+   "label": "PS3 CPU > Emulated Clock Speed",
+   "type": "int",
+   "values": {
+    "100": "100% (accurate)"
+   },
+   "default": "100",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Applied at game boot as RPCS3 YAML Core/Clocks scale. Clamped 10-3000."
+  },
+  "thread_scheduler": {
+   "file": "prefs",
+   "key": "config.global#affinityMode",
+   "label": "PS3 CPU > Thread Scheduler",
+   "type": "enum",
+   "values": {
+    "0": "Operating System",
+    "1": "RPCS3 Scheduler",
+    "2": "RPCS3 Alternative"
+   },
+   "default": "0",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Applied at game boot as RPCS3 YAML Core/Thread Scheduler Mode. JSON key affinityMode is serialised from the scheduler field (k07 line 3054) and pushed as Core/Thread Scheduler Mode. Order of values follows the UI labels (perf.scheduler.os/rpcs3/rpcs3Alt); 0 = Operating System matched config.yml on the test device. Values 1/2 not tested."
+  },
+  "spu_xfloat_accuracy": {
+   "file": "prefs",
+   "key": "config.global#ps3SpuXFloat",
+   "label": "Advanced > SPU Float Accuracy",
+   "type": "enum",
+   "values": {
+    "0": "Accurate",
+    "1": "Approximate",
+    "2": "Relaxed",
+    "3": "Inaccurate"
+   },
+   "default": "1",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Applied at game boot as RPCS3 YAML Core/SPU XFloat Accuracy."
+  },
+  "accurate_spu_reservations": {
+   "file": "prefs",
+   "key": "config.global#ps3AccurateSpuRsv",
+   "label": "Advanced > Accurate SPU Reservations",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "true",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Applied at game boot as RPCS3 YAML Core/Accurate SPU Reservations."
+  },
+  "accurate_rsx_reservations": {
+   "file": "prefs",
+   "key": "config.global#ps3AccurateRsxRsv",
+   "label": "Advanced > Accurate RSX Reservation Access",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Applied at game boot as RPCS3 YAML Core/Accurate RSX reservation access."
+  },
+  "accurate_cache_line_stores": {
+   "file": "prefs",
+   "key": "config.global#ps3AccurateCacheLine",
+   "label": "Advanced > Accurate Cache Line Stores",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Applied at game boot as RPCS3 YAML Core/Accurate Cache Line Stores."
+  },
+  "ppu_nan_handling": {
+   "file": "prefs",
+   "key": "config.global#ps3PpuNanHandling",
+   "label": "Advanced > PPU Vector NaN Handling",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "true",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Applied at game boot as RPCS3 YAML Core/PPU Vector NaN Handling."
+  },
+  "accurate_dfma": {
+   "file": "prefs",
+   "key": "config.global#ps3AccurateDfma",
+   "label": "Advanced > Accurate DFMA",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "true",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Applied at game boot as RPCS3 YAML Core/Use Accurate DFMA."
+  },
+  "sleep_timers": {
+   "file": "prefs",
+   "key": "config.global#ps3SleepTimers",
+   "label": "Advanced > Sleep Timers Accuracy",
+   "type": "enum",
+   "values": {
+    "0": "As Host",
+    "1": "Usleep Only",
+    "2": "All Timers"
+   },
+   "default": "0",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Applied at game boot as RPCS3 YAML Core/Sleep Timers Accuracy."
+  },
+  "perf_overlay": {
+   "file": "prefs",
+   "key": "config.global#ps3OverlayEnabled",
+   "label": "Overlay > Performance Overlay",
+   "type": "bool",
+   "values": {
+    "true": "On (RPCS3 FPS/perf overlay)",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Applied at game boot as RPCS3 YAML Video/Performance Overlay/Enabled. The in-game quick menu can also toggle the overlay for the session (lv4.l); the boot value comes from this key."
+  },
+  "perf_overlay_detail": {
+   "file": "prefs",
+   "key": "config.global#ps3OverlayDetail",
+   "label": "Overlay > Detail Level",
+   "type": "enum",
+   "values": {
+    "0": "None",
+    "1": "Minimal",
+    "2": "Low",
+    "3": "Medium",
+    "4": "High"
+   },
+   "default": "3",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Applied at game boot as RPCS3 YAML Video/Performance Overlay/Detail level."
+  },
+  "perf_overlay_position": {
+   "file": "prefs",
+   "key": "config.global#ps3OverlayPosition",
+   "label": "Overlay > Position",
+   "type": "enum",
+   "values": {
+    "0": "Top Left",
+    "1": "Top Right",
+    "2": "Bottom Left",
+    "3": "Bottom Right"
+   },
+   "default": "0",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Applied at game boot as RPCS3 YAML Video/Performance Overlay/Position."
+  },
+  "audio_backend": {
+   "file": "prefs",
+   "key": "config.global#ps3AudioRenderer",
+   "label": "Audio > Audio Backend",
+   "type": "enum",
+   "values": {
+    "0": "Null",
+    "1": "XAudio2",
+    "2": "Cubeb",
+    "3": "FAudio",
+    "4": "Oboe"
+   },
+   "default": "4",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Applied at game boot as RPCS3 YAML Audio/Renderer. Use Oboe (4) or Cubeb (2) on Android."
+  },
+  "audio_buffering": {
+   "file": "prefs",
+   "key": "config.global#ps3AudioBuffering",
+   "label": "Audio > Audio Buffer",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "true",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Applied at game boot as RPCS3 YAML Audio/Enable Buffering."
+  },
+  "audio_buffer_ms": {
+   "file": "prefs",
+   "key": "config.global#ps3AudioBufferMs",
+   "label": "Audio > Audio Buffer (ms)",
+   "type": "int",
+   "values": {
+    "34": "34 ms"
+   },
+   "default": "34",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Applied at game boot as RPCS3 YAML Audio/Desired Audio Buffer Duration. Clamped 4-250."
+  },
+  "audio_time_stretch": {
+   "file": "prefs",
+   "key": "config.global#ps3AudioTimeStretch",
+   "label": "Audio > Time Stretching",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Applied at game boot as RPCS3 YAML Audio/Enable Time Stretching."
+  },
+  "audio_format": {
+   "file": "prefs",
+   "key": "config.global#ps3AudioFormat",
+   "label": "Audio > Audio Format",
+   "type": "enum",
+   "values": {
+    "0": "Stereo",
+    "1": "Surround 5.1",
+    "2": "Surround 7.1",
+    "3": "Automatic",
+    "4": "Manual"
+   },
+   "default": "0",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Applied at game boot as RPCS3 YAML Audio/Audio Format."
+  },
+  "audio_volume": {
+   "file": "prefs",
+   "key": "config.global#audioVolume",
+   "label": "Audio > Volume",
+   "type": "int",
+   "values": {
+    "100": "100%"
+   },
+   "default": "100",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Applied at game boot as RPCS3 YAML Audio/Master Volume. Clamped 0-200. audioMuted=true forces Master Volume 0."
+  },
+  "audio_muted": {
+   "file": "prefs",
+   "key": "config.global#audioMuted",
+   "label": "Audio > Mute",
+   "type": "bool",
+   "values": {
+    "true": "Muted",
+    "false": "Sound on"
+   },
+   "default": "false",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Applied at game boot as RPCS3 YAML Audio/Master Volume = 0."
+  },
+  "console_language": {
+   "file": "prefs",
+   "key": "config.global#ps3ConsoleLanguage",
+   "label": "Advanced > Console Language",
+   "type": "enum",
+   "values": {
+    "0": "Japanese",
+    "1": "English (US)",
+    "2": "French",
+    "3": "Spanish",
+    "4": "German",
+    "5": "Italian",
+    "6": "Dutch",
+    "7": "Portuguese (Portugal)",
+    "8": "Russian",
+    "9": "Korean",
+    "10": "Chinese (Traditional)",
+    "11": "Chinese (Simplified)",
+    "12": "Finnish",
+    "13": "Swedish",
+    "14": "Danish",
+    "15": "Norwegian",
+    "16": "Polish",
+    "17": "Portuguese (Brazil)",
+    "18": "English (UK)",
+    "19": "Turkish"
+   },
+   "default": "1",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Applied at game boot as RPCS3 YAML System/Language."
+  },
+  "console_region": {
+   "file": "prefs",
+   "key": "config.global#ps3ConsoleRegion",
+   "label": "Advanced > Console Region",
+   "type": "enum",
+   "values": {
+    "0": "SCEJ",
+    "1": "SCEA",
+    "2": "SCEE",
+    "3": "SCEH",
+    "4": "SCEK",
+    "5": "SCH",
+    "6": "Other"
+   },
+   "default": "1",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Applied at game boot as RPCS3 YAML System/License Area."
+  },
+  "enter_button": {
+   "file": "prefs",
+   "key": "config.global#ps3EnterButtonAssign",
+   "label": "System > Enter button",
+   "type": "enum",
+   "values": {
+    "0": "Enter with circle",
+    "1": "Enter with cross"
+   },
+   "default": "1",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Applied at game boot as RPCS3 YAML System/Enter button assignment."
+  },
+  "shader_precision": {
+   "file": "prefs",
+   "key": "config.coreOverrides#Video@@Shader Precision",
+   "label": "(no UI: raw core override)",
+   "type": "enum",
+   "values": {
+    "\"\\\"Low\\\"\"": "Low",
+    "\"\\\"Normal\\\"\"": "Normal",
+    "\"\\\"High\\\"\"": "High",
+    "\"\\\"Ultra\\\"\"": "Ultra"
+   },
+   "default": "\"\\\"Low\\\"\"",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Raw RPCS3 override map (see per_game.notes). The value is a JSON string holding a YAML scalar, so a string option keeps its own quotes: stored as \"\\\"Low\\\"\". An ARMSX3 migration can set it to Low. Per game: config.coreOverrides.game.{game}#Video@@Shader Precision."
+  }
+ }
+}

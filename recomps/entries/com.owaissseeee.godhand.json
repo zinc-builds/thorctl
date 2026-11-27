@@ -1,0 +1,39 @@
+{
+ "package": "com.owaissseeee.godhand",
+ "name": "GodHandAndroid",
+ "original": {
+  "title": "God Hand",
+  "platform": "PS2",
+  "year": 2006
+ },
+ "kind": "static recompilation",
+ "project": {
+  "name": "God Hand Android Port (PS2 static recompilation, PCSX2 GS renderer)",
+  "repo": "https://github.com/LasVola/godhand-recomp",
+  "android_repo": "https://github.com/owaissseeee/godhand-android-port",
+  "license": "GPL-3.0 (upstream LasVola/godhand-recomp); Android repo lists none"
+ },
+ "version_checked": "2.2",
+ "update": {
+  "channel": "GitHub releases",
+  "url": "https://github.com/owaissseeee/godhand-android-port/releases"
+ },
+ "assets": {
+  "needs": "God Hand USA disc (SLUS-215.03) as an ISO, picked in the launcher; it is extracted and indexed into the app's cache (SLUS_215.03, GODHAND.AFS/_DATA.AFS, MODULES/IRX.IMS).",
+  "location": "Picked via SAF, extracted to /data/data/com.owaissseeee.godhand/files/godhand_cache. Fallback: an already-extracted folder at /sdcard/Download/God Hand (USA)/.",
+  "notes": null
+ },
+ "settings": {
+  "adapter": "godhand",
+  "files": [
+   "/data/data/com.owaissseeee.godhand/shared_prefs/godhand_settings.xml"
+  ],
+  "in_app_menu": "Launcher main screen settings (GRAPHICS / CONTROLS / AUDIO & SYSTEM tabs) and the in-game settings dialog. Renderer, resolution, aspect and FPS are locked while a game is running.",
+  "summary": "Renderer (Vulkan PCSX2-GS recommended, OpenGL ES 3.2, native GLES), resolution 0.5x-8x (default 1x native 512x448), aspect 16:9/4:3/full, 30 or 60 FPS (60 marked buggy), frameskip, audio scheduling/buffer, controller mode, dodge mode, touch opacity, FPS overlay."
+ },
+ "controls": "Auto-detects a physical gamepad (or force touch-only/gamepad-only); touch overlay auto-hides with a pad. Custom touch button layout stored in the same prefs. Dodge on right stick, swipe, or 4 dodge buttons.",
+ "display": "Single screen (no secondary-display code in the APK).",
+ "saves": "PS2 memory card Mcd001.ps2 (and Mcd002.ps2) plus save states under /data/data/com.owaissseeee.godhand/files (exact sub-folder not confirmed).",
+ "notes": "The checked build reports versionName 1.0.0-godhand-recomp, which does not say which release it is. GitHub releases are tagged Beta (2026-10-25), release/v2.1 (2026-11-21, app-release-v2.1.apk) and v2.2 (2026-11-22).",
+ "verified": "On device: dumpsys, data dir. APK: SettingsRepository (prefs file, keys, defaults, ranges), SettingsDialog/MainActivity labels, IsoCacheProcessor paths, libgodhand_android.so strings. Web: GitHub repos and releases. Nothing tested in the running app."
+}

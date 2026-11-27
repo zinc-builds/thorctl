@@ -1,0 +1,406 @@
+{
+ "name": "pico8",
+ "package": "io.wip.pico8",
+ "aliases": [
+  "pico8",
+  "pico-8",
+  "pico"
+ ],
+ "category": "tool",
+ "version_checked": "1.6.6",
+ "stop_before_write": true,
+ "files": {
+  "config": {
+   "path": "/sdcard/Documents/pico8/data/config.txt",
+   "format": "spaced",
+   "notes": "PICO-8 0.2.7 (Raspberry Pi build, pico8_64) config. Format: one setting per line, 'key value' separated by a space, values are bare numbers or words (multi-number values space-separated, e.g. 'window_size 128 128'); text after '//' is a comment; '//' lines are comments. Keep the comment lines; edit the value token only. PICO-8 reads it at start and saves it on a clean exit; the wrapper kills pico8 with SIGKILL, so in practice it is not rewritten. Inside the proot it is /home/public/data/config.txt (-home /home/public/data). The wrapper's command line overrides window_size/screen_size/windowed (-width 128 -height 128 -windowed 1), root_path (-root_path) and boot_to_splore (-splore), so those keys have no effect. Owner u0_a<N>:media_rw (shared storage)."
+  },
+  "wrapper": {
+   "path": "/data/data/io.wip.pico8/files/settings.cfg",
+   "format": "ini",
+   "notes": "Godot ConfigFile (user://settings.cfg) of the Android wrapper (Macs75/pico8-android). Format: '[section]' headers, 'key=value' lines with Godot Variant literals: ints 3, floats 1.0, bools true/false, strings \"sles\", Color(r, g, b, a). Settings are in [settings]; [updates] holds last_check. Only keys changed in the menu are present: missing = default. The app caches the file in memory and rewrites it whole on every option change, so force-stop first. Root only, owner u0_a<N>, mode 600."
+  },
+  "stats": {
+   "path": "/data/data/io.wip.pico8/files/activity_stats.json",
+   "format": "json",
+   "notes": "Play counts and time per cart. Not settings."
+  }
+ },
+ "per_game": null,
+ "keys": {
+  "show_fps": {
+   "file": "config",
+   "key": "show_fps",
+   "label": "config.txt show_fps",
+   "type": "bool",
+   "values": {
+    "1": "Draw FPS in the corner",
+    "0": "Off"
+   },
+   "default": "0",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "PICO-8's own counter, drawn inside the 128x128 picture."
+  },
+  "volume": {
+   "file": "config",
+   "key": "volume",
+   "label": "config.txt volume (PICO-8 audio)",
+   "type": "int",
+   "values": {
+    "0": "Silent",
+    "256": "Full"
+   },
+   "default": "256",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "0-256. The PICO-8 volume (sound_volume/music_volume are SDL-level and also 0-256)."
+  },
+  "sound_volume": {
+   "file": "config",
+   "key": "sound_volume",
+   "label": "config.txt sound_volume",
+   "type": "int",
+   "values": {
+    "256": "Full"
+   },
+   "default": "256",
+   "per_game": false,
+   "verified_on_device": true
+  },
+  "music_volume": {
+   "file": "config",
+   "key": "music_volume",
+   "label": "config.txt music_volume",
+   "type": "int",
+   "values": {
+    "256": "Full"
+   },
+   "default": "256",
+   "per_game": false,
+   "verified_on_device": true
+  },
+  "mix_buffer_size": {
+   "file": "config",
+   "key": "mix_buffer_size",
+   "label": "config.txt mix_buffer_size",
+   "type": "int",
+   "values": {
+    "1024": "Default",
+    "2048": "Try if sound is choppy"
+   },
+   "default": "1024",
+   "per_game": false,
+   "verified_on_device": true
+  },
+  "host_framerate_control": {
+   "file": "config",
+   "key": "host_framerate_control",
+   "label": "config.txt host_framerate_control",
+   "type": "enum",
+   "values": {
+    "0": "Off",
+    "1": "Auto",
+    "2": "Allow cart framerate control for slow hosts"
+   },
+   "default": "1",
+   "per_game": false,
+   "verified_on_device": true
+  },
+  "foreground_sleep_ms": {
+   "file": "config",
+   "key": "foreground_sleep_ms",
+   "label": "config.txt foreground_sleep_ms",
+   "type": "int",
+   "values": {
+    "1": "Default",
+    "10": "Save battery"
+   },
+   "default": "1",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Milliseconds slept each frame."
+  },
+  "transform_screen": {
+   "file": "config",
+   "key": "transform_screen",
+   "label": "config.txt transform_screen",
+   "type": "enum",
+   "values": {
+    "0": "None",
+    "129": "Flip horizontally",
+    "130": "Flip vertically",
+    "133": "Rotate 90 CW",
+    "134": "Rotate 180",
+    "135": "Rotate 270 CW"
+   },
+   "default": "0",
+   "per_game": false,
+   "verified_on_device": true
+  },
+  "joystick_index": {
+   "file": "config",
+   "key": "joystick_index",
+   "label": "config.txt joystick_index",
+   "type": "int",
+   "values": {
+    "0": "Controllers start at player 1"
+   },
+   "default": "0",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "0-7."
+  },
+  "merge_joysticks": {
+   "file": "config",
+   "key": "merge_joysticks",
+   "label": "config.txt merge_joysticks",
+   "type": "int",
+   "values": {
+    "0": "Off",
+    "2": "First 2 controllers act as player 1"
+   },
+   "default": "0",
+   "per_game": false,
+   "verified_on_device": true
+  },
+  "splore_filter": {
+   "file": "config",
+   "key": "splore_filter",
+   "label": "config.txt splore_filter",
+   "type": "bool",
+   "values": {
+    "1": "Hide carts tagged mature",
+    "0": "Show all"
+   },
+   "default": "0",
+   "per_game": false,
+   "verified_on_device": true
+  },
+  "check_for_cart_updates": {
+   "file": "config",
+   "key": "check_for_cart_updates",
+   "label": "config.txt check_for_cart_updates",
+   "type": "bool",
+   "values": {
+    "1": "On",
+    "0": "Off"
+   },
+   "default": "1",
+   "per_game": false,
+   "verified_on_device": true
+  },
+  "max_prefetch_threads": {
+   "file": "config",
+   "key": "max_prefetch_threads",
+   "label": "config.txt max_prefetch_threads",
+   "type": "int",
+   "values": {
+    "0": "No prefetch",
+    "4": "Default"
+   },
+   "default": "4",
+   "per_game": false,
+   "verified_on_device": true
+  },
+  "gif_len": {
+   "file": "config",
+   "key": "gif_len",
+   "label": "config.txt gif_len",
+   "type": "int",
+   "values": {
+    "0": "No GIF recording",
+    "16": "16 s"
+   },
+   "default": "16",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "0-120 seconds."
+  },
+  "screenshot_scale": {
+   "file": "config",
+   "key": "screenshot_scale",
+   "label": "config.txt screenshot_scale",
+   "type": "int",
+   "values": {
+    "3": "384x384"
+   },
+   "default": "3",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "gif_scale is the same for GIFs."
+  },
+  "screen_shader": {
+   "file": "wrapper",
+   "key": "settings/shader_type",
+   "label": "Options > Display > Shader",
+   "type": "enum",
+   "values": {
+    "0": "None",
+    "1": "Retro v2",
+    "2": "Retro v3",
+    "3": "LCD 3x",
+    "4": "LCD GBC",
+    "5": "LCD transparency",
+    "6": "Dot matrix",
+    "7": "zfast CRT",
+    "8": "CRT Hyllian",
+    "9": "CRT aperture",
+    "10": "CRT 1-tap"
+   },
+   "default": "0",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Shader files in /sdcard/Documents/pico8/shaders/; a <name>.custom.gdshader copy is used instead when present."
+  },
+  "shader_opacity": {
+   "file": "wrapper",
+   "key": "settings/shader_opacity",
+   "label": "Options > Display > Shader opacity",
+   "type": "float",
+   "values": {
+    "1.0": "Full"
+   },
+   "default": "1.0",
+   "per_game": false,
+   "verified_on_device": false
+  },
+  "integer_scaling": {
+   "file": "wrapper",
+   "key": "settings/integer_scaling_enabled",
+   "label": "Options > Display > Integer scaling",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "true",
+   "per_game": false,
+   "verified_on_device": false
+  },
+  "bezel": {
+   "file": "wrapper",
+   "key": "settings/bezel_enabled",
+   "label": "Options > Display > Bezel",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Image /sdcard/Documents/pico8/bezel.png (or bezel_landscape/portrait.png, or the theme's)."
+  },
+  "orientation": {
+   "file": "wrapper",
+   "key": "settings/orientation_mode",
+   "label": "Options > Display > Orientation",
+   "type": "enum",
+   "values": {
+    "0": "Auto",
+    "1": "Landscape",
+    "2": "Landscape reversed",
+    "3": "Portrait",
+    "4": "Portrait reversed"
+   },
+   "default": "0",
+   "per_game": false,
+   "verified_on_device": false
+  },
+  "background_color": {
+   "file": "wrapper",
+   "key": "settings/bg_color",
+   "label": "Options > Display > Background colour",
+   "type": "string",
+   "values": {
+    "Color(0.0078, 0.0157, 0.0235, 1)": "Near-black"
+   },
+   "default": "",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Godot Color literal Color(r, g, b, a) with 0-1 floats."
+  },
+  "theme": {
+   "file": "wrapper",
+   "key": "settings/current_theme",
+   "label": "Options > Display > Theme",
+   "type": "string",
+   "values": {
+    "\"\"": "Default"
+   },
+   "default": "\"\"",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Name of a theme folder in /sdcard/Documents/pico8/themes/."
+  },
+  "touch_controls": {
+   "file": "wrapper",
+   "key": "settings/controls_mode",
+   "label": "Options > Controls > Show controls",
+   "type": "enum",
+   "values": {
+    "0": "Auto (hide with a controller)",
+    "1": "Always show",
+    "2": "Never show"
+   },
+   "default": "0",
+   "per_game": false,
+   "verified_on_device": false
+  },
+  "haptics": {
+   "file": "wrapper",
+   "key": "settings/haptic_enabled",
+   "label": "Options > Controls > Haptic feedback",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": false
+  },
+  "swap_zx": {
+   "file": "wrapper",
+   "key": "settings/swap_zx_enabled",
+   "label": "Options > Controls > Swap Z/X (O/X buttons)",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": false
+  },
+  "audio_backend": {
+   "file": "wrapper",
+   "key": "settings/audio_backend",
+   "label": "Options > Audio > Audio backend",
+   "type": "enum",
+   "values": {
+    "\"sles\"": "OpenSL ES via PulseAudio (default)",
+    "\"stream\"": "Stream through Godot"
+   },
+   "default": "\"sles\"",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Applied at app start ('App restart required'). Forced to stream when the app is installed on external storage."
+  },
+  "start_with_splore": {
+   "file": "wrapper",
+   "key": "settings/start_with_splore",
+   "label": "Options > Start with Splore",
+   "type": "bool",
+   "values": {
+    "true": "Launch PICO-8 with -splore",
+    "false": "Boot to the PICO-8 prompt"
+   },
+   "default": "true",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Overrides config.txt boot_to_splore because the wrapper passes -splore on the command line."
+  }
+ }
+}

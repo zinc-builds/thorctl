@@ -1,0 +1,39 @@
+{
+ "package": "dev.ttyd.port.us",
+ "name": "Paper Cut (US)",
+ "original": {
+  "title": "Paper Mario: The Thousand-Year Door",
+  "platform": "GameCube",
+  "year": 2004
+ },
+ "kind": "decompilation",
+ "project": {
+  "name": "Paper Cut",
+  "repo": "https://github.com/LLCOOLT/ttyd",
+  "android_repo": "https://github.com/LLCOOLT/paper-cut",
+  "license": "MIT"
+ },
+ "version_checked": "0.5.1",
+ "update": {
+  "channel": "GitHub releases (one APK per disc release: papercut-<v>-eu-android-arm64.apk); the app can download and install its own updates",
+  "url": "https://github.com/LLCOOLT/paper-cut/releases"
+ },
+ "assets": {
+  "needs": "Your own US disc image, game ID G8ME01 (.iso, .gcm or .rvz). This is the US app; upstream ships separate EU (G8MP01) and JP (G8MJ01) APKs.",
+  "location": "Added to the launcher's library with the system file picker (persistable content:// URI); nothing is copied to a fixed path.",
+  "notes": "Add the disc with 'Add a disc image'. With 'Skip to this disc next time' on, the app boots straight to the game. Settings > Gameplay has presets such as Vanilla+."
+ },
+ "settings": {
+  "adapter": "papercut",
+  "files": [
+   "/data/data/dev.ttyd.port.us/files/settings.txt"
+  ],
+  "in_app_menu": "Launcher > Settings, or in game: the Start menu's settings page (controller Back/Select, or a three-finger tap).",
+  "summary": "framerate 60/120/144/240/display (frame interpolation), resolution (window or 1-8x 640x480), widescreen, wide HUD, 4x MSAA, sharp texture filter, no pop-in, VSync, FPS overlay; text speed, skip intro, run speed, fast-forward speed; EU: language and 50 Hz."
+ },
+ "controls": "SDL3/Aurora input: controllers, keyboard and mouse, and touch (on-screen stick and buttons with size/opacity, auto-run, fixed stick, tap = A).",
+ "display": "Dual-screen aware: when a second display exists it shows a companion page there (Party, Map, Battle info, Crystal Stars) through an Android Presentation (TtydCompanion). Recompa's index also marks it dual_screen. Any aspect ratio; landscape by default.",
+ "saves": "Memory cards beside settings.txt in Aurora's user folder (expected /data/data/dev.ttyd.port.us/files/, root-only).",
+ "notes": "The EU and US builds are separate apps; install the one that matches the disc's region. Touch buttons hide when the controller is used.",
+ "verified": "Device: dumpsys, data dirs. APK: jadx (TtydActivity, TtydCompanion), native strings (settings.txt, disc IDs). Source: settings_aurora.c and settings.h at tag v0.5.1 (key list, ranges, defaults), README, docs. Not checked: the user-folder path on Android (SDL pref path assumed), whether the EU app takes a US disc."
+}

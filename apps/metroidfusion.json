@@ -1,0 +1,70 @@
+{
+ "name": "metroidfusion",
+ "package": "io.github.genissonemilio.metroidfusion.albumtest",
+ "aliases": [
+  "fusion",
+  "mf"
+ ],
+ "category": "recomp",
+ "version_checked": "0.1.0",
+ "stop_before_write": true,
+ "files": {
+  "prefs": {
+   "path": "/data/data/io.github.genissonemilio.metroidfusion.albumtest/shared_prefs/fusion.xml",
+   "format": "prefs",
+   "template": "<?xml version='1.0' encoding='utf-8' standalone='yes' ?>\n<map>\n</map>\n",
+   "notes": "SharedPreferences 'fusion' (FusionSetupActivity). Does not exist until the app saves a setting. Read when a game starts ('vale na próxima partida')."
+  }
+ },
+ "per_game": null,
+ "keys": {
+  "pixel_mode": {
+   "file": "prefs",
+   "key": "pixel_mode",
+   "label": "Imagem",
+   "type": "enum",
+   "values": {
+    "0": "Pixel perfeito (sharp)",
+    "1": "Suave (Scale2x)"
+   },
+   "default": "1",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Integer scaling in both modes; applies to the next game."
+  },
+  "touch_size": {
+   "file": "prefs",
+   "key": "touch_size",
+   "label": "Controles > Tamanho",
+   "type": "int",
+   "default": "100",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "80-130 %."
+  },
+  "touch_opacity": {
+   "file": "prefs",
+   "key": "touch_opacity",
+   "label": "Controles > Opacidade",
+   "type": "int",
+   "default": "70",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "30-90 %."
+  },
+  "sound": {
+   "file": "prefs",
+   "key": "sound",
+   "label": "Controles > Som na próxima partida",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "true",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": ""
+  }
+ }
+}

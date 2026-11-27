@@ -1,0 +1,39 @@
+{
+ "package": "dev.picori.tmc",
+ "name": "The Minish Cap",
+ "original": {
+  "title": "The Legend of Zelda: The Minish Cap",
+  "platform": "GBA",
+  "year": 2004
+ },
+ "kind": "decompilation",
+ "project": {
+  "name": "Project Picori (zeldaret/tmc PC port) - Minish Cap Dual Screen",
+  "repo": "https://github.com/zeldaret/tmc",
+  "android_repo": "https://github.com/samyost1/tmc-android",
+  "license": null
+ },
+ "version_checked": "0.8.3",
+ "update": {
+  "channel": "GitHub releases",
+  "url": "https://github.com/samyost1/tmc-android/releases"
+ },
+ "assets": {
+  "needs": "The Minish Cap GBA ROM, USA (SHA-1 b4bd50e4131b027c334547b4524e2dbbd4227130), named baserom.gba. EU/JP ROMs also load (baserom_eu.gba / baserom_jp.gba) but run as a hybrid on the USA build.",
+  "location": "/sdcard/Android/data/dev.picori.tmc/files/baserom.gba; the port extracts rom_data/ (2,789 chunk files), assets/ and assets_src/ next to it on first run.",
+  "notes": "baserom.gba is 16,777,216 bytes. The port extracts rom_data and assets on the first run."
+ },
+ "settings": {
+  "adapter": "tmc",
+  "files": [
+   "/sdcard/Android/data/dev.picori.tmc/files/config.json"
+  ],
+  "in_app_menu": "Port settings menu: Select+Start on a gamepad (F8 on keyboard). Bottom screen > Settings tab: hide top HUD, widescreen, panel backdrop, map toggles and the port-wide toggles.",
+  "summary": "config.json (nlohmann JSON, 4-space indent) is rewritten on every setting change. Worth knowing: render_backend (software on Android by default; gpu needed for CRT/LCD shaders and .glslp presets), upscale_method (nearest/linear/xbrz_nearest/xbrz_linear), frame_time_ns (60 FPS cap), widescreen_enabled and aspect_mode, hide_top_hud, second_screen_* panel options, autosave, touch controls, randomizer options, accessibility audio cues and TTS."
+ },
+ "controls": "SDL3 gamepad and keyboard bindings in config.json 'bindings' (SDL_GAMEPAD button ids / SDLK codes). Defaults: A=0, B=1, soft X/Y on 2/3, L=9, R=10, Start=6, Select=4, roll-attack macro on 8, L2/R2 axes 4/5. Touch overlay on by default (touch_controls, joystick scheme). Select+Start opens the port menu. Start opens the game's pause menu unless game_pause_menu is false.",
+ "display": "Game on the top screen; bottom screen is a Presentation with Map (follow cam, zoom, Windcrest pins), Dungeon automap, Quest, Items (touch equip) and Settings. second_screen_swap puts the game on the bottom panel instead (read by TMCLauncherActivity at launch). Built with a 384-pixel widescreen path (widescreen_enabled, aspect_mode).",
+ "saves": "/sdcard/Android/data/dev.picori.tmc/files/tmc.sav (8 KB, active_save_profile), state_quick.bin and state_auto_0..2.bin (autosave every 60 s), tmc.randomizer.",
+ "notes": "Release v1.2 (tmc-dual-screen-v1.2.apk, 2026-08-19, SHA-256 9f666877...) is the latest release. versionName 0.8.3 is the Picori port version. Lineage: zeldaret/tmc decompilation -> MatheoVignaud/tmc (PC port) -> 999sian/tmc ('Project Picori') -> Raekwon1603/tmc-android -> samyost1/tmc-android (Thor dual-screen mod). The native binary has a GitHub update check against MatheoVignaud/tmc (TMC_NO_UPDATE_CHECK disables it); that is the PC port's channel, not this APK's.",
+ "verified": "Device: version, install time, config.json content, ROM and extracted data present, save files. APK: SHA-256 against GitHub release, libmain.so strings. Source at tag v1.2: port/port_runtime_config.cpp (keys, defaults, value parsing), port_ppu.cpp (upscale names), port_gpu_renderer.cpp, TMCLauncherActivity.java, README. Not checked: changing a setting and relaunching."
+}

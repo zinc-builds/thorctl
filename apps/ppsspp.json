@@ -1,0 +1,707 @@
+{
+ "name": "ppsspp",
+ "package": "org.ppsspp.ppssppgold",
+ "aliases": [
+  "psp",
+  "ppssppgold",
+  "ppsspp-gold"
+ ],
+ "category": "emulator",
+ "version_checked": "v1.20.4",
+ "stop_before_write": true,
+ "files": {
+  "main": {
+   "path": "/storage/{sdcard}/PPSSPP/PSP/SYSTEM/ppsspp.ini",
+   "format": "ini",
+   "notes": "All global settings. UTF-8 WITH BOM (EF BB BF) before the first line '[General]': a parser that does not strip the BOM sees the first section as '\\ufeff[General]' (cocoonlib appconf.ini_read currently files [General] keys under '/'); keep the BOM when writing. 'Key = Value', bools True/False. Location comes from the memstick choice in /data/data/org.ppsspp.ppssppgold/files/memstick_dir.txt (a SAF tree URI such as <sdcard>:PPSSPP); the file sits on the SD card (owner media_rw, mode 770). Read once at app start (NativeInit -> Config::Load). Written from memory (load file, overwrite every known key, keep unknown lines) when leaving a settings screen, when a game exits, and in onDestroy (NativeShutdown). A force-stop skips the save."
+  },
+  "controls": {
+   "path": "/storage/{sdcard}/PPSSPP/PSP/SYSTEM/controls.ini",
+   "format": "ini",
+   "notes": "[ControlMapping] button = <deviceId>-<keyCode>[,...] (10 = default pad). UTF-8 with BOM. Saved with the main config when not in a game."
+  },
+  "game": {
+   "path": "/storage/{sdcard}/PPSSPP/PSP/SYSTEM/{game}_ppsspp.ini",
+   "format": "ini",
+   "notes": "Per-game config, see per_game."
+  }
+ },
+ "per_game": {
+  "path": "/storage/{sdcard}/PPSSPP/PSP/SYSTEM/{game}_ppsspp.ini",
+  "format": "ini",
+  "game_id": "PARAM.SFO DISC_ID without a dash, e.g. ULUS10051. Read it from PSP_GAME/PARAM.SFO inside the ISO; [PlayTime] in ppsspp.ini lists IDs of played games.",
+  "create": true,
+  "notes": "Loaded at game boot only if the file exists (PSPLoaders -> Config::LoadGameConfig); every setting found in the file overrides the global value, missing keys keep the global value, so a hand-made file with a few lines works. Same section/key names as ppsspp.ini, plus [PostShaderList], [PostShaderSetting] and [ControlMapping] (per-game controls). When the game exits or its settings screen closes, PPSSPP rewrites the file with EVERY per-game setting at its current value (a full snapshot), so later global changes no longer reach that game for those keys. While in game-specific mode the main ppsspp.ini save skips PER_GAME keys. Created empty by Game info > Create game config, then filled on save. Delete the file to return the game to global settings. Edit only while the app is stopped, or at least while that game is not running."
+ },
+ "keys": {
+  "graphics_backend": {
+   "file": "main",
+   "key": "Graphics/GraphicsBackend",
+   "label": "Settings > Graphics > Backend",
+   "type": "enum",
+   "values": {
+    "0 (OPENGL)": "OpenGL",
+    "3 (VULKAN)": "Vulkan"
+   },
+   "default": "3 (VULKAN)",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Written as '<int> (<NAME>)'; on read the leading integer wins, and plain 3, VULKAN, 0 or OPENGL also parse. Android default is Vulkan when the driver supports it. Takes effect on app restart. Global only: not a PER_GAME setting, and the app never writes it to a game ini."
+  },
+  "internal_resolution": {
+   "file": "main",
+   "key": "Graphics/InternalResolution",
+   "label": "Settings > Graphics > Rendering Resolution",
+   "type": "enum",
+   "values": {
+    "0": "Auto (1:1)",
+    "1": "1x PSP",
+    "2": "2x PSP",
+    "3": "3x PSP",
+    "4": "4x PSP",
+    "5": "5x PSP",
+    "6": "6x PSP",
+    "7": "7x PSP",
+    "8": "8x PSP",
+    "9": "9x PSP",
+    "10": "10x PSP"
+   },
+   "default": "2",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "1x PSP = 480x272. Default on Android is 2 when the longest display side is >= 1000 px, else 1. Per-game: same [Graphics] InternalResolution line in PSP/SYSTEM/<GAMEID>_ppsspp.ini."
+  },
+  "display_resolution": {
+   "file": "main",
+   "key": "Graphics/AndroidHwScale",
+   "label": "Settings > Graphics > Display Resolution (HW scaler)",
+   "type": "enum",
+   "values": {
+    "0": "Native device resolution",
+    "1": "Same as Rendering resolution",
+    "2": "1x PSP",
+    "3": "2x PSP",
+    "4": "3x PSP",
+    "5": "4x PSP",
+    "6": "5x PSP"
+   },
+   "default": "0",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Android only. Global only: not a PER_GAME setting, and the app never writes it to a game ini."
+  },
+  "software_rendering": {
+   "file": "main",
+   "key": "Graphics/SoftwareRenderer",
+   "label": "Settings > Graphics > Software Rendering (slow)",
+   "type": "bool",
+   "values": {
+    "True": "On",
+    "False": "Off"
+   },
+   "default": "False",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Per-game: same [Graphics] SoftwareRenderer line in PSP/SYSTEM/<GAMEID>_ppsspp.ini."
+  },
+  "msaa": {
+   "file": "main",
+   "key": "Graphics/MultiSampleLevel",
+   "label": "Settings > Graphics > Antialiasing (MSAA)",
+   "type": "enum",
+   "values": {
+    "0": "Off",
+    "1": "2x",
+    "2": "4x",
+    "3": "8x",
+    "4": "16x"
+   },
+   "default": "0",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Samples = 1 << value. Shown in the UI only when the driver reports MSAA support; do not write levels the GPU lacks. Per-game: same [Graphics] MultiSampleLevel line in PSP/SYSTEM/<GAMEID>_ppsspp.ini."
+  },
+  "vsync": {
+   "file": "main",
+   "key": "Graphics/VerticalSync",
+   "label": "Settings > Graphics > VSync",
+   "type": "bool",
+   "values": {
+    "True": "On",
+    "False": "Off"
+   },
+   "default": "True",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Current key is VerticalSync. A [Graphics] VSync line left by older versions is a stale key and is ignored. Per-game: same [Graphics] VerticalSync line in PSP/SYSTEM/<GAMEID>_ppsspp.ini."
+  },
+  "low_latency_display": {
+   "file": "main",
+   "key": "Graphics/LowLatencyPresent",
+   "label": "Settings > Graphics > Low latency display",
+   "type": "bool",
+   "values": {
+    "True": "On",
+    "False": "Off"
+   },
+   "default": "False",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Per-game: same [Graphics] LowLatencyPresent line in PSP/SYSTEM/<GAMEID>_ppsspp.ini."
+  },
+  "frameskip": {
+   "file": "main",
+   "key": "Graphics/FrameSkip",
+   "label": "Settings > Graphics > Frame Skipping",
+   "type": "enum",
+   "values": {
+    "0": "Off",
+    "1": "1",
+    "2": "2",
+    "3": "3",
+    "4": "4",
+    "5": "5",
+    "6": "6",
+    "7": "7",
+    "8": "8"
+   },
+   "default": "0",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Frames skipped per rendered frame. The UI disables it while AutoFrameSkip is on. Per-game: same [Graphics] FrameSkip line in PSP/SYSTEM/<GAMEID>_ppsspp.ini."
+  },
+  "auto_frameskip": {
+   "file": "main",
+   "key": "Graphics/AutoFrameSkip",
+   "label": "Settings > Graphics > Auto FrameSkip",
+   "type": "bool",
+   "values": {
+    "True": "On",
+    "False": "Off"
+   },
+   "default": "False",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Turning it on in the UI also turns off SkipBufferEffects (Config::UpdateAfterSettingAutoFrameSkip); do the same when writing. Per-game: same [Graphics] AutoFrameSkip line in PSP/SYSTEM/<GAMEID>_ppsspp.ini."
+  },
+  "alt_speed": {
+   "file": "main",
+   "key": "Graphics/FrameRate",
+   "label": "Settings > Graphics > Alternative Speed",
+   "type": "int",
+   "values": {
+    "0": "Unlimited",
+    "-1": "Disabled"
+   },
+   "default": "0",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Stored as a frame rate, not a percent: FrameRate = percent * 60 / 100 (UI 200% = 120, 50% = 30). 0 = unlimited, -1 = disabled. Used while the alternative-speed hotkey is held or toggled. Per-game: same [Graphics] FrameRate line in PSP/SYSTEM/<GAMEID>_ppsspp.ini."
+  },
+  "alt_speed_2": {
+   "file": "main",
+   "key": "Graphics/FrameRate2",
+   "label": "Settings > Graphics > Alternative Speed 2",
+   "type": "int",
+   "values": {
+    "0": "Unlimited",
+    "-1": "Disabled"
+   },
+   "default": "-1",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Same encoding as alt_speed. Per-game: same [Graphics] FrameRate2 line in PSP/SYSTEM/<GAMEID>_ppsspp.ini."
+  },
+  "skip_buffer_effects": {
+   "file": "main",
+   "key": "Graphics/SkipBufferEffects",
+   "label": "Settings > Graphics > Skip Buffer Effects",
+   "type": "bool",
+   "values": {
+    "True": "On",
+    "False": "Off"
+   },
+   "default": "False",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Speed hack; breaks many post-effects. Per-game: same [Graphics] SkipBufferEffects line in PSP/SYSTEM/<GAMEID>_ppsspp.ini."
+  },
+  "skip_gpu_readbacks": {
+   "file": "main",
+   "key": "Graphics/SkipGPUReadbackMode",
+   "label": "Settings > Graphics > Skip GPU Readbacks",
+   "type": "enum",
+   "values": {
+    "0": "No",
+    "1": "Skip",
+    "2": "Copy to texture"
+   },
+   "default": "0",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Per-game: same [Graphics] SkipGPUReadbackMode line in PSP/SYSTEM/<GAMEID>_ppsspp.ini."
+  },
+  "lens_flare_occlusion": {
+   "file": "main",
+   "key": "Graphics/DepthRasterMode",
+   "label": "Settings > Graphics > Lens flare occlusion",
+   "type": "enum",
+   "values": {
+    "0": "Auto",
+    "1": "Low",
+    "2": "Off",
+    "3": "Always on"
+   },
+   "default": "1",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Enum DepthRasterMode {DEFAULT, LOW_QUALITY, OFF, FORCE_ON}; Android default is 1 (Low). Per-game: same [Graphics] DepthRasterMode line in PSP/SYSTEM/<GAMEID>_ppsspp.ini."
+  },
+  "bloom_hack": {
+   "file": "main",
+   "key": "Graphics/BloomHack",
+   "label": "Settings > Graphics > Lower resolution for effects",
+   "type": "enum",
+   "values": {
+    "0": "Off",
+    "1": "Safe",
+    "2": "Balanced",
+    "3": "Aggressive"
+   },
+   "default": "0",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Per-game: same [Graphics] BloomHack line in PSP/SYSTEM/<GAMEID>_ppsspp.ini."
+  },
+  "render_duplicate_frames": {
+   "file": "main",
+   "key": "Graphics/RenderDuplicateFrames",
+   "label": "Settings > Graphics > Render duplicate frames to 60hz",
+   "type": "bool",
+   "values": {
+    "True": "On",
+    "False": "Off"
+   },
+   "default": "False",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Smoother frame pacing in 30 fps games. Per-game: same [Graphics] RenderDuplicateFrames line in PSP/SYSTEM/<GAMEID>_ppsspp.ini."
+  },
+  "inflight_frames": {
+   "file": "main",
+   "key": "Graphics/InflightFrames",
+   "label": "Settings > Graphics > Buffer graphics commands",
+   "type": "enum",
+   "values": {
+    "1": "No buffer",
+    "2": "Up to 1",
+    "3": "Up to 2"
+   },
+   "default": "3",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Lower = less input latency, may cost speed. Global only: not a PER_GAME setting, and the app never writes it to a game ini."
+  },
+  "hardware_transform": {
+   "file": "main",
+   "key": "Graphics/HardwareTransform",
+   "label": "Settings > Graphics > Hardware Transform",
+   "type": "bool",
+   "values": {
+    "True": "On",
+    "False": "Off"
+   },
+   "default": "True",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Per-game: same [Graphics] HardwareTransform line in PSP/SYSTEM/<GAMEID>_ppsspp.ini."
+  },
+  "software_skinning": {
+   "file": "main",
+   "key": "Graphics/SoftwareSkinning",
+   "label": "Settings > Graphics > Software Skinning",
+   "type": "bool",
+   "values": {
+    "True": "On",
+    "False": "Off"
+   },
+   "default": "True",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Per-game: same [Graphics] SoftwareSkinning line in PSP/SYSTEM/<GAMEID>_ppsspp.ini."
+  },
+  "texture_shader": {
+   "file": "main",
+   "key": "Graphics/TextureShader",
+   "label": "Settings > Graphics > GPU texture upscaler (fast)",
+   "type": "enum",
+   "values": {
+    "Off": "Off",
+    "Tex2xBRZ": "2xBRZ (2x)",
+    "Tex4xBRZ": "4xBRZ (4x)",
+    "TexSpline36": "Spline36 (2x)",
+    "TexSpline36_4x": "Spline36 (4x)",
+    "TexMMPX": "MMPX (2x)",
+    "TexMMPXAdvanced": "MMPX Advanced (2x)",
+    "TexNNEDI3NNS16": "NNEDI3 Multi (2x)",
+    "TexNNEDI3NNS16_4x": "NNEDI3 Multi (4x)",
+    "TexNNEDI3NNS16Single": "NNEDI3 Single (2x)",
+    "TexNNEDI3NNS16Single4x": "NNEDI3 Single (4x)",
+    "TexSmiley": "Smiley (2x)"
+   },
+   "default": "Off",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Vulkan only. Names are the [sections] of assets/shaders/defaultshaders.ini with Type=Texture. The UI also sets Graphics/TexHardwareScaling = (TextureShader != Off); the texture cache only applies the shader when TexHardwareScaling is True, so write both. Per-game: same [Graphics] TextureShader line in PSP/SYSTEM/<GAMEID>_ppsspp.ini."
+  },
+  "tex_hardware_scaling": {
+   "file": "main",
+   "key": "Graphics/TexHardwareScaling",
+   "label": "(set by the GPU texture upscaler choice)",
+   "type": "bool",
+   "values": {
+    "True": "On",
+    "False": "Off"
+   },
+   "default": "False",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Must be True for texture_shader to apply. Per-game: same [Graphics] TexHardwareScaling line in PSP/SYSTEM/<GAMEID>_ppsspp.ini."
+  },
+  "tex_scaling_type": {
+   "file": "main",
+   "key": "Graphics/TexScalingType",
+   "label": "Settings > Graphics > CPU texture upscaler (slow)",
+   "type": "enum",
+   "values": {
+    "0": "xBRZ",
+    "1": "Hybrid",
+    "2": "Bicubic",
+    "3": "Hybrid + Bicubic"
+   },
+   "default": "0",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Per-game: same [Graphics] TexScalingType line in PSP/SYSTEM/<GAMEID>_ppsspp.ini."
+  },
+  "tex_scaling_level": {
+   "file": "main",
+   "key": "Graphics/TexScalingLevel",
+   "label": "Settings > Graphics > Upscale Level",
+   "type": "enum",
+   "values": {
+    "1": "Off",
+    "2": "2x",
+    "3": "3x"
+   },
+   "default": "1",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "CPU upscaler factor. Mobile builds offer Off/2x/3x (desktop also 4x, 5x). Per-game: same [Graphics] TexScalingLevel line in PSP/SYSTEM/<GAMEID>_ppsspp.ini."
+  },
+  "anisotropy": {
+   "file": "main",
+   "key": "Graphics/AnisotropyLevel",
+   "label": "Settings > Graphics > Anisotropic Filtering",
+   "type": "enum",
+   "values": {
+    "0": "Off",
+    "1": "2x",
+    "2": "4x",
+    "3": "8x",
+    "4": "16x"
+   },
+   "default": "4",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Per-game: same [Graphics] AnisotropyLevel line in PSP/SYSTEM/<GAMEID>_ppsspp.ini."
+  },
+  "texture_filter": {
+   "file": "main",
+   "key": "Graphics/TextureFiltering",
+   "label": "Settings > Graphics > Texture Filter",
+   "type": "enum",
+   "values": {
+    "1": "Auto",
+    "2": "Nearest",
+    "3": "Linear",
+    "4": "Auto Max Quality"
+   },
+   "default": "1",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Per-game: same [Graphics] TextureFiltering line in PSP/SYSTEM/<GAMEID>_ppsspp.ini."
+  },
+  "smart_2d_filtering": {
+   "file": "main",
+   "key": "Graphics/Smart2DTexFiltering",
+   "label": "Settings > Graphics > Smart 2D texture filtering",
+   "type": "bool",
+   "values": {
+    "True": "On",
+    "False": "Off"
+   },
+   "default": "False",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Per-game: same [Graphics] Smart2DTexFiltering line in PSP/SYSTEM/<GAMEID>_ppsspp.ini."
+  },
+  "replace_textures": {
+   "file": "main",
+   "key": "Graphics/ReplaceTextures",
+   "label": "Settings > Graphics > Replace textures",
+   "type": "bool",
+   "values": {
+    "True": "On",
+    "False": "Off"
+   },
+   "default": "True",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Loads texture packs from PSP/TEXTURES/<GAMEID>/. Per-game: same [Graphics] ReplaceTextures line in PSP/SYSTEM/<GAMEID>_ppsspp.ini."
+  },
+  "status_overlay": {
+   "file": "main",
+   "key": "Graphics/iShowStatusFlags",
+   "label": "Settings > Graphics > Show FPS Counter / Show Speed / Show Battery %",
+   "type": "int",
+   "values": {
+    "0": "Nothing",
+    "2": "FPS counter",
+    "4": "Speed",
+    "6": "FPS + speed",
+    "8": "Battery %",
+    "10": "FPS + battery",
+    "14": "FPS + speed + battery"
+   },
+   "default": "0",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Bit mask: 2 = FPS counter, 4 = speed, 8 = battery percent (enum ShowStatusFlags). Add the bits. Per-game: same [Graphics] iShowStatusFlags line in PSP/SYSTEM/<GAMEID>_ppsspp.ini."
+  },
+  "post_shader": {
+   "file": "main",
+   "key": "PostShaderList/PostShader1",
+   "label": "Display layout & effects > Postprocessing shaders",
+   "type": "enum",
+   "values": {
+    "Off": "Off",
+    "FXAA": "FXAA Antialiasing",
+    "CRT": "CRT Scanlines",
+    "Natural": "Natural Colors",
+    "NaturalA": "Natural Colors (No Blur)",
+    "Vignette": "Vignette",
+    "FakeReflections": "Fake Reflections",
+    "Bloom": "Bloom Shader",
+    "BloomNoBlur": "Bloom (no blur)",
+    "Sharpen": "Sharpen",
+    "Scanlines": "Scanlines (CRT)",
+    "Cartoon": "Cartoon",
+    "4xHqGLSL": "4xHqGLSL Upscaler",
+    "AAColor": "AA-Color",
+    "UpscaleBicubic": "Bicubic Upscaler",
+    "UpscaleSpline36": "Spline36 Upscaler",
+    "5xBR": "5xBR Upscaler",
+    "5xBR-lv2": "5xBR lv2 Upscaler",
+    "VideoSmoothingAA": "Video aware guest.r AA 4.o",
+    "SSAA(Gauss)": "Super Sampling AA (Gauss)",
+    "ColorCorrection": "Color correction",
+    "PSPColor": "PSP Color",
+    "LCDPersistence": "LCD Persistence",
+    "UpscaleSharpBilinear": "Sharp Bilinear Upscaler",
+    "FSR-EASU": "FSR-EASU (upscale)",
+    "FSR-RCAS": "FSR-RCAS (sharpen)"
+   },
+   "default": null,
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Chain: [PostShaderList] PostShader1, PostShader2, ... (Off entries are dropped). Shader parameters go in [PostShaderSetting] as <ShaderName>SettingCurrentValue<N> = float. The section is rewritten (cleared) on every save. Names are defaultshaders.ini sections (assets/shaders) plus any user shaders in PSP/shaders. Per-game: same [PostShaderList] PostShader1 line in PSP/SYSTEM/<GAMEID>_ppsspp.ini."
+  },
+  "screen_filter": {
+   "file": "main",
+   "key": "DisplayLayout.Landscape/BufferFiltering",
+   "label": "Display layout & effects > Screen Scaling Filter",
+   "type": "enum",
+   "values": {
+    "1": "Linear",
+    "2": "Nearest"
+   },
+   "default": "1",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "1.20 keeps display layout per orientation in [DisplayLayout.Landscape] / [DisplayLayout.Portrait]. The same key in [Graphics] is the pre-1.19 location and is only read when [DisplayLayout.Landscape] is missing. Per-game: same [DisplayLayout.Landscape] BufferFiltering line in PSP/SYSTEM/<GAMEID>_ppsspp.ini."
+  },
+  "stretch": {
+   "file": "main",
+   "key": "DisplayLayout.Landscape/DisplayStretch",
+   "label": "Display layout & effects > Stretch",
+   "type": "bool",
+   "values": {
+    "True": "On",
+    "False": "Off"
+   },
+   "default": "False",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Per-game: same [DisplayLayout.Landscape] DisplayStretch line in PSP/SYSTEM/<GAMEID>_ppsspp.ini."
+  },
+  "integer_scale": {
+   "file": "main",
+   "key": "DisplayLayout.Landscape/DisplayIntegerScale",
+   "label": "Display layout & effects > Integer scale factor",
+   "type": "bool",
+   "values": {
+    "True": "On",
+    "False": "Off"
+   },
+   "default": "False",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Per-game: same [DisplayLayout.Landscape] DisplayIntegerScale line in PSP/SYSTEM/<GAMEID>_ppsspp.ini."
+  },
+  "aspect_ratio": {
+   "file": "main",
+   "key": "DisplayLayout.Landscape/DisplayAspectRatio",
+   "label": "Display layout & effects > Aspect Ratio",
+   "type": "float",
+   "values": {
+    "1.000000": "PSP native (480:272)"
+   },
+   "default": "1.000000",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Multiplier on the PSP's 480:272 shape, slider 0.1-2.0. Written with 6 decimals. Ignored when Stretch or Integer scale is on. Per-game: same [DisplayLayout.Landscape] DisplayAspectRatio line in PSP/SYSTEM/<GAMEID>_ppsspp.ini."
+  },
+  "crop_to_16x9": {
+   "file": "main",
+   "key": "Graphics/DisplayCropTo16x9",
+   "label": "(no UI in 1.20.4; ini only)",
+   "type": "bool",
+   "values": {
+    "True": "On",
+    "False": "Off"
+   },
+   "default": "True",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Crops 480x272 to exact 16:9 when the image fills a 16:9 screen at scale 1, aspect 1 and centred offsets (PresentationCommon.cpp). Per-game: same [Graphics] DisplayCropTo16x9 line in PSP/SYSTEM/<GAMEID>_ppsspp.ini."
+  },
+  "cpu_core": {
+   "file": "main",
+   "key": "CPU/CPUCore",
+   "label": "Developer tools > CPU Core",
+   "type": "enum",
+   "values": {
+    "0": "Interpreter",
+    "1": "Dynarec/JIT (recommended)",
+    "2": "IR Interpreter",
+    "3": "JIT using IR"
+   },
+   "default": "1",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Enum CPUCore. Default JIT (1) where JIT is allowed. Per-game: same [CPU] CPUCore line in PSP/SYSTEM/<GAMEID>_ppsspp.ini."
+  },
+  "cpu_clock": {
+   "file": "main",
+   "key": "CPU/CPUSpeed",
+   "label": "Settings > System > Change CPU Clock (unstable)",
+   "type": "int",
+   "values": {
+    "0": "Default (game decides, 222/333 MHz)"
+   },
+   "default": "0",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Emulated PSP CPU MHz, 0-1000. Some games run smoother at 333; higher can break games. Per-game: same [CPU] CPUSpeed line in PSP/SYSTEM/<GAMEID>_ppsspp.ini."
+  },
+  "fast_memory": {
+   "file": "main",
+   "key": "CPU/FastMemoryAccess",
+   "label": "Settings > System > Fast Memory",
+   "type": "bool",
+   "values": {
+    "True": "On",
+    "False": "Off"
+   },
+   "default": "True",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Per-game: same [CPU] FastMemoryAccess line in PSP/SYSTEM/<GAMEID>_ppsspp.ini."
+  },
+  "sound": {
+   "file": "main",
+   "key": "Sound/Enable",
+   "label": "Settings > Audio > Enable Sound",
+   "type": "bool",
+   "values": {
+    "True": "On",
+    "False": "Off"
+   },
+   "default": "True",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Per-game: same [Sound] Enable line in PSP/SYSTEM/<GAMEID>_ppsspp.ini."
+  },
+  "game_volume": {
+   "file": "main",
+   "key": "Sound/GameVolume",
+   "label": "Settings > Audio > Game volume",
+   "type": "int",
+   "values": {},
+   "default": "100",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "0-100. Per-game: same [Sound] GameVolume line in PSP/SYSTEM/<GAMEID>_ppsspp.ini."
+  },
+  "audio_playback_mode": {
+   "file": "main",
+   "key": "Sound/AudioSyncMode",
+   "label": "Settings > Audio > Playback mode",
+   "type": "enum",
+   "values": {
+    "0": "Smooth (reduces artifacts)",
+    "1": "Classic (lowest latency)"
+   },
+   "default": "1",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Enum AudioSyncMode {GRANULAR, CLASSIC_PITCH}. Global only: not a PER_GAME setting, and the app never writes it to a game ini."
+  },
+  "framerate_mode": {
+   "file": "main",
+   "key": "Graphics/AndroidFramerateMode",
+   "label": "Developer tools > Framerate mode",
+   "type": "enum",
+   "values": {
+    "0": "Default",
+    "1": "Request 60 Hz",
+    "2": "Force 60Hz"
+   },
+   "default": "1",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Android display refresh-rate request (enum DisplayFramerateMode). Global only: not a PER_GAME setting, and the app never writes it to a game ini."
+  },
+  "auto_load_save_state": {
+   "file": "main",
+   "key": "General/AutoLoadSaveState",
+   "label": "Settings > System > Auto load savestate",
+   "type": "enum",
+   "values": {
+    "0": "Off",
+    "1": "Oldest save",
+    "2": "Newest save",
+    "3": "Slot 1",
+    "4": "Slot 2",
+    "5": "Slot 3",
+    "6": "Slot 4",
+    "7": "Slot 5"
+   },
+   "default": "0",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "UI choices: 0 Off, 1 Oldest Save (shown only when already set), 2 Newest Save, 3-7 = Slot 1-5. Per-game: same [General] AutoLoadSaveState line in PSP/SYSTEM/<GAMEID>_ppsspp.ini."
+  }
+ }
+}

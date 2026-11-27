@@ -1,0 +1,1357 @@
+{
+  "name": "retroarch",
+  "package": "com.retroarch",
+  "aliases": [
+    "ra",
+    "libretro"
+  ],
+  "version_checked": "1.22.2 (2026-10-30)",
+  "stop_before_write": true,
+  "files": {
+    "main": {
+      "path": "/storage/emulated/0/Android/data/com.retroarch/files/retroarch.cfg",
+      "format": "cfg",
+      "notes": "Main config (same file as /sdcard/Android/data/com.retroarch/files/retroarch.cfg). Every setting is written on save. Values are written double-quoted: key = \"value\"; the raw values below are the text inside the quotes. Contains secrets (cheevos_*, netplay_*): never print."
+    },
+    "global_core_options": {
+      "path": "/storage/emulated/0/Android/data/com.retroarch/files/retroarch-core-options.cfg",
+      "format": "cfg",
+      "notes": "Only used when global_core_options = \"true\", or to seed a missing per-core .opt. core_options_path moves it."
+    },
+    "opt_saturn": {
+      "path": "/storage/emulated/0/RetroArch/config/Beetle Saturn/Beetle Saturn.opt",
+      "format": "cfg",
+      "notes": "Per-core options for mednafen_saturn_libretro_android.so (library_name \"Beetle Saturn\")."
+    },
+    "opt_mupen64plus": {
+      "path": "/storage/emulated/0/RetroArch/config/Mupen64Plus-Next/Mupen64Plus-Next.opt",
+      "format": "cfg",
+      "notes": "Per-core options for mupen64plus_next_gles3_libretro_android.so (library_name \"Mupen64Plus-Next\"). RetroArch creates it when the core first unloads."
+    },
+    "opt_mgba": {
+      "path": "/storage/emulated/0/RetroArch/config/mGBA/mGBA.opt",
+      "format": "cfg",
+      "notes": "Per-core options for mgba_libretro_android.so (library_name \"mGBA\")."
+    },
+    "opt_gambatte": {
+      "path": "/storage/emulated/0/RetroArch/config/Gambatte/Gambatte.opt",
+      "format": "cfg",
+      "notes": "Per-core options for gambatte_libretro_android.so (library_name \"Gambatte\")."
+    },
+    "opt_flycast": {
+      "path": "/storage/emulated/0/RetroArch/config/Flycast/Flycast.opt",
+      "format": "cfg",
+      "notes": "Per-core options for flycast_libretro_android.so (library_name \"Flycast\")."
+    },
+    "opt_genesis_plus_gx": {
+      "path": "/storage/emulated/0/RetroArch/config/Genesis Plus GX/Genesis Plus GX.opt",
+      "format": "cfg",
+      "notes": "Per-core options for genesis_plus_gx_libretro_android.so (library_name \"Genesis Plus GX\"). RetroArch creates the folder and .opt when the core first unloads."
+    },
+    "opt_snes9x": {
+      "path": "/storage/emulated/0/RetroArch/config/Snes9x/Snes9x.opt",
+      "format": "cfg",
+      "notes": "Per-core options for snes9x_libretro_android.so (library_name \"Snes9x\"). RetroArch creates the folder and .opt when the core first unloads."
+    },
+    "override_core_flycast": {
+      "path": "/storage/emulated/0/RetroArch/config/Flycast/Flycast.cfg",
+      "format": "cfg",
+      "notes": "Flycast core override; holds only the keys it changes. Pattern: config/<core>/<core>.cfg."
+    },
+    "shader_presets": {
+      "path": "/storage/emulated/0/RetroArch/config/{core}/{core|contentdir|game}.slangp and /storage/emulated/0/RetroArch/config/global.slangp",
+      "format": "cfg",
+      "notes": "Auto-loaded shader presets (auto_shaders_enable). Each holds one #reference \"<path to .slangp>\" line. Shaders live in /data/user/0/com.retroarch/shaders/shaders_slang (Vulkan) and shaders_glsl (GL)."
+    },
+    "standalone_gambatte_cfg": {
+      "path": "/storage/emulated/0/RetroArch/config/gambatte_libretro_android.cfg",
+      "format": "cfg",
+      "notes": "A full config in the config root, when one has been saved. Not an override path RetroArch loads automatically (overrides live in config/<core>/); it is what \"Save New Configuration\" writes. Only used if something launches RetroArch with it as the config file. Not checked whether Cocoon does."
+    }
+  },
+  "per_game": {
+    "path": "/storage/emulated/0/RetroArch/config/{core}/{game}.cfg",
+    "format": "cfg",
+    "game_id": "{game} = content file name without directory and extension (path_basename_nocompression of the loaded ROM, e.g. \"Some Game (USA)\"). {core} = the core's library_name, which is the folder name under config/: Beetle Saturn, Mupen64Plus-Next, mGBA, Gambatte, Flycast, Genesis Plus GX, Snes9x.",
+    "create": true,
+    "notes": "Settings overrides (auto_overrides_enable = \"true\"): config/{core}/{core}.cfg, then config/{core}/{contentdir}.cfg ({contentdir} = name of the ROM's parent folder), then config/{core}/{game}.cfg, each stacked on retroarch.cfg; later wins. An override holds only the keys it changes. Core options do NOT stack: RetroArch uses exactly one file, the first that exists of config/{core}/{game}.opt, config/{core}/{contentdir}.opt (both need game_specific_options = \"true\"), config/{core}/{core}.opt, and finally retroarch-core-options.cfg (global_core_options, or to seed a new per-core file). A per-game .opt must therefore contain every option the game needs, not just the changed one: copy the core .opt and edit it. Shader presets: config/{core}/{game}.slangp > {contentdir}.slangp > {core}.slangp > global.slangp. Remaps: config/remaps/{core}/{game}.rmp etc.."
+  },
+  "keys": {
+    "video_driver": {
+      "file": "main",
+      "key": "video_driver",
+      "label": "Video (Drivers > Video)",
+      "type": "enum",
+      "values": {
+        "gl": "OpenGL ES",
+        "vulkan": "Vulkan (needed for .slang shaders)",
+        "null": "no video"
+      },
+      "default": "gl",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Android default is gl (configuration.c VIDEO_DEFAULT_DRIVER: HAVE_OPENGL). Can be set in a core override; driver reinits on content load."
+    },
+    "video_threaded": {
+      "file": "main",
+      "key": "video_threaded",
+      "label": "Threaded Video",
+      "type": "bool",
+      "values": {
+        "true": "render on a separate thread (smoother, more latency)",
+        "false": "off"
+      },
+      "default": "false",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": ""
+    },
+    "vsync": {
+      "file": "main",
+      "key": "video_vsync",
+      "label": "Vertical Sync (VSync)",
+      "type": "bool",
+      "values": {
+        "true": "on",
+        "false": "off"
+      },
+      "default": "true",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": ""
+    },
+    "swap_interval": {
+      "file": "main",
+      "key": "video_swap_interval",
+      "label": "VSync Swap Interval",
+      "type": "enum",
+      "values": {
+        "0": "Auto",
+        "1": "1",
+        "2": "2",
+        "3": "3",
+        "4": "4"
+      },
+      "default": "1",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Range 0-4; 0 shows as \"Auto\" (factor from core-reported rate)."
+    },
+    "frame_delay": {
+      "file": "main",
+      "key": "video_frame_delay",
+      "label": "Frame Delay",
+      "type": "int",
+      "values": {
+        "<0-99>": "milliseconds to wait after vsync before running the core"
+      },
+      "default": "0",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": ""
+    },
+    "frame_delay_auto": {
+      "file": "main",
+      "key": "video_frame_delay_auto",
+      "label": "Automatic Frame Delay",
+      "type": "bool",
+      "values": {
+        "true": "adjust frame delay dynamically",
+        "false": "fixed"
+      },
+      "default": "false",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": ""
+    },
+    "aspect_ratio": {
+      "file": "main",
+      "key": "aspect_ratio_index",
+      "label": "Aspect Ratio",
+      "type": "enum",
+      "values": {
+        "0": "4:3",
+        "1": "16:9",
+        "2": "16:10",
+        "3": "16:15",
+        "4": "21:9",
+        "5": "1:1",
+        "6": "2:1",
+        "7": "3:2",
+        "8": "3:4",
+        "9": "4:1",
+        "10": "9:16",
+        "11": "5:4",
+        "12": "6:5",
+        "13": "7:9",
+        "14": "8:3",
+        "15": "8:7",
+        "16": "19:12",
+        "17": "19:14",
+        "18": "30:17",
+        "19": "32:9",
+        "20": "Config (video_aspect_ratio value)",
+        "21": "1:1 PAR (square pixels)",
+        "22": "Core provided",
+        "23": "Custom (custom_viewport_*)",
+        "24": "Full"
+      },
+      "default": "22",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "enum aspect_ratio (gfx/video_defines.h); index 10 is named ASPECT_RATIO_4_4 in the enum but its table entry is \"9:16\". Default ASPECT_RATIO_CORE on Android."
+    },
+    "integer_scale": {
+      "file": "main",
+      "key": "video_scale_integer",
+      "label": "Integer Scale",
+      "type": "bool",
+      "values": {
+        "true": "scale in whole multiples only",
+        "false": "off"
+      },
+      "default": "false",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Related: video_scale_integer_overscale, video_scale_integer_scaling."
+    },
+    "bilinear_filtering": {
+      "file": "main",
+      "key": "video_smooth",
+      "label": "Bilinear Filtering",
+      "type": "bool",
+      "values": {
+        "true": "smooth",
+        "false": "sharp pixels"
+      },
+      "default": "false",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": ""
+    },
+    "shaders_enable": {
+      "file": "main",
+      "key": "video_shader_enable",
+      "label": "Video Shaders",
+      "type": "bool",
+      "values": {
+        "true": "shader pipeline on",
+        "false": "off"
+      },
+      "default": "false",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Preset choice is not a retroarch.cfg key: it comes from the auto-load preset files (see files.shader_presets)."
+    },
+    "auto_shaders": {
+      "file": "main",
+      "key": "auto_shaders_enable",
+      "label": "Load Shader Presets Automatically",
+      "type": "bool",
+      "values": {
+        "true": "load config/<core>/<game|contentdir|core>.slangp and global.slangp",
+        "false": "off"
+      },
+      "default": "true",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": ""
+    },
+    "runahead": {
+      "file": "main",
+      "key": "run_ahead_enabled",
+      "label": "Run-Ahead (Single/Second Instance)",
+      "type": "bool",
+      "values": {
+        "true": "run-ahead on",
+        "false": "off"
+      },
+      "default": "false",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Menu \"Run-Ahead\" mode = run_ahead_enabled + run_ahead_secondary_instance + preemptive_frames_enable: Off = all false; Single Instance = enabled true, secondary false; Second Instance = enabled true, secondary true; Preemptive Frames = preemptive true, enabled false."
+    },
+    "runahead_frames": {
+      "file": "main",
+      "key": "run_ahead_frames",
+      "label": "Number of Frames to Run-Ahead",
+      "type": "int",
+      "values": {
+        "<1-12>": "frames (MAX_RUNAHEAD_FRAMES 12); also the preemptive frame count"
+      },
+      "default": "1",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": ""
+    },
+    "runahead_second_instance": {
+      "file": "main",
+      "key": "run_ahead_secondary_instance",
+      "label": "Second Instance Mode",
+      "type": "bool",
+      "values": {
+        "true": "use a second core instance",
+        "false": "single instance"
+      },
+      "default": "true",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": ""
+    },
+    "preemptive_frames": {
+      "file": "main",
+      "key": "preemptive_frames_enable",
+      "label": "Preemptive Frames Mode",
+      "type": "bool",
+      "values": {
+        "true": "preemptive frames",
+        "false": "off"
+      },
+      "default": "false",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": ""
+    },
+    "rewind": {
+      "file": "main",
+      "key": "rewind_enable",
+      "label": "Rewind Support",
+      "type": "bool",
+      "values": {
+        "true": "on (costly)",
+        "false": "off"
+      },
+      "default": "false",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": ""
+    },
+    "rewind_granularity": {
+      "file": "main",
+      "key": "rewind_granularity",
+      "label": "Rewind Frames",
+      "type": "int",
+      "values": {
+        "<1-32768>": "frames per rewind step"
+      },
+      "default": "1",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": ""
+    },
+    "audio_driver": {
+      "file": "main",
+      "key": "audio_driver",
+      "label": "Audio (Drivers > Audio)",
+      "type": "enum",
+      "values": {
+        "opensl": "OpenSL ES",
+        "null": "no audio"
+      },
+      "default": "opensl",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "Android build defines HAVE_SL only (pkg/android/phoenix-common/jni/Android.mk)."
+    },
+    "audio_latency": {
+      "file": "main",
+      "key": "audio_latency",
+      "label": "Audio Latency (ms)",
+      "type": "int",
+      "values": {
+        "<0-512>": "max latency in ms"
+      },
+      "default": "128",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "DEFAULT_OUT_LATENCY is 128 on Android."
+    },
+    "audio_sync": {
+      "file": "main",
+      "key": "audio_sync",
+      "label": "Synchronization (Audio)",
+      "type": "bool",
+      "values": {
+        "true": "sync to audio",
+        "false": "off"
+      },
+      "default": "true",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": ""
+    },
+    "audio_resampler_quality": {
+      "file": "main",
+      "key": "audio_resampler_quality",
+      "label": "Resampler Quality",
+      "type": "enum",
+      "values": {
+        "0": "Don't care",
+        "1": "Lowest",
+        "2": "Lower",
+        "3": "Normal",
+        "4": "Higher",
+        "5": "Highest"
+      },
+      "default": "2",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Default RESAMPLER_QUALITY_LOWER on Android."
+    },
+    "menu_driver": {
+      "file": "main",
+      "key": "menu_driver",
+      "label": "Menu (Drivers > Menu)",
+      "type": "enum",
+      "values": {
+        "glui": "Material UI",
+        "xmb": "XMB",
+        "ozone": "Ozone",
+        "rgui": "RGUI"
+      },
+      "default": "glui",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "Android default is glui (MENU_MATERIALUI, RARCH_MOBILE). Restart RetroArch to apply."
+    },
+    "show_fps": {
+      "file": "main",
+      "key": "fps_show",
+      "label": "Display Framerate",
+      "type": "bool",
+      "values": {
+        "true": "show FPS",
+        "false": "hide"
+      },
+      "default": "false",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": ""
+    },
+    "savestate_auto_save": {
+      "file": "main",
+      "key": "savestate_auto_save",
+      "label": "Auto Save State",
+      "type": "bool",
+      "values": {
+        "true": "save state on content close",
+        "false": "off"
+      },
+      "default": "false",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": ""
+    },
+    "savestate_auto_load": {
+      "file": "main",
+      "key": "savestate_auto_load",
+      "label": "Auto Load State",
+      "type": "bool",
+      "values": {
+        "true": "load auto state on content start",
+        "false": "off"
+      },
+      "default": "false",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": ""
+    },
+    "fastforward_ratio": {
+      "file": "main",
+      "key": "fastforward_ratio",
+      "label": "Fast-Forward Rate",
+      "type": "float",
+      "values": {
+        "0.000000": "unlimited",
+        "<0.0-50.0>": "max speed multiplier"
+      },
+      "default": "0.000000",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Written with 6 decimals (e.g. \"2.000000\")."
+    },
+    "overlay_enable": {
+      "file": "main",
+      "key": "input_overlay_enable",
+      "label": "Display Overlay",
+      "type": "bool",
+      "values": {
+        "true": "on-screen touch overlay",
+        "false": "off"
+      },
+      "default": "true",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Default comes from config_overlay_enable_default() (true on Android)."
+    },
+    "menu_toggle_combo": {
+      "file": "main",
+      "key": "input_menu_toggle_gamepad_combo",
+      "label": "Menu Toggle (Controller Combo)",
+      "type": "enum",
+      "values": {
+        "0": "None",
+        "1": "Down + Y + L1 + R1",
+        "2": "L3 + R3",
+        "3": "L1 + R1 + Start + Select",
+        "4": "Start + Select",
+        "5": "L3 + R1",
+        "6": "L1 + R1",
+        "7": "Hold Start (2 seconds)",
+        "8": "Hold Select (2 seconds)",
+        "9": "Down + Select",
+        "10": "L2 + R2"
+      },
+      "default": "0",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": ""
+    },
+    "swap_ok_cancel": {
+      "file": "main",
+      "key": "menu_swap_ok_cancel_buttons",
+      "label": "Menu Swap OK and Cancel Buttons",
+      "type": "bool",
+      "values": {
+        "true": "western layout",
+        "false": "Japanese layout"
+      },
+      "default": "true",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": ""
+    },
+    "config_save_on_exit": {
+      "file": "main",
+      "key": "config_save_on_exit",
+      "label": "Save Configuration on Quit",
+      "type": "bool",
+      "values": {
+        "true": "write retroarch.cfg from memory on Quit",
+        "false": "never auto-save"
+      },
+      "default": "true",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": ""
+    },
+    "auto_overrides": {
+      "file": "main",
+      "key": "auto_overrides_enable",
+      "label": "Load Override Files Automatically",
+      "type": "bool",
+      "values": {
+        "true": "load core/contentdir/game .cfg overrides",
+        "false": "off"
+      },
+      "default": "true",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": ""
+    },
+    "game_specific_options": {
+      "file": "main",
+      "key": "game_specific_options",
+      "label": "Load Content-Specific Core Options Automatically",
+      "type": "bool",
+      "values": {
+        "true": "use <game>.opt / <contentdir>.opt if present",
+        "false": "off"
+      },
+      "default": "true",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": ""
+    },
+    "global_core_options": {
+      "file": "main",
+      "key": "global_core_options",
+      "label": "Use Global Core Options File",
+      "type": "bool",
+      "values": {
+        "true": "one retroarch-core-options.cfg for all cores",
+        "false": "config/<core>/<core>.opt per core"
+      },
+      "default": "false",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": ""
+    },
+    "network_cmd_enable": {
+      "file": "main",
+      "key": "network_cmd_enable",
+      "label": "Network Commands",
+      "type": "bool",
+      "values": {
+        "true": "listen for UDP commands",
+        "false": "off"
+      },
+      "default": "false",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "Read at start-up; restart RetroArch after changing."
+    },
+    "network_cmd_port": {
+      "file": "main",
+      "key": "network_cmd_port",
+      "label": "Network Command Port",
+      "type": "int",
+      "values": {
+        "<port>": "UDP port"
+      },
+      "default": "55355",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": ""
+    },
+    "saturn_region": {
+      "file": "opt_saturn",
+      "key": "beetle_saturn_region",
+      "label": "System Region",
+      "type": "enum",
+      "values": {
+        "Auto Detect": "Auto Detect",
+        "Japan": "Japan",
+        "North America": "North America",
+        "Europe": "Europe",
+        "South Korea": "South Korea",
+        "Asia (NTSC)": "Asia (NTSC)",
+        "Asia (PAL)": "Asia (PAL)",
+        "Brazil": "Brazil",
+        "Latin America": "Latin America"
+      },
+      "default": "Auto Detect",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Source: libretro/beetle-saturn-libretro@7126d65b83 libretro_core_options.h (master, not version-matched to the installed core). Per-game: same key in config/Beetle Saturn/<game>.opt (copy the whole file; see per_game)."
+    },
+    "saturn_cart": {
+      "file": "opt_saturn",
+      "key": "beetle_saturn_cart",
+      "label": "Cartridge",
+      "type": "enum",
+      "values": {
+        "Auto Detect": "Auto Detect",
+        "None": "None",
+        "Backup Memory": "Backup Memory",
+        "Extended RAM (1MB)": "Extended RAM (1MB)",
+        "Extended RAM (4MB)": "Extended RAM (4MB)",
+        "The King of Fighters '95": "The King of Fighters '95",
+        "Ultraman: Hikari no Kyojin Densetsu": "Ultraman: Hikari no Kyojin Densetsu"
+      },
+      "default": "Auto Detect",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Source: libretro/beetle-saturn-libretro@7126d65b83 libretro_core_options.h (master, not version-matched to the installed core). Per-game: same key in config/Beetle Saturn/<game>.opt (copy the whole file; see per_game)."
+    },
+    "saturn_cd_image_cache": {
+      "file": "opt_saturn",
+      "key": "beetle_saturn_cdimagecache",
+      "label": "CD Image Cache",
+      "type": "enum",
+      "values": {
+        "disabled": "disabled",
+        "enabled": "enabled"
+      },
+      "default": "disabled",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Source: libretro/beetle-saturn-libretro@7126d65b83 libretro_core_options.h (master, not version-matched to the installed core). Per-game: same key in config/Beetle Saturn/<game>.opt (copy the whole file; see per_game)."
+    },
+    "saturn_deinterlacer": {
+      "file": "opt_saturn",
+      "key": "beetle_saturn_deinterlacer",
+      "label": "Deinterlace Method",
+      "type": "enum",
+      "values": {
+        "weave": "Weave",
+        "bob": "Bob",
+        "bob_offset": "Bob (Offset)",
+        "fastmad": "FastMAD (Motion Adaptive)",
+        "progressive": "Progressive",
+        "off": "Off"
+      },
+      "default": "weave",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Source: libretro/beetle-saturn-libretro@7126d65b83 libretro_core_options.h (master, not version-matched to the installed core). Per-game: same key in config/Beetle Saturn/<game>.opt (copy the whole file; see per_game)."
+    },
+    "saturn_midsync": {
+      "file": "opt_saturn",
+      "key": "beetle_saturn_midsync",
+      "label": "Mid-frame Input Synchronization",
+      "type": "enum",
+      "values": {
+        "disabled": "disabled",
+        "enabled": "enabled"
+      },
+      "default": "enabled",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Source: libretro/beetle-saturn-libretro@7126d65b83 libretro_core_options.h (master, not version-matched to the installed core). Per-game: same key in config/Beetle Saturn/<game>.opt (copy the whole file; see per_game)."
+    },
+    "saturn_horizontal_blend": {
+      "file": "opt_saturn",
+      "key": "beetle_saturn_horizontal_blend",
+      "label": "Horizontal Blend",
+      "type": "enum",
+      "values": {
+        "disabled": "disabled",
+        "enabled": "enabled"
+      },
+      "default": "disabled",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Source: libretro/beetle-saturn-libretro@7126d65b83 libretro_core_options.h (master, not version-matched to the installed core). Per-game: same key in config/Beetle Saturn/<game>.opt (copy the whole file; see per_game)."
+    },
+    "n64_rdp_plugin": {
+      "file": "opt_mupen64plus",
+      "key": "mupen64plus-rdp-plugin",
+      "label": "RDP Plugin",
+      "type": "enum",
+      "values": {
+        "angrylion": "Angrylion",
+        "parallel": "ParaLLEl-RDP",
+        "gliden64": "GLideN64"
+      },
+      "default": "gliden64",
+      "per_game": true,
+      "verified_on_device": false,
+      "notes": "Source: libretro/mupen64plus-libretro-nx@6752836de8 libretro_core_options.h (master, not version-matched to the installed core). angrylion/parallel only appear if compiled in (HAVE_THR_AL / HAVE_PARALLEL_RDP); GLES3 Android build: gliden64 at least. Per-game: same key in config/Mupen64Plus-Next/<game>.opt (copy the whole file; see per_game)."
+    },
+    "n64_rsp_plugin": {
+      "file": "opt_mupen64plus",
+      "key": "mupen64plus-rsp-plugin",
+      "label": "RSP Plugin",
+      "type": "enum",
+      "values": {
+        "cxd4": "CXD4",
+        "parallel": "ParaLLEl",
+        "hle": "HLE"
+      },
+      "default": "hle",
+      "per_game": true,
+      "verified_on_device": false,
+      "notes": "Source: libretro/mupen64plus-libretro-nx@6752836de8 libretro_core_options.h (master, not version-matched to the installed core). Values are #ifdef-gated like rdp-plugin. Per-game: same key in config/Mupen64Plus-Next/<game>.opt (copy the whole file; see per_game)."
+    },
+    "n64_cpu_core": {
+      "file": "opt_mupen64plus",
+      "key": "mupen64plus-cpucore",
+      "label": "CPU Core",
+      "type": "enum",
+      "values": {
+        "pure_interpreter": "Pure Interpreter",
+        "cached_interpreter": "Cached Interpreter",
+        "dynamic_recompiler": "Dynarec"
+      },
+      "default": "dynamic_recompiler",
+      "per_game": true,
+      "verified_on_device": false,
+      "notes": "Source: libretro/mupen64plus-libretro-nx@6752836de8 libretro_core_options.h (master, not version-matched to the installed core). Default \"dynamic_recompiler\" with DYNAREC (arm64 builds), else \"cached_interpreter\". Per-game: same key in config/Mupen64Plus-Next/<game>.opt (copy the whole file; see per_game)."
+    },
+    "n64_resolution_4_3": {
+      "file": "opt_mupen64plus",
+      "key": "mupen64plus-43screensize",
+      "label": "4:3 Resolution",
+      "type": "enum",
+      "values": {
+        "320x240": "320x240",
+        "640x480": "640x480",
+        "960x720": "960x720",
+        "1280x960": "1280x960",
+        "1440x1080": "1440x1080",
+        "1600x1200": "1600x1200",
+        "1920x1440": "1920x1440",
+        "2240x1680": "2240x1680",
+        "2560x1920": "2560x1920",
+        "2880x2160": "2880x2160",
+        "3200x2400": "3200x2400",
+        "3520x2640": "3520x2640",
+        "3840x2880": "3840x2880"
+      },
+      "default": "640x480",
+      "per_game": true,
+      "verified_on_device": false,
+      "notes": "Source: libretro/mupen64plus-libretro-nx@6752836de8 libretro_core_options.h (master, not version-matched to the installed core). Per-game: same key in config/Mupen64Plus-Next/<game>.opt (copy the whole file; see per_game)."
+    },
+    "n64_aspect": {
+      "file": "opt_mupen64plus",
+      "key": "mupen64plus-aspect",
+      "label": "Aspect Ratio",
+      "type": "enum",
+      "values": {
+        "4:3": "Original (4:3)",
+        "16:9": "Wide (Stretched)",
+        "16:9 adjusted": "Wide (Adjusted)"
+      },
+      "default": "4:3",
+      "per_game": true,
+      "verified_on_device": false,
+      "notes": "Source: libretro/mupen64plus-libretro-nx@6752836de8 libretro_core_options.h (master, not version-matched to the installed core). Per-game: same key in config/Mupen64Plus-Next/<game>.opt (copy the whole file; see per_game)."
+    },
+    "n64_native_res_factor": {
+      "file": "opt_mupen64plus",
+      "key": "mupen64plus-EnableNativeResFactor",
+      "label": "Native Resolution Factor",
+      "type": "enum",
+      "values": {
+        "0": "Disabled",
+        "1": "1x",
+        "2": "2x",
+        "3": "3x",
+        "4": "4x",
+        "5": "5x",
+        "6": "6x",
+        "7": "7x",
+        "8": "8x"
+      },
+      "default": "0",
+      "per_game": true,
+      "verified_on_device": false,
+      "notes": "Source: libretro/mupen64plus-libretro-nx@6752836de8 libretro_core_options.h (master, not version-matched to the installed core). Per-game: same key in config/Mupen64Plus-Next/<game>.opt (copy the whole file; see per_game)."
+    },
+    "gba_color_correction": {
+      "file": "opt_mgba",
+      "key": "mgba_color_correction",
+      "label": "Color Correction",
+      "type": "enum",
+      "values": {
+        "OFF": "disabled",
+        "GBA": "Game Boy Advance",
+        "GBC": "Game Boy Color",
+        "Auto": "Auto"
+      },
+      "default": "OFF",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Source: libretro/mgba@7a12d6d4b9 libretro_core_options.h (master, not version-matched to the installed core). Per-game: same key in config/mGBA/<game>.opt (copy the whole file; see per_game)."
+    },
+    "gba_interframe_blending": {
+      "file": "opt_mgba",
+      "key": "mgba_interframe_blending",
+      "label": "Interframe Blending",
+      "type": "enum",
+      "values": {
+        "OFF": "disabled",
+        "mix": "Simple",
+        "mix_smart": "Smart",
+        "lcd_ghosting": "LCD Ghosting (Accurate)",
+        "lcd_ghosting_fast": "LCD Ghosting (Fast)"
+      },
+      "default": "OFF",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Source: libretro/mgba@7a12d6d4b9 libretro_core_options.h (master, not version-matched to the installed core). Per-game: same key in config/mGBA/<game>.opt (copy the whole file; see per_game)."
+    },
+    "gba_use_bios": {
+      "file": "opt_mgba",
+      "key": "mgba_use_bios",
+      "label": "Use BIOS File if Found (Restart)",
+      "type": "enum",
+      "values": {
+        "ON": "enabled",
+        "OFF": "disabled"
+      },
+      "default": "ON",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Source: libretro/mgba@7a12d6d4b9 libretro_core_options.h (master, not version-matched to the installed core). Per-game: same key in config/mGBA/<game>.opt (copy the whole file; see per_game)."
+    },
+    "gba_skip_bios": {
+      "file": "opt_mgba",
+      "key": "mgba_skip_bios",
+      "label": "Skip BIOS Intro (Restart)",
+      "type": "enum",
+      "values": {
+        "OFF": "disabled",
+        "ON": "enabled"
+      },
+      "default": "OFF",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Source: libretro/mgba@7a12d6d4b9 libretro_core_options.h (master, not version-matched to the installed core). Per-game: same key in config/mGBA/<game>.opt (copy the whole file; see per_game)."
+    },
+    "gba_frameskip": {
+      "file": "opt_mgba",
+      "key": "mgba_frameskip",
+      "label": "Frameskip",
+      "type": "enum",
+      "values": {
+        "disabled": "disabled",
+        "auto": "Auto",
+        "auto_threshold": "Auto (Threshold)",
+        "fixed_interval": "Fixed Interval"
+      },
+      "default": "disabled",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Source: libretro/mgba@7a12d6d4b9 libretro_core_options.h (master, not version-matched to the installed core). Per-game: same key in config/mGBA/<game>.opt (copy the whole file; see per_game)."
+    },
+    "gba_idle_optimization": {
+      "file": "opt_mgba",
+      "key": "mgba_idle_optimization",
+      "label": "Idle Loop Removal",
+      "type": "enum",
+      "values": {
+        "Remove Known": "Remove Known",
+        "Detect and Remove": "Detect and Remove",
+        "Don't Remove": "Don't Remove"
+      },
+      "default": "Remove Known",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Source: libretro/mgba@7a12d6d4b9 libretro_core_options.h (master, not version-matched to the installed core). Per-game: same key in config/mGBA/<game>.opt (copy the whole file; see per_game)."
+    },
+    "gb_colorization": {
+      "file": "opt_gambatte",
+      "key": "gambatte_gb_colorization",
+      "label": "GB Colorization",
+      "type": "enum",
+      "values": {
+        "disabled": "disabled",
+        "auto": "Auto",
+        "GBC": "GBC",
+        "SGB": "SGB",
+        "internal": "Internal",
+        "custom": "Custom"
+      },
+      "default": "disabled",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Source: libretro/gambatte-libretro@b14881d382 libretro_core_options.h (master, not version-matched to the installed core). Per-game: same key in config/Gambatte/<game>.opt (copy the whole file; see per_game)."
+    },
+    "gb_internal_palette": {
+      "file": "opt_gambatte",
+      "key": "gambatte_gb_internal_palette",
+      "label": "Internal Palette",
+      "type": "enum",
+      "values": {
+        "GB - DMG": "GB - DMG",
+        "GB - Pocket": "GB - Pocket",
+        "GB - Light": "GB - Light",
+        "GBC - Blue": "GBC - Blue",
+        "GBC - Brown": "GBC - Brown",
+        "GBC - Dark Blue": "GBC - Dark Blue",
+        "GBC - Dark Brown": "GBC - Dark Brown",
+        "GBC - Dark Green": "GBC - Dark Green",
+        "GBC - Grayscale": "GBC - Grayscale",
+        "GBC - Green": "GBC - Green",
+        "GBC - Inverted": "GBC - Inverted",
+        "GBC - Orange": "GBC - Orange",
+        "GBC - Pastel Mix": "GBC - Pastel Mix",
+        "GBC - Red": "GBC - Red",
+        "GBC - Yellow": "GBC - Yellow",
+        "SGB - 1A": "SGB - 1A",
+        "SGB - 1B": "SGB - 1B",
+        "SGB - 1C": "SGB - 1C",
+        "SGB - 1D": "SGB - 1D",
+        "SGB - 1E": "SGB - 1E",
+        "SGB - 1F": "SGB - 1F",
+        "SGB - 1G": "SGB - 1G",
+        "SGB - 1H": "SGB - 1H",
+        "SGB - 2A": "SGB - 2A",
+        "SGB - 2B": "SGB - 2B",
+        "SGB - 2C": "SGB - 2C",
+        "SGB - 2D": "SGB - 2D",
+        "SGB - 2E": "SGB - 2E",
+        "SGB - 2F": "SGB - 2F",
+        "SGB - 2G": "SGB - 2G",
+        "SGB - 2H": "SGB - 2H",
+        "SGB - 3A": "SGB - 3A",
+        "SGB - 3B": "SGB - 3B",
+        "SGB - 3C": "SGB - 3C",
+        "SGB - 3D": "SGB - 3D",
+        "SGB - 3E": "SGB - 3E",
+        "SGB - 3F": "SGB - 3F",
+        "SGB - 3G": "SGB - 3G",
+        "SGB - 3H": "SGB - 3H",
+        "SGB - 4A": "SGB - 4A",
+        "SGB - 4B": "SGB - 4B",
+        "SGB - 4C": "SGB - 4C",
+        "SGB - 4D": "SGB - 4D",
+        "SGB - 4E": "SGB - 4E",
+        "SGB - 4F": "SGB - 4F",
+        "SGB - 4G": "SGB - 4G",
+        "SGB - 4H": "SGB - 4H",
+        "Special 1": "Special 1",
+        "Special 2": "Special 2",
+        "Special 3": "Special 3",
+        "Special 4 (TI-83 Legacy)": "Special 4 (TI-83 Legacy)",
+        "TWB64 - Pack 1": "TWB64 - Pack 1",
+        "TWB64 - Pack 2": "TWB64 - Pack 2",
+        "TWB64 - Pack 3": "TWB64 - Pack 3",
+        "PixelShift - Pack 1": "PixelShift - Pack 1"
+      },
+      "default": "GB - DMG",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Source: libretro/gambatte-libretro@b14881d382 libretro_core_options.h (master, not version-matched to the installed core). Per-game: same key in config/Gambatte/<game>.opt (copy the whole file; see per_game)."
+    },
+    "gbc_color_correction": {
+      "file": "opt_gambatte",
+      "key": "gambatte_gbc_color_correction",
+      "label": "Color Correction",
+      "type": "enum",
+      "values": {
+        "GBC only": "GBC Only",
+        "always": "Always",
+        "disabled": "disabled"
+      },
+      "default": "GBC only",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Source: libretro/gambatte-libretro@b14881d382 libretro_core_options.h (master, not version-matched to the installed core). Per-game: same key in config/Gambatte/<game>.opt (copy the whole file; see per_game)."
+    },
+    "gb_mix_frames": {
+      "file": "opt_gambatte",
+      "key": "gambatte_mix_frames",
+      "label": "Interframe Blending",
+      "type": "enum",
+      "values": {
+        "disabled": "disabled",
+        "mix": "Simple",
+        "lcd_ghosting": "LCD Ghosting (Accurate)",
+        "lcd_ghosting_fast": "LCD Ghosting (Fast)"
+      },
+      "default": "disabled",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Source: libretro/gambatte-libretro@b14881d382 libretro_core_options.h (master, not version-matched to the installed core). Per-game: same key in config/Gambatte/<game>.opt (copy the whole file; see per_game)."
+    },
+    "gb_hardware_mode": {
+      "file": "opt_gambatte",
+      "key": "gambatte_gb_hwmode",
+      "label": "Emulated Hardware (Restart Required)",
+      "type": "enum",
+      "values": {
+        "Auto": "Auto",
+        "GB": "GB",
+        "GBC": "GBC",
+        "GBA": "GBA"
+      },
+      "default": "Auto",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Source: libretro/gambatte-libretro@b14881d382 libretro_core_options.h (master, not version-matched to the installed core). Per-game: same key in config/Gambatte/<game>.opt (copy the whole file; see per_game)."
+    },
+    "dc_internal_resolution": {
+      "file": "opt_flycast",
+      "key": "reicast_internal_resolution",
+      "label": "Internal Resolution",
+      "type": "enum",
+      "values": {
+        "320x240": "320x240 (Half)",
+        "640x480": "640x480 (Native)",
+        "800x600": "800x600 (x1.25)",
+        "960x720": "960x720 (x1.5)",
+        "1024x768": "1024x768 (x1.6)",
+        "1280x960": "1280x960 (x2)",
+        "1440x1080": "1440x1080 (x2.25)",
+        "1600x1200": "1600x1200 (x2.5)",
+        "1920x1440": "1920x1440 (x3)",
+        "2560x1920": "2560x1920 (x4)",
+        "2880x2160": "2880x2160 (x4.5)",
+        "3200x2400": "3200x2400 (x5)",
+        "3840x2880": "3840x2880 (x6)",
+        "4480x3360": "4480x3360 (x7)",
+        "5120x3840": "5120x3840 (x8)",
+        "5760x4320": "5760x4320 (x9)",
+        "6400x4800": "6400x4800 (x10)",
+        "7040x5280": "7040x5280 (x11)",
+        "7680x5760": "7680x5760 (x12)",
+        "8320x6240": "8320x6240 (x13)",
+        "8960x6720": "8960x6720 (x14)",
+        "9600x7200": "9600x7200 (x15)",
+        "10240x7680": "10240x7680 (x16)",
+        "10880x8160": "10880x8160 (x17)",
+        "11520x8640": "11520x8640 (x18)",
+        "12160x9120": "12160x9120 (x19)",
+        "12800x9600": "12800x9600 (x20)"
+      },
+      "default": "640x480",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Source: flyinghead/flycast@12a7f18b81 libretro_core_options.h (master, not version-matched to the installed core). Default is \"640x480\" (\"320x240\" only in LOW_RES builds). Per-game: same key in config/Flycast/<game>.opt (copy the whole file; see per_game)."
+    },
+    "dc_widescreen_hack": {
+      "file": "opt_flycast",
+      "key": "reicast_widescreen_hack",
+      "label": "Widescreen Hack",
+      "type": "enum",
+      "values": {
+        "disabled": "disabled",
+        "enabled": "enabled"
+      },
+      "default": "disabled",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Source: flyinghead/flycast@12a7f18b81 libretro_core_options.h (master, not version-matched to the installed core). Per-game: same key in config/Flycast/<game>.opt (copy the whole file; see per_game)."
+    },
+    "dc_widescreen_cheats": {
+      "file": "opt_flycast",
+      "key": "reicast_widescreen_cheats",
+      "label": "Widescreen Cheats (Restart Required)",
+      "type": "enum",
+      "values": {
+        "disabled": "disabled",
+        "enabled": "enabled"
+      },
+      "default": "disabled",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Source: flyinghead/flycast@12a7f18b81 libretro_core_options.h (master, not version-matched to the installed core). Per-game: same key in config/Flycast/<game>.opt (copy the whole file; see per_game)."
+    },
+    "dc_alpha_sorting": {
+      "file": "opt_flycast",
+      "key": "reicast_alpha_sorting",
+      "label": "Alpha Sorting",
+      "type": "enum",
+      "values": {
+        "per-strip (fast, least accurate)": "Per-Strip (fast, least accurate)",
+        "per-triangle (normal)": "Per-Triangle (normal)",
+        "per-pixel (accurate)": "Per-Pixel (accurate, but slowest)"
+      },
+      "default": "per-strip (fast, least accurate)",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Source: flyinghead/flycast@12a7f18b81 libretro_core_options.h (master, not version-matched to the installed core). Per-game: same key in config/Flycast/<game>.opt (copy the whole file; see per_game)."
+    },
+    "dc_anisotropic_filtering": {
+      "file": "opt_flycast",
+      "key": "reicast_anisotropic_filtering",
+      "label": "Anisotropic Filtering",
+      "type": "enum",
+      "values": {
+        "off": "disabled",
+        "2": "2",
+        "4": "4",
+        "8": "8",
+        "16": "16"
+      },
+      "default": "4",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Source: flyinghead/flycast@12a7f18b81 libretro_core_options.h (master, not version-matched to the installed core). Per-game: same key in config/Flycast/<game>.opt (copy the whole file; see per_game)."
+    },
+    "dc_threaded_rendering": {
+      "file": "opt_flycast",
+      "key": "reicast_threaded_rendering",
+      "label": "Threaded Rendering",
+      "type": "enum",
+      "values": {
+        "disabled": "disabled",
+        "enabled": "enabled"
+      },
+      "default": "enabled",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Source: flyinghead/flycast@12a7f18b81 libretro_core_options.h (master, not version-matched to the installed core). Per-game: same key in config/Flycast/<game>.opt (copy the whole file; see per_game)."
+    },
+    "dc_auto_skip_frame": {
+      "file": "opt_flycast",
+      "key": "reicast_auto_skip_frame",
+      "label": "Auto Skip Frame",
+      "type": "enum",
+      "values": {
+        "disabled": "disabled",
+        "some": "Normal",
+        "more": "Maximum"
+      },
+      "default": "some",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Source: flyinghead/flycast@12a7f18b81 libretro_core_options.h (master, not version-matched to the installed core). Per-game: same key in config/Flycast/<game>.opt (copy the whole file; see per_game)."
+    },
+    "md_system_hw": {
+      "file": "opt_genesis_plus_gx",
+      "key": "genesis_plus_gx_system_hw",
+      "label": "System Hardware",
+      "type": "enum",
+      "values": {
+        "auto": "Auto",
+        "sg-1000": "SG-1000",
+        "sg-1000 II": "SG-1000 II",
+        "sg-1000 II + ram ext.": "SG-1000 II + RAM Ext.",
+        "mark-III": "Mark III",
+        "master system": "Master System",
+        "master system II": "Master System II",
+        "game gear": "Game Gear",
+        "mega drive / genesis": "Mega Drive/Genesis"
+      },
+      "default": "auto",
+      "per_game": true,
+      "verified_on_device": false,
+      "notes": "Source: libretro/Genesis-Plus-GX@51348f6573 libretro_core_options.h (master, not version-matched to the installed core). Per-game: same key in config/Genesis Plus GX/<game>.opt (copy the whole file; see per_game)."
+    },
+    "md_region": {
+      "file": "opt_genesis_plus_gx",
+      "key": "genesis_plus_gx_region_detect",
+      "label": "System Region",
+      "type": "enum",
+      "values": {
+        "auto": "Auto",
+        "ntsc-u": "NTSC-U",
+        "pal": "PAL",
+        "ntsc-j": "NTSC-J"
+      },
+      "default": "auto",
+      "per_game": true,
+      "verified_on_device": false,
+      "notes": "Source: libretro/Genesis-Plus-GX@51348f6573 libretro_core_options.h (master, not version-matched to the installed core). Per-game: same key in config/Genesis Plus GX/<game>.opt (copy the whole file; see per_game)."
+    },
+    "md_ntsc_filter": {
+      "file": "opt_genesis_plus_gx",
+      "key": "genesis_plus_gx_blargg_ntsc_filter",
+      "label": "Blargg NTSC Filter",
+      "type": "enum",
+      "values": {
+        "disabled": "disabled",
+        "monochrome": "Monochrome",
+        "composite": "Composite",
+        "svideo": "S-Video",
+        "rgb": "RGB"
+      },
+      "default": "disabled",
+      "per_game": true,
+      "verified_on_device": false,
+      "notes": "Source: libretro/Genesis-Plus-GX@51348f6573 libretro_core_options.h (master, not version-matched to the installed core). Per-game: same key in config/Genesis Plus GX/<game>.opt (copy the whole file; see per_game)."
+    },
+    "md_aspect_ratio": {
+      "file": "opt_genesis_plus_gx",
+      "key": "genesis_plus_gx_aspect_ratio",
+      "label": "Core-Provided Aspect Ratio",
+      "type": "enum",
+      "values": {
+        "auto": "Auto",
+        "NTSC PAR": "NTSC PAR",
+        "PAL PAR": "PAL PAR",
+        "4:3": "4:3",
+        "Uncorrected": "Uncorrected"
+      },
+      "default": "auto",
+      "per_game": true,
+      "verified_on_device": false,
+      "notes": "Source: libretro/Genesis-Plus-GX@51348f6573 libretro_core_options.h (master, not version-matched to the installed core). Per-game: same key in config/Genesis Plus GX/<game>.opt (copy the whole file; see per_game)."
+    },
+    "md_overscan": {
+      "file": "opt_genesis_plus_gx",
+      "key": "genesis_plus_gx_overscan",
+      "label": "Borders",
+      "type": "enum",
+      "values": {
+        "disabled": "disabled",
+        "top/bottom": "Top/Bottom",
+        "left/right": "Left/Right",
+        "full": "Full"
+      },
+      "default": "disabled",
+      "per_game": true,
+      "verified_on_device": false,
+      "notes": "Source: libretro/Genesis-Plus-GX@51348f6573 libretro_core_options.h (master, not version-matched to the installed core). Per-game: same key in config/Genesis Plus GX/<game>.opt (copy the whole file; see per_game)."
+    },
+    "md_no_sprite_limit": {
+      "file": "opt_genesis_plus_gx",
+      "key": "genesis_plus_gx_no_sprite_limit",
+      "label": "Remove Per-Line Sprite Limit",
+      "type": "enum",
+      "values": {
+        "disabled": "disabled",
+        "enabled": "enabled"
+      },
+      "default": "disabled",
+      "per_game": true,
+      "verified_on_device": false,
+      "notes": "Source: libretro/Genesis-Plus-GX@51348f6573 libretro_core_options.h (master, not version-matched to the installed core). Per-game: same key in config/Genesis Plus GX/<game>.opt (copy the whole file; see per_game)."
+    },
+    "snes_aspect": {
+      "file": "opt_snes9x",
+      "key": "snes9x_aspect",
+      "label": "Preferred Aspect Ratio",
+      "type": "enum",
+      "values": {
+        "4:3": "4:3",
+        "4:3 scaled": "4:3 (Preserved)",
+        "uncorrected": "Uncorrected",
+        "auto": "Auto",
+        "ntsc": "NTSC",
+        "pal": "PAL"
+      },
+      "default": "4:3",
+      "per_game": true,
+      "verified_on_device": false,
+      "notes": "Source: libretro/snes9x@204ea1c0b8 libretro_core_options.h (master, not version-matched to the installed core). Per-game: same key in config/Snes9x/<game>.opt (copy the whole file; see per_game)."
+    },
+    "snes_overscan": {
+      "file": "opt_snes9x",
+      "key": "snes9x_overscan",
+      "label": "Crop Overscan",
+      "type": "enum",
+      "values": {
+        "enabled": "~8 Pixels",
+        "12_pixels": "12 Pixels",
+        "16_pixels": "16 Pixels",
+        "auto": "Auto (~8 Pixels)",
+        "disabled": "disabled"
+      },
+      "default": "enabled",
+      "per_game": true,
+      "verified_on_device": false,
+      "notes": "Source: libretro/snes9x@204ea1c0b8 libretro_core_options.h (master, not version-matched to the installed core). Per-game: same key in config/Snes9x/<game>.opt (copy the whole file; see per_game)."
+    },
+    "snes_hires_blend": {
+      "file": "opt_snes9x",
+      "key": "snes9x_hires_blend",
+      "label": "Hi-Res Blending",
+      "type": "enum",
+      "values": {
+        "disabled": "disabled",
+        "merge": "Merge",
+        "blur": "Blur"
+      },
+      "default": "disabled",
+      "per_game": true,
+      "verified_on_device": false,
+      "notes": "Source: libretro/snes9x@204ea1c0b8 libretro_core_options.h (master, not version-matched to the installed core). Per-game: same key in config/Snes9x/<game>.opt (copy the whole file; see per_game)."
+    },
+    "snes_superfx_overclock": {
+      "file": "opt_snes9x",
+      "key": "snes9x_overclock_superfx",
+      "label": "SuperFX Overclocking",
+      "type": "enum",
+      "values": {
+        "50%": "50%",
+        "60%": "60%",
+        "70%": "70%",
+        "80%": "80%",
+        "90%": "90%",
+        "100%": "100%",
+        "150%": "150%",
+        "200%": "200%",
+        "250%": "250%",
+        "300%": "300%",
+        "350%": "350%",
+        "400%": "400%",
+        "450%": "450%",
+        "500%": "500%"
+      },
+      "default": "100%",
+      "per_game": true,
+      "verified_on_device": false,
+      "notes": "Source: libretro/snes9x@204ea1c0b8 libretro_core_options.h (master, not version-matched to the installed core). Per-game: same key in config/Snes9x/<game>.opt (copy the whole file; see per_game)."
+    },
+    "snes_reduce_sprite_flicker": {
+      "file": "opt_snes9x",
+      "key": "snes9x_reduce_sprite_flicker",
+      "label": "Reduce Flickering (Hack, Unsafe)",
+      "type": "enum",
+      "values": {
+        "disabled": "disabled",
+        "enabled": "enabled"
+      },
+      "default": "disabled",
+      "per_game": true,
+      "verified_on_device": false,
+      "notes": "Source: libretro/snes9x@204ea1c0b8 libretro_core_options.h (master, not version-matched to the installed core). Per-game: same key in config/Snes9x/<game>.opt (copy the whole file; see per_game)."
+    }
+  }
+}

@@ -1,0 +1,40 @@
+{
+ "package": "com.dishii.zelda3",
+ "name": "Zelda3",
+ "original": {
+  "title": "The Legend of Zelda: A Link to the Past",
+  "platform": "SNES",
+  "year": 1991
+ },
+ "kind": "decompilation",
+ "project": {
+  "name": "snesrev/zelda3 (zelda3-android dual-screen fork)",
+  "repo": "https://github.com/snesrev/zelda3",
+  "android_repo": "https://github.com/samyost1/zelda3-android",
+  "license": null
+ },
+ "version_checked": "2.0",
+ "update": {
+  "channel": "GitHub releases (Obtainium can track them)",
+  "url": "https://github.com/samyost1/zelda3-android"
+ },
+ "assets": {
+  "needs": "zelda3_assets.dat, built on the device from 'Legend of Zelda, The - A Link to the Past (USA)' ROM on first run (SetupActivity applies zelda3_assets.bps). Fan translations are supported from v2.0 (pick the translated ROM, then the US ROM).",
+  "location": "/sdcard/Android/data/com.dishii.zelda3/files/zelda3_assets.dat",
+  "notes": "The app does not need the ROM after extraction. MSU-1 packs go in files/msu/."
+ },
+ "settings": {
+  "adapter": "zelda3",
+  "files": [
+   "/sdcard/Android/data/com.dishii.zelda3/files/zelda3.ini",
+   "/data/data/com.dishii.zelda3/shared_prefs/secondscreen.xml"
+  ],
+  "in_app_menu": "Bottom screen > Settings list (save states, button remap, quick save/load, autosave, widescreen, CRT top/bottom, hide top HUD, X item ring, swap screens, MSU music, and 12 [Features] toggles). Everything else in zelda3.ini.",
+  "summary": "zelda3.ini (snesrev format) is read at game start and rewritten line by line by the bottom-screen settings (MinimapView.updateIni). Enhancements worth knowing: ExtendedAspectRatio (16:9 is the v2.0 default), EnhancedMode7, NoSpriteLimits, NewRenderer, CrtFilter, DimFlashes, MSU-1, and the [Features] quality-of-life fixes (item switch on L/R, collect items with sword, break pots with sword, skip intro, more bombs, 9999 rupees, bug fixes). Bottom-screen keys SecondScreenXItemRing/Swap/Crt live in [General]; hideTopHud is a SharedPreference (default true)."
+ },
+ "controls": "SDL2 gamepad. [GamepadMap] Controls sets the button layout; the Nintendo layout (A right, B bottom) matches the Thor. Buttons can be remapped from the bottom screen (writes [GamepadMap] Controls). No gameplay touch controls; the bottom screen is touch (map, inventory, equipping items).",
+ "display": "Game on the top screen, fullscreen. Bottom screen (Presentation) shows hearts/magic/counters, world map with pins, dungeon map, touch inventory and the settings list. SecondScreenSwap = 1 runs the game on the bottom panel (takes effect at next launch). With ExtendedAspectRatio = 4:3 the game is pillarboxed.",
+ "saves": "/sdcard/Android/data/com.dishii.zelda3/files/saves/: sram.dat (+ sram.bak) is the in-game save; save0.sav = autosave state, save1.sav = quick save state, save2+ = the four bottom-screen state slots; saves/ref/ holds 13 reference chapter saves copied from the APK. map_pins.txt next to zelda3.ini holds map pins.",
+ "notes": "Release v2.0 (zelda3-dualscreen.apk, 2026-07-24, SHA-256 ccea2445...) is the latest release. Fork chain: snesrev/zelda3 -> Waterdish/zelda3-android -> samyost1/zelda3-android (branch dual-screen). A zelda3.ini written before v2.0 has no SecondScreenSwap line (the app had inserted Autosave, SecondScreenCrt and CrtFilter into the one checked); updates never overwrite an existing ini. zelda3.user.ini, if present, replaces zelda3.ini entirely.",
+ "verified": "Device: version, install times, Obtainium app JSON, zelda3.ini content, prefs, assets and saves. APK: SHA-256 against GitHub release. Source at tag v2.0: config.c (keys, ParseBool, sections), MinimapView.java (which rows write which keys), MainActivity/SetupActivity (copy on first run, swap display), README."
+}

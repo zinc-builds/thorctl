@@ -1,0 +1,39 @@
+{
+ "package": "io.github.kalasyan.recompa",
+ "name": "Recompa",
+ "original": {
+  "title": null,
+  "platform": "Android (ports hub)",
+  "year": null
+ },
+ "kind": "wrapper",
+ "project": {
+  "name": "Recompa",
+  "repo": "https://github.com/kalasyan/recompa",
+  "android_repo": "https://github.com/kalasyan/recompa",
+  "license": "GPL-3.0"
+ },
+ "version_checked": "0.5.1",
+ "update": {
+  "channel": "GitHub releases (recompa.apk)",
+  "url": "https://github.com/kalasyan/recompa/releases"
+ },
+ "assets": {
+  "needs": "None for itself. It is a launcher/store that finds, installs and updates native Android ports; each port needs its own game data.",
+  "location": "Not applicable.",
+  "notes": "Its catalogue (https://recompa.app/index.json, 734 ports) lists six of the other recomps here with their upstream repos and signing keys: Majora ReMasked, Mareshine, Mario Kart DS, Metroid Fusion, Paper Cut and Skies of Arcadia. PokeDaisy is not in it."
+ },
+ "settings": {
+  "adapter": null,
+  "files": [
+   "/data/data/io.github.kalasyan.recompa/shared_prefs/user_prefs.xml (launcher preferences)"
+  ],
+  "in_app_menu": "Inside Recompa.",
+  "summary": "Launcher preferences only; no game settings. No adapter."
+ },
+ "controls": "Controller-navigable launcher (not tested).",
+ "display": "Has a SecondScreenActivity for dual-screen handhelds (not tested).",
+ "saves": "None.",
+ "notes": "v0.5.1 released 2026-11-23. Needs REQUEST_INSTALL_PACKAGES/REQUEST_DELETE_PACKAGES to install and remove ports; it could replace manual updates for the ports above, but an app signed with a different key (Mario Kart DS) still needs an uninstall.",
+ "verified": "Device: dumpsys, data dirs. APK: jadx manifest and prefs names. Web: GitHub API, recompa.app/index.json."
+}

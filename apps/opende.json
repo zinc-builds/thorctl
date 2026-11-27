@@ -1,0 +1,520 @@
+{
+ "name": "opende",
+ "package": "com.opende.deusex",
+ "aliases": [
+  "deusex",
+  "deus-ex",
+  "opende"
+ ],
+ "category": "recomp",
+ "version_checked": "0.7-beta",
+ "stop_before_write": true,
+ "files": {
+  "system": {
+   "path": "/sdcard/Android/data/com.opende.deusex/files/DeusEx.ini",
+   "format": "ini",
+   "notes": "User copy of the system ini (config.cc userDirectory = app external files dir; created from the game's System/DeusEx.ini or Default.ini). `Key=Value` without spaces; repeated keys (Paths=, ServerActors=, EditPackages=) are lists: edit only single-valued keys. OpenDE-specific options are stored as menu indices in [WinDrv.WindowsClient] (the ViewportManager section). OpenDE writes the file when settings change in its menus (Ini::save), so stop the app first. The DeusEx.ini inside <game_root>/System (game_root in opende_prefs.xml) is NOT the live one."
+  },
+  "user": {
+   "path": "/sdcard/Android/data/com.opende.deusex/files/User.ini",
+   "format": "ini",
+   "notes": "User copy of User.ini: [DeusEx.DeusExPlayer] HUD/gameplay toggles, [Engine.Input] key bindings and aliases."
+  }
+ },
+ "per_game": null,
+ "keys": {
+  "anisotropy": {
+   "file": "system",
+   "key": "WinDrv.WindowsClient/Anisotropy",
+   "label": "Display > Anisotropic Filtering",
+   "type": "enum",
+   "values": {
+    "0": "Off",
+    "1": "2x",
+    "2": "4x",
+    "3": "8x",
+    "4": "16x"
+   },
+   "default": "0",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Stored as the menu index."
+  },
+  "trilinear": {
+   "file": "system",
+   "key": "WinDrv.WindowsClient/UseTrilinear",
+   "label": "Display > Trilinear Filtering",
+   "type": "enum",
+   "values": {
+    "False": "Off",
+    "True": "On"
+   },
+   "default": "False",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "The renderer reads this key from [WinDrv.WindowsClient]; the menu seeds its initial state from [OpenGLDrv.OpenGLRenderDevice] UseTrilinear. True/False or 1/0 accepted."
+  },
+  "multisampling": {
+   "file": "system",
+   "key": "WinDrv.WindowsClient/Multisampling",
+   "label": "Display > Multisample AA",
+   "type": "enum",
+   "values": {
+    "0": "Off",
+    "1": "2x",
+    "2": "4x",
+    "3": "8x"
+   },
+   "default": "0",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Stored as the menu index."
+  },
+  "fxaa": {
+   "file": "system",
+   "key": "WinDrv.WindowsClient/FXAA",
+   "label": "Display > FXAA",
+   "type": "enum",
+   "values": {
+    "False": "Off",
+    "True": "On"
+   },
+   "default": "False",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "1/0 also accepted."
+  },
+  "smooth_lightmaps": {
+   "file": "system",
+   "key": "WinDrv.WindowsClient/SmoothLightmaps",
+   "label": "Display > Smooth Lighting",
+   "type": "enum",
+   "values": {
+    "False": "Off",
+    "True": "On"
+   },
+   "default": "False",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Bicubic lightmap filtering."
+  },
+  "detail_distance": {
+   "file": "system",
+   "key": "WinDrv.WindowsClient/DetailDistance",
+   "label": "Display > Detail Distance",
+   "type": "enum",
+   "values": {
+    "0": "Normal (380)",
+    "1": "Far (1024)",
+    "2": "Very Far (2048)"
+   },
+   "default": "0",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Stored as the menu index."
+  },
+  "vsync": {
+   "file": "system",
+   "key": "WinDrv.WindowsClient/VSync",
+   "label": "Display > Vertical Sync",
+   "type": "enum",
+   "values": {
+    "0": "Off",
+    "1": "On",
+    "2": "Adaptive"
+   },
+   "default": "1",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Stored as the menu index."
+  },
+  "frame_rate_limit": {
+   "file": "system",
+   "key": "WinDrv.WindowsClient/FrameRateLimit",
+   "label": "Display > Frame Rate Limit",
+   "type": "enum",
+   "values": {
+    "0": "Off",
+    "1": "30",
+    "2": "60",
+    "3": "75",
+    "4": "120",
+    "5": "144",
+    "6": "165",
+    "7": "240"
+   },
+   "default": "0",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Stored as the menu index."
+  },
+  "limit_texture_animation": {
+   "file": "system",
+   "key": "WinDrv.WindowsClient/LimitTextureAnimation",
+   "label": "Display > Limit Texture Animation",
+   "type": "enum",
+   "values": {
+    "False": "Off (original)",
+    "True": "On (60 updates/s)"
+   },
+   "default": "True",
+   "per_game": false,
+   "verified_on_device": true
+  },
+  "ambient_occlusion": {
+   "file": "system",
+   "key": "WinDrv.WindowsClient/AmbientOcclusion",
+   "label": "Display > Ambient Occlusion",
+   "type": "enum",
+   "values": {
+    "0": "Off",
+    "1": "Low",
+    "2": "Medium",
+    "3": "High"
+   },
+   "default": "0",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Stored as the menu index."
+  },
+  "ui_scale": {
+   "file": "system",
+   "key": "WinDrv.WindowsClient/UIScale",
+   "label": "Display > UI Scale",
+   "type": "enum",
+   "values": {
+    "0": "Auto",
+    "1": "1x",
+    "2": "1.25x",
+    "3": "1.5x",
+    "4": "1.75x",
+    "5": "2x",
+    "6": "2.25x",
+    "7": "2.5x",
+    "8": "2.75x",
+    "9": "3x",
+    "10": "3.5x",
+    "11": "4x"
+   },
+   "default": "0",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Stored as the menu index."
+  },
+  "performance_hud": {
+   "file": "system",
+   "key": "WinDrv.WindowsClient/PerformanceHUD",
+   "label": "Display > Performance HUD",
+   "type": "enum",
+   "values": {
+    "0": "Off",
+    "1": "Compact",
+    "2": "Full Debug"
+   },
+   "default": "0",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Stored as the menu index."
+  },
+  "field_of_view_index": {
+   "file": "system",
+   "key": "WinDrv.WindowsClient/FieldOfViewIndex",
+   "label": "Display > Field of View",
+   "type": "enum",
+   "values": {
+    "0": "60 deg",
+    "1": "65 deg",
+    "2": "70 deg",
+    "3": "75 deg",
+    "4": "80 deg",
+    "5": "85 deg",
+    "6": "90 deg",
+    "7": "95 deg",
+    "8": "100 deg",
+    "9": "105 deg",
+    "10": "110 deg",
+    "11": "115 deg",
+    "12": "120 deg"
+   },
+   "default": "3",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Target FOV = 60 + 5*index degrees, Hor+ corrected for the screen aspect. Clamped 0-12."
+  },
+  "brightness": {
+   "file": "system",
+   "key": "WinDrv.WindowsClient/Brightness",
+   "label": "Brightness (menu label not checked)",
+   "type": "float",
+   "default": "0.600000",
+   "per_game": false,
+   "verified_on_device": true
+  },
+  "fullscreen_x": {
+   "file": "system",
+   "key": "WinDrv.WindowsClient/FullscreenViewportX",
+   "label": "Resolution width (menu label not checked)",
+   "type": "int",
+   "default": "640",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Fullscreen render width; written together with FullscreenViewportY by the resolution menu."
+  },
+  "fullscreen_y": {
+   "file": "system",
+   "key": "WinDrv.WindowsClient/FullscreenViewportY",
+   "label": "Resolution height (menu label not checked)",
+   "type": "int",
+   "default": "480",
+   "per_game": false,
+   "verified_on_device": true
+  },
+  "touch_overlays": {
+   "file": "system",
+   "key": "WinDrv.WindowsClient/TouchOverlaysEnabled",
+   "label": "Display > Touch Overlays",
+   "type": "enum",
+   "values": {
+    "0": "Off",
+    "1": "On"
+   },
+   "default": "1",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Stored as the menu index. Default On on touch devices."
+  },
+  "touch_overlay_opacity": {
+   "file": "system",
+   "key": "WinDrv.WindowsClient/TouchOverlayOpacity",
+   "label": "Display > Touch Opacity",
+   "type": "enum",
+   "values": {
+    "0": "25%",
+    "1": "40%",
+    "2": "55%",
+    "3": "75%",
+    "4": "95%"
+   },
+   "default": "2",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Stored as the menu index."
+  },
+  "touch_overlay_scale": {
+   "file": "system",
+   "key": "WinDrv.WindowsClient/TouchOverlayScale",
+   "label": "Display > Touch Button Size",
+   "type": "enum",
+   "values": {
+    "0": "75%",
+    "1": "100%",
+    "2": "125%",
+    "3": "150%"
+   },
+   "default": "1",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Stored as the menu index."
+  },
+  "touch_look_sensitivity": {
+   "file": "system",
+   "key": "WinDrv.WindowsClient/TouchLookSensitivity",
+   "label": "Display > Touch Look Speed",
+   "type": "enum",
+   "values": {
+    "0": "0.5x",
+    "1": "0.75x",
+    "2": "1.0x",
+    "3": "1.5x",
+    "4": "2.0x"
+   },
+   "default": "2",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Stored as the menu index."
+  },
+  "gyro_aim_mode": {
+   "file": "system",
+   "key": "WinDrv.WindowsClient/GyroAimMode",
+   "label": "Display > Gyroscope Aim",
+   "type": "enum",
+   "values": {
+    "0": "Off",
+    "1": "Always On",
+    "2": "Aim / Scope"
+   },
+   "default": "0",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Stored as the menu index."
+  },
+  "gyro_sensitivity": {
+   "file": "system",
+   "key": "WinDrv.WindowsClient/GyroSensitivity",
+   "label": "Display > Gyro Sensitivity",
+   "type": "enum",
+   "values": {
+    "0": "0.5x",
+    "1": "0.75x",
+    "2": "1.0x",
+    "3": "1.5x",
+    "4": "2.0x",
+    "5": "3.0x"
+   },
+   "default": "2",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Stored as the menu index."
+  },
+  "gyro_axis_mode": {
+   "file": "system",
+   "key": "WinDrv.WindowsClient/GyroAxisMode",
+   "label": "Display > Gyro Yaw Axis",
+   "type": "enum",
+   "values": {
+    "0": "Auto (Gravity)",
+    "1": "Yaw (Turn)",
+    "2": "Roll (Steer)"
+   },
+   "default": "0",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Stored as the menu index."
+  },
+  "gyro_invert_y": {
+   "file": "system",
+   "key": "WinDrv.WindowsClient/GyroInvertY",
+   "label": "Display > Invert Gyro Y",
+   "type": "enum",
+   "values": {
+    "0": "Off",
+    "1": "On"
+   },
+   "default": "0",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Stored as the menu index."
+  },
+  "stick_deadzone_left": {
+   "file": "system",
+   "key": "DXController.ControllerSettings/StickDeadzoneLeft",
+   "label": "DXController > Left stick deadzone",
+   "type": "int",
+   "default": "3500",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Raw axis units (0-32767)."
+  },
+  "stick_deadzone_right": {
+   "file": "system",
+   "key": "DXController.ControllerSettings/StickDeadzoneRight",
+   "label": "DXController > Right stick deadzone",
+   "type": "int",
+   "default": "3500",
+   "per_game": false,
+   "verified_on_device": true
+  },
+  "stick_scale_right": {
+   "file": "system",
+   "key": "DXController.ControllerSettings/StickScaleRight",
+   "label": "DXController > Look speed",
+   "type": "float",
+   "default": "0.400000",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Right-stick look sensitivity."
+  },
+  "invert_look_y": {
+   "file": "system",
+   "key": "DXController.ControllerSettings/InvertLookY",
+   "label": "DXController > Invert look",
+   "type": "enum",
+   "values": {
+    "False": "Off",
+    "True": "On"
+   },
+   "default": "False",
+   "per_game": false,
+   "verified_on_device": true
+  },
+  "controller_autosave": {
+   "file": "system",
+   "key": "DXController.AutoSaveManager/bEnabled",
+   "label": "DXController > Periodic autosave",
+   "type": "enum",
+   "values": {
+    "False": "Off",
+    "True": "On"
+   },
+   "default": "False",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Rotating autosaves every IntervalSeconds (300), keeping MaxSaves (3)."
+  },
+  "fix_vanilla_bugs": {
+   "file": "system",
+   "key": "DeusEx.DeusExGameEngine/FixVanillaBugs",
+   "label": "(ini only)",
+   "type": "enum",
+   "values": {
+    "False": "Off",
+    "True": "On"
+   },
+   "default": "True",
+   "per_game": false,
+   "verified_on_device": true
+  },
+  "always_run": {
+   "file": "user",
+   "key": "DeusEx.DeusExPlayer/bAlwaysRun",
+   "label": "Options > Always Run",
+   "type": "enum",
+   "values": {
+    "False": "Off",
+    "True": "On"
+   },
+   "default": "True",
+   "per_game": false,
+   "verified_on_device": true
+  },
+  "toggle_crouch": {
+   "file": "user",
+   "key": "DeusEx.DeusExPlayer/bToggleCrouch",
+   "label": "Options > Toggle Crouch",
+   "type": "enum",
+   "values": {
+    "False": "Off",
+    "True": "On"
+   },
+   "default": "False",
+   "per_game": false,
+   "verified_on_device": true
+  },
+  "subtitles": {
+   "file": "user",
+   "key": "DeusEx.DeusExPlayer/bSubtitles",
+   "label": "Options > Subtitles",
+   "type": "enum",
+   "values": {
+    "False": "Off",
+    "True": "On"
+   },
+   "default": "True",
+   "per_game": false,
+   "verified_on_device": true
+  },
+  "crosshair": {
+   "file": "user",
+   "key": "DeusEx.DeusExPlayer/bCrosshairVisible",
+   "label": "Options > Crosshair",
+   "type": "enum",
+   "values": {
+    "False": "Off",
+    "True": "On"
+   },
+   "default": "True",
+   "per_game": false,
+   "verified_on_device": true
+  }
+ }
+}

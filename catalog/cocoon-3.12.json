@@ -1,0 +1,6278 @@
+{
+ "cocoon_version": "3.12",
+ "keys": {
+  "accent_custom_end": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "dg/xc.java",
+    "ze/s1.java"
+   ]
+  },
+  "accent_custom_start": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "dg/xc.java",
+    "ze/s1.java"
+   ]
+  },
+  "accent_folder_icons": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    false
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "accent_highlight_selection": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    true
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "accent_theme": {
+   "types": [
+    "string"
+   ],
+   "defaults": [
+    {
+     "expr": "hh.d.DEFAULT.name("
+    }
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "active": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    false
+   ],
+   "files": [
+    "game_tracking_session",
+    "now_playing_session"
+   ],
+   "sources": [
+    "gd/g.java",
+    "rip/moth/cocoonshell/utils/l8.java",
+    "xe/s1.java"
+   ]
+  },
+  "active_home_preset_id": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "rip/moth/cocoonshell/presets/HomePresetStore.java"
+   ]
+  },
+  "active_recovery_token_v2": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "background_scrape_state"
+   ],
+   "sources": [
+    "rip/moth/cocoonshell/domain/scraping/i.java"
+   ]
+  },
+  "activity": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [],
+   "sources": [
+    "ff/k0.java"
+   ]
+  },
+  "android.progress": {
+   "types": [
+    "int"
+   ],
+   "defaults": [
+    0
+   ],
+   "files": [],
+   "sources": [
+    "s3/c.java"
+   ]
+  },
+  "android.template": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [],
+   "sources": [
+    "b4/e.java"
+   ]
+  },
+  "android_conversations_enabled": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    true
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "dg/us.java",
+    "fg/w7.java",
+    "rip/moth/cocoonshell/ui/activity/SettingsActivity.java",
+    "ze/s1.java"
+   ]
+  },
+  "android_game_launch_preferences_migrated_v1": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    false
+   ],
+   "files": [
+    "dock_prefs"
+   ],
+   "sources": [
+    "gh/p1.java",
+    "jh/q3.java"
+   ]
+  },
+  "android_games_on_main_migrated": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    false
+   ],
+   "files": [
+    "dock_prefs"
+   ],
+   "sources": [
+    "gh/p1.java",
+    "jh/q3.java"
+   ]
+  },
+  "animation_speed": {
+   "types": [
+    "string"
+   ],
+   "defaults": [
+    "FAST"
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "dg/l2.java",
+    "ze/s1.java"
+   ]
+  },
+  "app_id": {
+   "types": [
+    "int",
+    "string"
+   ],
+   "defaults": [
+    -1
+   ],
+   "files": [],
+   "sources": [
+    "rip/moth/cocoonshell/data/api/f0.java"
+   ]
+  },
+  "app_language": {
+   "types": [
+    "string"
+   ],
+   "defaults": [
+    "system"
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "dg/l2.java",
+    "rip/moth/cocoonshell/CocoonApp.java",
+    "rip/moth/cocoonshell/ui/activity/SettingsActivity.java",
+    "ve/a.java",
+    "ze/s1.java"
+   ]
+  },
+  "app_last_update_time": {
+   "types": [
+    "long"
+   ],
+   "defaults": [
+    0
+   ],
+   "files": [
+    "now_playing_session"
+   ],
+   "sources": [
+    "rip/moth/cocoonshell/utils/l8.java",
+    "xe/s1.java"
+   ]
+  },
+  "auto_hide_dock": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    false
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "rip/moth/cocoonshell/presets/HomePresetSnapshot.java",
+    "ze/s1.java"
+   ]
+  },
+  "automatic_checks": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    true
+   ],
+   "files": [
+    "cocoon_updates"
+   ],
+   "sources": [
+    "bg/g0.java",
+    "dg/us.java"
+   ]
+  },
+  "backoff_until": {
+   "types": [
+    "long"
+   ],
+   "defaults": [
+    0
+   ],
+   "files": [
+    "cocoon_platform_catalogue",
+    "cocoon_updates"
+   ],
+   "sources": [
+    "ae/h.java",
+    "bg/a0.java",
+    "bg/z.java",
+    "ef/o.java"
+   ]
+  },
+  "became_stable": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    true
+   ],
+   "files": [
+    "startup_safe_mode"
+   ],
+   "sources": [
+    "rip/moth/cocoonshell/CocoonApp.java",
+    "rip/moth/cocoonshell/utils/sa.java"
+   ]
+  },
+  "bg_music_mode": {
+   "types": [
+    "string"
+   ],
+   "defaults": [
+    "TIME"
+   ],
+   "files": [
+    "audio_prefs"
+   ],
+   "sources": [
+    "dg/l2.java",
+    "dg/pu.java",
+    "hh/k0.java",
+    "rip/moth/cocoonshell/utils/ya.java",
+    "se/c0.java"
+   ]
+  },
+  "bg_music_playback_mode": {
+   "types": [
+    "string"
+   ],
+   "defaults": [
+    "IN ORDER"
+   ],
+   "files": [
+    "audio_prefs"
+   ],
+   "sources": [
+    "dg/l2.java",
+    "dg/pu.java",
+    "hh/k0.java",
+    "rip/moth/cocoonshell/utils/ya.java",
+    "se/c0.java"
+   ]
+  },
+  "bg_music_playlist": {
+   "types": [
+    "string"
+   ],
+   "defaults": [
+    "",
+    {
+     "expr": "str20"
+    },
+    {
+     "expr": "r110"
+    }
+   ],
+   "files": [
+    "audio_prefs"
+   ],
+   "sources": [
+    "dg/l2.java",
+    "dg/pu.java",
+    "dg/td.java",
+    "fg/b5.java",
+    "hh/k0.java"
+   ]
+  },
+  "bg_music_time_schedule": {
+   "types": [
+    "string"
+   ],
+   "defaults": [
+    "0:0|default_sleepy||4:0|default_cozy||8:0|default_space||12:0|default_eternal||16:0|default_fluffy||20:0|default_bubbly",
+    {
+     "expr": "str12"
+    },
+    {
+     "expr": "r110"
+    }
+   ],
+   "files": [
+    "audio_prefs"
+   ],
+   "sources": [
+    "dg/l2.java",
+    "dg/pu.java",
+    "dg/td.java",
+    "fg/b5.java",
+    "hh/k0.java"
+   ]
+  },
+  "bindings_json": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [],
+   "sources": [
+    "rip/moth/cocoonshell/utils/i6.java",
+    "rip/moth/cocoonshell/utils/s3.java"
+   ]
+  },
+  "check_failures": {
+   "types": [
+    "int"
+   ],
+   "defaults": [
+    0
+   ],
+   "files": [
+    "cocoon_platform_catalogue",
+    "cocoon_updates"
+   ],
+   "sources": [
+    "ae/h.java",
+    "bg/a0.java",
+    "bg/z.java"
+   ]
+  },
+  "cocoon_data_directory_uri": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [],
+   "sources": [
+    "dg/l2.java",
+    "dg/s5.java",
+    "og/n4.java",
+    "rip/moth/cocoonshell/CocoonApp.java",
+    "rip/moth/cocoonshell/MainActivity.java"
+   ]
+  },
+  "cocoon_logcat_capture_enabled": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    false
+   ],
+   "files": [],
+   "sources": [
+    "a5/x0.java",
+    "dg/kt.java",
+    "rip/moth/cocoonshell/CocoonApp.java",
+    "rip/moth/cocoonshell/utils/n0.java"
+   ]
+  },
+  "cocoon_rom_folder_uri": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "ui_prefs"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "completed": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    false
+   ],
+   "files": [],
+   "sources": [
+    "com/discord/socialsdk/AuthenticationActivity.java"
+   ]
+  },
+  "consent": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [],
+   "sources": [
+    "rip/moth/cocoonshell/domain/deviceaccess/AynGameObserver.java",
+    "rip/moth/cocoonshell/domain/deviceaccess/AynTaskHelper.java"
+   ]
+  },
+  "controller_layout": {
+   "types": [
+    "string"
+   ],
+   "defaults": [
+    "HANDHELD"
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "corner_hints_enabled": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    true
+   ],
+   "files": [
+    "ui_prefs"
+   ],
+   "sources": [
+    "dg/td.java",
+    "dg/tp.java",
+    "dg/us.java",
+    "hh/k0.java",
+    "rip/moth/cocoonshell/backup/AppearanceRuntimeSynchronizer.java"
+   ]
+  },
+  "cover_delay_ms": {
+   "types": [
+    "long"
+   ],
+   "defaults": [
+    -1
+   ],
+   "files": [],
+   "sources": [
+    "androidx/lifecycle/q.java",
+    "ff/g3.java"
+   ]
+  },
+  "cursor_style": {
+   "types": [
+    "string"
+   ],
+   "defaults": [
+    "ANIMATED"
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "custom_theme_colors_id": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "dg/td.java",
+    "ze/s1.java"
+   ]
+  },
+  "custom_theme_icon_overlays_id": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "custom_theme_id": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "rip/moth/cocoonshell/CocoonApp.java"
+   ]
+  },
+  "custom_theme_music_id": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "custom_theme_sf_heroes_id": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "custom_theme_sf_icons_id": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "custom_theme_sf_logos_id": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "custom_theme_smart_folders_id": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "custom_theme_sounds_id": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "custom_theme_wallpapers_id": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "custom_wallpaper_bottom": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "ui_prefs"
+   ],
+   "sources": [
+    "dg/td.java",
+    "rip/moth/cocoonshell/MainActivity.java"
+   ]
+  },
+  "custom_wallpaper_main": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "ui_prefs"
+   ],
+   "sources": [
+    "dg/td.java"
+   ]
+  },
+  "custom_wallpaper_top": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "ui_prefs"
+   ],
+   "sources": [
+    "dg/td.java",
+    "rip/moth/cocoonshell/ExternalDisplayActivity.java"
+   ]
+  },
+  "d": {
+   "types": [
+    "long"
+   ],
+   "defaults": [],
+   "files": [],
+   "sources": [
+    "h5/e.java"
+   ]
+  },
+  "date": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [],
+   "sources": [
+    "dg/td.java"
+   ]
+  },
+  "deadline": {
+   "types": [
+    "long"
+   ],
+   "defaults": [],
+   "files": [],
+   "sources": [
+    "rip/moth/cocoonshell/domain/deviceaccess/AynTaskHelper.java"
+   ]
+  },
+  "default_player_scope_windows:steam": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "rip/moth/cocoonshell/backup/PlatformRefreshJournal.java"
+   ]
+  },
+  "description": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [],
+   "sources": [
+    "rip/moth/cocoonshell/data/api/RetroAchievementsHelper.java"
+   ]
+  },
+  "device_id": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "hive_activity_sync"
+   ],
+   "sources": [
+    "r1/g.java"
+   ]
+  },
+  "disable_animated_assets": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    false
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "discord_direct_social_cleanup_v1": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    false
+   ],
+   "files": [],
+   "sources": [
+    "rip/moth/cocoonshell/utils/DiscordRichPresenceManager.java"
+   ]
+  },
+  "discord_enabled": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    true
+   ],
+   "files": [],
+   "sources": [
+    "rip/moth/cocoonshell/utils/DiscordRichPresenceManager.java"
+   ]
+  },
+  "discord_last_clear_delivery_v1": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [],
+   "sources": [
+    "rip/moth/cocoonshell/utils/DiscordRichPresenceManager.java"
+   ]
+  },
+  "discord_presence_may_be_active_v1": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    false
+   ],
+   "files": [],
+   "sources": [
+    "rip/moth/cocoonshell/utils/DiscordRichPresenceManager.java"
+   ]
+  },
+  "discord_refresh_token": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "cocoon_prefs"
+   ],
+   "sources": [
+    "yf/a4.java"
+   ]
+  },
+  "discord_refresh_token_backup": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "cocoon_prefs"
+   ],
+   "sources": [
+    "yf/a4.java"
+   ]
+  },
+  "discord_rich_presence_enabled": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    true
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "rip/moth/cocoonshell/utils/DiscordRichPresenceManager.java",
+    "ze/s1.java"
+   ]
+  },
+  "discord_single_toggle_migrated_v1": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    false
+   ],
+   "files": [],
+   "sources": [
+    "rip/moth/cocoonshell/utils/DiscordRichPresenceManager.java"
+   ]
+  },
+  "dock_icon_count": {
+   "types": [
+    "int"
+   ],
+   "defaults": [
+    5
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "dg/c3.java",
+    "ze/s1.java"
+   ]
+  },
+  "dock_icon_pack": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "dg/l2.java",
+    "rip/moth/cocoonshell/CocoonApp.java",
+    "ze/s1.java"
+   ]
+  },
+  "dock_icon_shape": {
+   "types": [
+    "string"
+   ],
+   "defaults": [
+    "CIRCLE"
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "dock_on_top": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    false
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "done_generation": {
+   "types": [
+    "long"
+   ],
+   "defaults": [
+    0
+   ],
+   "files": [
+    "game_media_names"
+   ],
+   "sources": [
+    "lg/f3.java",
+    "rip/moth/cocoonshell/utils/b3.java"
+   ]
+  },
+  "done_rules_version": {
+   "types": [
+    "int"
+   ],
+   "defaults": [
+    0
+   ],
+   "files": [
+    "game_genre_names"
+   ],
+   "sources": [
+    "rip/moth/cocoonshell/utils/o2.java"
+   ]
+  },
+  "drawer_pinned_app_packages_v2": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "dock_prefs"
+   ],
+   "sources": [
+    "xe/s1.java"
+   ]
+  },
+  "elapsed_realtime_at_persist": {
+   "types": [
+    "long"
+   ],
+   "defaults": [
+    0
+   ],
+   "files": [
+    "now_playing_session"
+   ],
+   "sources": [
+    "rip/moth/cocoonshell/utils/l8.java",
+    "xe/s1.java"
+   ]
+  },
+  "elapsed_realtime_ms": {
+   "types": [
+    "long"
+   ],
+   "defaults": [],
+   "files": [],
+   "sources": [
+    "rip/moth/cocoonshell/utils/e9.java"
+   ]
+  },
+  "emulator_package": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "game_tracking_session",
+    "now_playing_session"
+   ],
+   "sources": [
+    "gd/g.java",
+    "rip/moth/cocoonshell/utils/l8.java",
+    "xe/s1.java"
+   ]
+  },
+  "error": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [],
+   "sources": [
+    "dg/h1.java"
+   ]
+  },
+  "esde_auto_sync_enabled": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [],
+   "files": [],
+   "sources": [
+    "dg/h3.java",
+    "dg/o3.java"
+   ]
+  },
+  "esde_folder_uri": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [],
+   "sources": [
+    "rip/moth/cocoonshell/utils/u7.java"
+   ]
+  },
+  "esde_hero_mapping": {
+   "types": [
+    "string"
+   ],
+   "defaults": [
+    "fanart"
+   ],
+   "files": [
+    "ui_prefs"
+   ],
+   "sources": [
+    "rip/moth/cocoonshell/utils/u7.java"
+   ]
+  },
+  "esde_icon_mapping": {
+   "types": [
+    "string"
+   ],
+   "defaults": [
+    "covers"
+   ],
+   "files": [
+    "ui_prefs"
+   ],
+   "sources": [
+    "rip/moth/cocoonshell/utils/u7.java"
+   ]
+  },
+  "esde_last_asset_fingerprint": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [],
+   "sources": [
+    "rip/moth/cocoonshell/utils/b2.java"
+   ]
+  },
+  "esde_logo_mapping": {
+   "types": [
+    "string"
+   ],
+   "defaults": [
+    "marquees"
+   ],
+   "files": [
+    "ui_prefs"
+   ],
+   "sources": [
+    "rip/moth/cocoonshell/utils/u7.java"
+   ]
+  },
+  "esde_prioritize_linked_folder": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    false
+   ],
+   "files": [],
+   "sources": [
+    "rip/moth/cocoonshell/utils/u7.java"
+   ]
+  },
+  "external_display_docking": {
+   "types": [
+    "string"
+   ],
+   "defaults": [
+    "AUTOMATIC"
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "rip/moth/cocoonshell/ui/activity/SettingsActivity.java",
+    "ze/s1.java"
+   ]
+  },
+  "feed_body": {
+   "types": [
+    "string"
+   ],
+   "defaults": [
+    {
+     "expr": "str"
+    }
+   ],
+   "files": [
+    "cocoon_updates"
+   ],
+   "sources": [
+    "bg/z.java"
+   ]
+  },
+  "feed_etag": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "cocoon_updates"
+   ],
+   "sources": [
+    "bg/z.java"
+   ]
+  },
+  "file": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [],
+   "sources": [
+    "yf/c.java"
+   ]
+  },
+  "floating_folders": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    true
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "folder_preview_mode": {
+   "types": [
+    "string"
+   ],
+   "defaults": [
+    "ALL"
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "dg/l7.java",
+    "ze/s1.java"
+   ]
+  },
+  "force_layout_picker": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    false
+   ],
+   "files": [
+    "ui_prefs"
+   ],
+   "sources": [
+    "ae/h.java",
+    "dg/c.java",
+    "eg/e3.java"
+   ]
+  },
+  "force_layout_reset": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    false
+   ],
+   "files": [],
+   "sources": [
+    "dg/c.java",
+    "eg/e3.java",
+    "eg/q3.java"
+   ]
+  },
+  "game": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [],
+   "sources": [
+    "yf/c.java"
+   ]
+  },
+  "game_id": {
+   "types": [
+    "long"
+   ],
+   "defaults": [
+    -1
+   ],
+   "files": [
+    "game_tracking_session",
+    "now_playing_session"
+   ],
+   "sources": [
+    "gd/g.java",
+    "rip/moth/cocoonshell/utils/l8.java",
+    "xe/s1.java"
+   ]
+  },
+  "game_name": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "game_tracking_session"
+   ],
+   "sources": [
+    "gd/g.java"
+   ]
+  },
+  "game_session_tracking_enabled": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    true
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "rip/moth/cocoonshell/MainActivity.java",
+    "ze/s1.java"
+   ]
+  },
+  "game_source": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [],
+   "sources": [
+    "rip/moth/cocoonshell/data/api/f0.java"
+   ]
+  },
+  "generation": {
+   "types": [
+    "long"
+   ],
+   "defaults": [
+    0,
+    -1
+   ],
+   "files": [
+    "startup_safe_mode"
+   ],
+   "sources": [
+    "rip/moth/cocoonshell/CocoonApp.java",
+    "rip/moth/cocoonshell/utils/sa.java"
+   ]
+  },
+  "glass_blur": {
+   "types": [
+    "float"
+   ],
+   "defaults": [
+    8.0
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "glass_highlight": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    true
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "glass_on_tiles": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    true
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "glass_refraction": {
+   "types": [
+    "float"
+   ],
+   "defaults": [
+    0.7
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "glass_rim_strength": {
+   "types": [
+    "float"
+   ],
+   "defaults": [
+    0.55
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "glass_tint": {
+   "types": [
+    "float"
+   ],
+   "defaults": [
+    0.25
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "grid_rows": {
+   "types": [
+    "int"
+   ],
+   "defaults": [
+    3
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "grid_scrolling_navigation_enabled": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    {
+     "expr": "!sharedPreferences.getBoolean(\"page_mode_enabled\", false"
+    }
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ae/h.java",
+    "ze/s1.java"
+   ]
+  },
+  "haptic_enabled": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    true
+   ],
+   "files": [
+    "audio_prefs"
+   ],
+   "sources": [
+    "dg/l2.java",
+    "se/c0.java"
+   ]
+  },
+  "height": {
+   "types": [
+    "int"
+   ],
+   "defaults": [],
+   "files": [],
+   "sources": [
+    "ff/k0.java"
+   ]
+  },
+  "hero_animation_speed": {
+   "types": [
+    "float"
+   ],
+   "defaults": [
+    0.5
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "hero_bottom_fade": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    false
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "hero_display_style": {
+   "types": [
+    "string"
+   ],
+   "defaults": [
+    "FULLSCREEN"
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "hero_folder_logo_animation_style": {
+   "types": [
+    "string"
+   ],
+   "defaults": [
+    "FLOAT"
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "dg/l7.java",
+    "ze/s1.java"
+   ]
+  },
+  "hero_folder_logo_scale": {
+   "types": [
+    "float"
+   ],
+   "defaults": [
+    0.6
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "hero_gradient_style": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "hero_logo_animation_style": {
+   "types": [
+    "string"
+   ],
+   "defaults": [
+    "FLOAT"
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "dg/l7.java",
+    "ze/s1.java"
+   ]
+  },
+  "hero_logo_scale": {
+   "types": [
+    "float"
+   ],
+   "defaults": [
+    0.6
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "hero_transition_style": {
+   "types": [
+    "string"
+   ],
+   "defaults": [
+    "FADE"
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "dg/l2.java",
+    "ze/s1.java"
+   ]
+  },
+  "hero_vignette_size": {
+   "types": [
+    "float"
+   ],
+   "defaults": [
+    0.5
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "rip/moth/cocoonshell/utils/ya.java",
+    "ze/s1.java"
+   ]
+  },
+  "highlight_thickness_scale": {
+   "types": [
+    "float"
+   ],
+   "defaults": [
+    1.0
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "home_grid_seeded": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    false
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "jh/b1.java",
+    "jh/q3.java",
+    "ze/s1.java"
+   ]
+  },
+  "home_presets_seeded": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    false
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "rip/moth/cocoonshell/presets/HomePresetStore.java"
+   ]
+  },
+  "home_sort_by": {
+   "types": [
+    "string"
+   ],
+   "defaults": [
+    "MANUAL"
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "xe/s1.java",
+    "ze/s1.java"
+   ]
+  },
+  "home_view_mode": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "dg/d6.java",
+    "rip/moth/cocoonshell/presets/HomePresetSnapshot.java",
+    "xe/s1.java"
+   ]
+  },
+  "home_zoom_level": {
+   "types": [
+    "int"
+   ],
+   "defaults": [
+    3
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "eg/e3.java",
+    "rip/moth/cocoonshell/data/store/c0.java",
+    "xe/s1.java",
+    "ze/s1.java"
+   ]
+  },
+  "icon_bg_transparency": {
+   "types": [
+    "float"
+   ],
+   "defaults": [
+    1.0
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "icon_hover_scale": {
+   "types": [
+    "float"
+   ],
+   "defaults": [
+    1.0
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "icon_mode": {
+   "types": [
+    "string"
+   ],
+   "defaults": [
+    "COLORED"
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "icon_roundness": {
+   "types": [
+    "float"
+   ],
+   "defaults": [
+    0.17391305
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "icon_scale": {
+   "types": [
+    "float"
+   ],
+   "defaults": [
+    0.87
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "id": {
+   "types": [
+    "int",
+    "long",
+    "string"
+   ],
+   "defaults": [],
+   "files": [],
+   "sources": [
+    "cf/c.java",
+    "dg/td.java",
+    "ef/q.java",
+    "rip/moth/cocoonshell/data/api/RetroAchievementsHelper.java",
+    "rip/moth/cocoonshell/data/model/GameSessionKt.java"
+   ]
+  },
+  "install_committed_at": {
+   "types": [
+    "long"
+   ],
+   "defaults": [
+    0
+   ],
+   "files": [
+    "cocoon_updates"
+   ],
+   "sources": [
+    "a/a.java"
+   ]
+  },
+  "install_kind": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "cocoon_updates"
+   ],
+   "sources": [
+    "a/a.java"
+   ]
+  },
+  "install_message": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "cocoon_updates"
+   ],
+   "sources": [
+    "a/a.java",
+    "rip/moth/cocoonshell/domain/update/SelfInstallResultReceiver.java"
+   ]
+  },
+  "install_result": {
+   "types": [
+    "int"
+   ],
+   "defaults": [
+    1
+   ],
+   "files": [
+    "cocoon_updates"
+   ],
+   "sources": [
+    "a/a.java",
+    "rip/moth/cocoonshell/domain/update/SelfInstallResultReceiver.java"
+   ]
+  },
+  "install_session": {
+   "types": [
+    "int"
+   ],
+   "defaults": [
+    -1
+   ],
+   "files": [],
+   "sources": [
+    "a/a.java"
+   ]
+  },
+  "install_target": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "cocoon_updates"
+   ],
+   "sources": [
+    "a/a.java"
+   ]
+  },
+  "install_with_profile": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    false
+   ],
+   "files": [
+    "cocoon_updates"
+   ],
+   "sources": [
+    "a/a.java"
+   ]
+  },
+  "installed_manifest": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [],
+   "sources": [
+    "ae/h.java",
+    "ef/c0.java"
+   ]
+  },
+  "installed_sha256": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "cocoon_platform_catalogue"
+   ],
+   "sources": [
+    "ef/c0.java",
+    "ef/o.java"
+   ]
+  },
+  "installed_version": {
+   "types": [
+    "int"
+   ],
+   "defaults": [
+    0
+   ],
+   "files": [],
+   "sources": [
+    "ae/h.java",
+    "ef/c0.java"
+   ]
+  },
+  "int1": {
+   "types": [
+    "int"
+   ],
+   "defaults": [],
+   "files": [],
+   "sources": [
+    "androidx/core/graphics/drawable/IconCompat.java"
+   ]
+  },
+  "int2": {
+   "types": [
+    "int"
+   ],
+   "defaults": [],
+   "files": [],
+   "sources": [
+    "androidx/core/graphics/drawable/IconCompat.java"
+   ]
+  },
+  "interrupted_recovery_pending": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    false
+   ],
+   "files": [
+    "background_scrape_state"
+   ],
+   "sources": [
+    "rip/moth/cocoonshell/domain/scraping/i.java",
+    "yf/p1.java"
+   ]
+  },
+  "is_paused": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    false
+   ],
+   "files": [
+    "game_tracking_session"
+   ],
+   "sources": [
+    "gd/g.java"
+   ]
+  },
+  "issued_at_v1": {
+   "types": [
+    "long"
+   ],
+   "defaults": [
+    0
+   ],
+   "files": [
+    "hive_account_credentials"
+   ],
+   "sources": [
+    "ye/i.java"
+   ]
+  },
+  "jingle_auto_fade_enabled": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    true
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "cf/e.java",
+    "dg/l2.java",
+    "ze/s1.java"
+   ]
+  },
+  "jingle_auto_fade_seconds": {
+   "types": [
+    "int"
+   ],
+   "defaults": [
+    10
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "cf/e.java",
+    "dg/l2.java",
+    "ze/s1.java"
+   ]
+  },
+  "jingle_fallback_global": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ac/l.java",
+    "dg/l2.java",
+    "ff/u0.java",
+    "rip/moth/cocoonshell/utils/i6.java",
+    "rip/moth/cocoonshell/utils/u7.java"
+   ]
+  },
+  "jingle_fallback_platforms": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "hh/z.java",
+    "ze/s1.java"
+   ]
+  },
+  "jingle_normalize_enabled": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    true
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "cf/e.java",
+    "dg/l2.java",
+    "ze/s1.java"
+   ]
+  },
+  "jingle_repos": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "jingle_volume": {
+   "types": [
+    "float"
+   ],
+   "defaults": [
+    0.3
+   ],
+   "files": [
+    "audio_prefs"
+   ],
+   "sources": [
+    "dg/l2.java",
+    "hh/k0.java",
+    "rip/moth/cocoonshell/utils/ya.java",
+    "se/c0.java"
+   ]
+  },
+  "k": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [],
+   "sources": [
+    "d5/c0.java"
+   ]
+  },
+  "key": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [],
+   "sources": [
+    "s3/j.java"
+   ]
+  },
+  "keyboard_layout": {
+   "types": [
+    "string"
+   ],
+   "defaults": [
+    {
+     "expr": "f0Var.name("
+    }
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "kid": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [],
+   "sources": [
+    "d5/c0.java"
+   ]
+  },
+  "kty": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [],
+   "sources": [
+    "d5/c0.java"
+   ]
+  },
+  "land": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [],
+   "files": [],
+   "sources": [
+    "ff/e.java",
+    "rip/moth/cocoonshell/domain/deviceaccess/AynReturnCurtain.java"
+   ]
+  },
+  "language": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [],
+   "sources": [
+    "u6/l.java"
+   ]
+  },
+  "last_attempt_ms": {
+   "types": [
+    "long"
+   ],
+   "defaults": [
+    0
+   ],
+   "files": [
+    "hltb_prefs"
+   ],
+   "sources": [
+    "kf/l.java"
+   ]
+  },
+  "last_cancel_all_time_ms": {
+   "types": [
+    "long"
+   ],
+   "defaults": [
+    0
+   ],
+   "files": [
+    "androidx.work.util.preferences"
+   ],
+   "sources": [
+    "z7/d.java"
+   ]
+  },
+  "last_check_at": {
+   "types": [
+    "long"
+   ],
+   "defaults": [
+    0
+   ],
+   "files": [
+    "cocoon_platform_catalogue",
+    "cocoon_updates"
+   ],
+   "sources": [
+    "ae/h.java",
+    "bg/z.java",
+    "ef/o.java"
+   ]
+  },
+  "last_handled_exit": {
+   "types": [
+    "long"
+   ],
+   "defaults": [
+    0
+   ],
+   "files": [
+    "process_exit_diagnostics"
+   ],
+   "sources": [
+    "rip/moth/cocoonshell/utils/da.java"
+   ]
+  },
+  "last_resume_platform_probe": {
+   "types": [
+    "long"
+   ],
+   "defaults": [
+    0
+   ],
+   "files": [
+    "rom_library_discovery"
+   ],
+   "sources": [
+    "rip/moth/cocoonshell/domain/discovery/RomLibraryResumeDiscoveryWorker.java"
+   ]
+  },
+  "last_success_ms": {
+   "types": [
+    "long"
+   ],
+   "defaults": [
+    0
+   ],
+   "files": [
+    "hltb_prefs"
+   ],
+   "sources": [
+    "kf/l.java"
+   ]
+  },
+  "last_successful_platform_refresh_branch": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "dg/gt.java",
+    "dg/r5.java",
+    "ef/c0.java",
+    "rip/moth/cocoonshell/backup/PlatformRefreshJournal.java"
+   ]
+  },
+  "launch_apps_on_main_by_default": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    false
+   ],
+   "files": [
+    "dock_prefs"
+   ],
+   "sources": [
+    "gh/p1.java"
+   ]
+  },
+  "launch_on_external_packages": {
+   "types": [
+    "string_set"
+   ],
+   "defaults": [
+    {
+     "expr": "set"
+    }
+   ],
+   "files": [
+    "dock_prefs"
+   ],
+   "sources": [
+    "gh/p1.java",
+    "jh/p0.java",
+    "xe/s1.java"
+   ]
+  },
+  "launch_on_main_packages": {
+   "types": [
+    "string_set"
+   ],
+   "defaults": [
+    {
+     "expr": "set"
+    }
+   ],
+   "files": [
+    "dock_prefs"
+   ],
+   "sources": [
+    "gh/p1.java"
+   ]
+  },
+  "launchbox_db_populated": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    false
+   ],
+   "files": [],
+   "sources": [
+    "yf/t0.java"
+   ]
+  },
+  "launcher_ui_session_json": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [],
+   "sources": [
+    "rip/moth/cocoonshell/data/session/LauncherUiSessionCodec.java"
+   ]
+  },
+  "length": {
+   "types": [
+    "int"
+   ],
+   "defaults": [],
+   "files": [],
+   "sources": [
+    "s3/c.java"
+   ]
+  },
+  "loading": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    false
+   ],
+   "files": [],
+   "sources": [
+    "dg/h1.java"
+   ]
+  },
+  "logo_animation_speed": {
+   "types": [
+    "float"
+   ],
+   "defaults": [
+    0.5
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "logo_transition_style": {
+   "types": [
+    "string"
+   ],
+   "defaults": [
+    "REVERSE_ZOOM"
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "dg/l2.java",
+    "ze/s1.java"
+   ]
+  },
+  "manifest_body": {
+   "types": [
+    "string"
+   ],
+   "defaults": [
+    {
+     "expr": "str"
+    }
+   ],
+   "files": [
+    "cocoon_platform_catalogue"
+   ],
+   "sources": [
+    "ef/o.java"
+   ]
+  },
+  "manifest_etag": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "cocoon_platform_catalogue"
+   ],
+   "sources": [
+    "ef/o.java"
+   ]
+  },
+  "master_enabled": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    true
+   ],
+   "files": [
+    "audio_prefs"
+   ],
+   "sources": [
+    "dg/l2.java",
+    "se/c0.java"
+   ]
+  },
+  "match_logic_version": {
+   "types": [
+    "int"
+   ],
+   "defaults": [
+    0
+   ],
+   "files": [
+    "hltb_prefs"
+   ],
+   "sources": [
+    "kf/l.java"
+   ]
+  },
+  "media_refresh_counter": {
+   "types": [
+    "int"
+   ],
+   "defaults": [
+    {
+     "expr": "Enums.EProtoAppType.k_EAppTypeDepotOnly_VALUE"
+    }
+   ],
+   "files": [
+    "dock_prefs"
+   ],
+   "sources": [
+    "rip/moth/cocoonshell/CocoonApp.java",
+    "xe/s1.java"
+   ]
+  },
+  "mime": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [],
+   "sources": [
+    "se/c0.java",
+    "u6/l.java"
+   ]
+  },
+  "music_enabled": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    true
+   ],
+   "files": [
+    "audio_prefs"
+   ],
+   "sources": [
+    "se/c0.java"
+   ]
+  },
+  "music_volume": {
+   "types": [
+    "float"
+   ],
+   "defaults": [
+    0.5
+   ],
+   "files": [
+    "audio_prefs"
+   ],
+   "sources": [
+    "dg/l2.java",
+    "hh/k0.java",
+    "rip/moth/cocoonshell/utils/ya.java",
+    "se/c0.java"
+   ]
+  },
+  "name": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [],
+   "sources": [
+    "cf/c.java",
+    "ef/q.java",
+    "yf/c.java"
+   ]
+  },
+  "next_alarm_manager_id": {
+   "types": [
+    "int"
+   ],
+   "defaults": [
+    0
+   ],
+   "files": [
+    "androidx.work.util.id"
+   ],
+   "sources": [
+    "z7/d.java"
+   ]
+  },
+  "next_job_scheduler_id": {
+   "types": [
+    "int"
+   ],
+   "defaults": [
+    0
+   ],
+   "files": [
+    "androidx.work.util.id"
+   ],
+   "sources": [
+    "z7/d.java"
+   ]
+  },
+  "nonce": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [],
+   "sources": [
+    "rip/moth/cocoonshell/domain/deviceaccess/AynTaskHelper.java"
+   ]
+  },
+  "notification_exit_count": {
+   "types": [
+    "int"
+   ],
+   "defaults": [
+    1
+   ],
+   "files": [
+    "process_exit_diagnostics"
+   ],
+   "sources": [
+    "rip/moth/cocoonshell/utils/da.java"
+   ]
+  },
+  "notification_incident_started_at": {
+   "types": [
+    "long"
+   ],
+   "defaults": [
+    0
+   ],
+   "files": [
+    "process_exit_diagnostics"
+   ],
+   "sources": [
+    "rip/moth/cocoonshell/utils/da.java"
+   ]
+  },
+  "notification_last_exit_at": {
+   "types": [
+    "long"
+   ],
+   "defaults": [
+    0
+   ],
+   "files": [
+    "process_exit_diagnostics"
+   ],
+   "sources": [
+    "rip/moth/cocoonshell/utils/da.java"
+   ]
+  },
+  "notification_sound_enabled": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    true
+   ],
+   "files": [
+    "audio_prefs"
+   ],
+   "sources": [
+    "dg/l2.java",
+    "se/c0.java"
+   ]
+  },
+  "now_playing_content_alpha": {
+   "types": [
+    "float"
+   ],
+   "defaults": [
+    0.15
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "now_playing_dim_alpha": {
+   "types": [
+    "float"
+   ],
+   "defaults": [
+    1.0
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "now_playing_enabled": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    true
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "rip/moth/cocoonshell/utils/e9.java",
+    "ze/s1.java"
+   ]
+  },
+  "now_playing_gradient_alpha": {
+   "types": [
+    "float"
+   ],
+   "defaults": [
+    0.8
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "now_playing_idle_saturation": {
+   "types": [
+    "float"
+   ],
+   "defaults": [
+    0.0
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "now_playing_idle_timeout_ms": {
+   "types": [
+    "long"
+   ],
+   "defaults": [
+    5000
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "dg/l2.java",
+    "ze/s1.java"
+   ]
+  },
+  "now_playing_logo_dim_factor": {
+   "types": [
+    "float"
+   ],
+   "defaults": [
+    0.4
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "now_playing_logo_scale": {
+   "types": [
+    "float"
+   ],
+   "defaults": [
+    0.5
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "dg/l2.java",
+    "ze/s1.java"
+   ]
+  },
+  "now_playing_session_grace_period_sec": {
+   "types": [
+    "int"
+   ],
+   "defaults": [
+    30
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "cd/m.java",
+    "dg/a4.java",
+    "ze/s1.java"
+   ]
+  },
+  "now_playing_session_mode": {
+   "types": [
+    "string"
+   ],
+   "defaults": [
+    "AUTO"
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "dg/a4.java",
+    "dg/l2.java",
+    "ze/s1.java"
+   ]
+  },
+  "now_playing_session_pause_use_grace": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    false
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "now_playing_show_achievements": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    true
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "now_playing_show_status_pills_in_dim": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    true
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "dg/l2.java",
+    "ze/s1.java"
+   ]
+  },
+  "now_playing_use_wallpaper": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    false
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "dg/l2.java",
+    "ze/s1.java"
+   ]
+  },
+  "obj": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [],
+   "sources": [
+    "androidx/core/graphics/drawable/IconCompat.java"
+   ]
+  },
+  "onboarding_v2_step": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "setup_progress"
+   ],
+   "sources": [
+    "androidx/lifecycle/q.java",
+    "eg/y.java"
+   ]
+  },
+  "one_row_labels_enabled": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    true
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "dg/a6.java",
+    "ze/s1.java"
+   ]
+  },
+  "op": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [],
+   "sources": [
+    "rip/moth/cocoonshell/domain/deviceaccess/AynTaskHelper.java"
+   ]
+  },
+  "optimise_attempts": {
+   "types": [
+    "int"
+   ],
+   "defaults": [
+    0
+   ],
+   "files": [
+    "cocoon_updates"
+   ],
+   "sources": [
+    "a4/a0.java"
+   ]
+  },
+  "optimise_attempts_for": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "cocoon_updates"
+   ],
+   "sources": [
+    "a4/a0.java"
+   ]
+  },
+  "optimise_declined_for": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "cocoon_updates"
+   ],
+   "sources": [
+    "a4/a0.java"
+   ]
+  },
+  "owned_games_at": {
+   "types": [
+    "long"
+   ],
+   "defaults": [
+    0
+   ],
+   "files": [
+    "steam_prefs"
+   ],
+   "sources": [
+    "rip/moth/cocoonshell/data/api/i.java"
+   ]
+  },
+  "owned_games_json": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "steam_prefs"
+   ],
+   "sources": [
+    "rip/moth/cocoonshell/data/api/i.java"
+   ]
+  },
+  "package": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [],
+   "sources": [
+    "ff/k0.java",
+    "rip/moth/cocoonshell/domain/deviceaccess/AynGameObserver.java",
+    "rip/moth/cocoonshell/domain/deviceaccess/AynTaskHelper.java"
+   ]
+  },
+  "page_mode_enabled": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    false
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ae/h.java",
+    "ze/s1.java"
+   ]
+  },
+  "page_mode_small_screen_scrolling_enabled": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    true
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "page_mode_static_cols": {
+   "types": [
+    "int"
+   ],
+   "defaults": [
+    0
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ae/h.java",
+    "dg/kt.java",
+    "rip/moth/cocoonshell/data/store/c0.java",
+    "ze/s1.java"
+   ]
+  },
+  "page_mode_static_rows": {
+   "types": [
+    "int"
+   ],
+   "defaults": [
+    0
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ae/h.java",
+    "rip/moth/cocoonshell/data/store/c0.java",
+    "ze/s1.java"
+   ]
+  },
+  "pause_animated_icons": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    false
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "lg/k3.java",
+    "vg/g.java",
+    "ze/s1.java"
+   ]
+  },
+  "pause_started_at_ms": {
+   "types": [
+    "long"
+   ],
+   "defaults": [
+    0
+   ],
+   "files": [
+    "game_tracking_session"
+   ],
+   "sources": [
+    "gd/g.java"
+   ]
+  },
+  "pending_app_widget_ids": {
+   "types": [
+    "string_set"
+   ],
+   "defaults": [
+    {
+     "expr": "set"
+    },
+    {
+     "expr": "set3"
+    }
+   ],
+   "files": [
+    "widget_host_resource_journal"
+   ],
+   "sources": [
+    "we/f.java"
+   ]
+  },
+  "pending_fixed_grid_picker_handoff": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    false,
+    {
+     "expr": "r11"
+    },
+    {
+     "expr": "r12"
+    }
+   ],
+   "files": [],
+   "sources": [
+    "ae/h.java",
+    "dg/k8.java"
+   ]
+  },
+  "pending_grid_ensured_zoom": {
+   "types": [
+    "int"
+   ],
+   "defaults": [
+    3
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "pending_grid_migration_mode": {
+   "types": [
+    "string"
+   ],
+   "defaults": [
+    "INSERT"
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "pending_grid_organization_mode_smart": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    false
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "pending_grid_page_mode_enabled": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    false
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "pending_grid_page_settings": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    false
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "pending_grid_removed_widget_ids": {
+   "types": [
+    "string_set"
+   ],
+   "defaults": [
+    {
+     "expr": "set"
+    }
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "pending_grid_scrolling_navigation": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    {
+     "expr": "!sharedPreferences.getBoolean(\"pending_grid_page_mode_enabled\", false"
+    }
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "pending_grid_small_screen_scrolling": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    true
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "pending_grid_static_cols": {
+   "types": [
+    "int"
+   ],
+   "defaults": [
+    0
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "pending_grid_static_rows": {
+   "types": [
+    "int"
+   ],
+   "defaults": [
+    0
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "pending_historical_library_conflict_owners": {
+   "types": [
+    "string_set"
+   ],
+   "defaults": [],
+   "files": [
+    "ui_prefs"
+   ],
+   "sources": [
+    "rip/moth/cocoonshell/backup/LibraryMutationJournalBarrier.java"
+   ]
+  },
+  "pending_paths_v1": {
+   "types": [
+    "string_set"
+   ],
+   "defaults": [
+    {
+     "expr": "ua.t.f41648a"
+    }
+   ],
+   "files": [
+    "managed_media_resource_journal"
+   ],
+   "sources": [
+    "rip/moth/cocoonshell/utils/h6.java"
+   ]
+  },
+  "pending_platform_selection_mutation": {
+   "types": [
+    "bool",
+    "string"
+   ],
+   "defaults": [
+    false
+   ],
+   "files": [
+    "ui_prefs"
+   ],
+   "sources": [
+    "dg/bt.java",
+    "r8/b.java",
+    "rip/moth/cocoonshell/backup/LibraryMutationDowngradeGuard.java"
+   ]
+  },
+  "pending_platform_selection_removed": {
+   "types": [
+    "string_set"
+   ],
+   "defaults": [],
+   "files": [
+    "ui_prefs"
+   ],
+   "sources": [
+    "dg/bt.java",
+    "r8/b.java"
+   ]
+  },
+  "pending_platform_selection_target": {
+   "types": [
+    "string_set"
+   ],
+   "defaults": [],
+   "files": [
+    "ui_prefs"
+   ],
+   "sources": [
+    "dg/bt.java",
+    "r8/b.java"
+   ]
+  },
+  "pending_revocations_v2": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [],
+   "sources": [
+    "ye/i.java"
+   ]
+  },
+  "pending_screen": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "layout_choice"
+   ],
+   "sources": [
+    "rip/moth/cocoonshell/data/store/c0.java"
+   ]
+  },
+  "pending_snapshot": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "rom_library_discovery"
+   ],
+   "sources": [
+    "gf/z.java"
+   ]
+  },
+  "pending_source_resolutions": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [],
+   "sources": [
+    "rip/moth/cocoonshell/backup/SourcesPlayersRestoreJournal.java"
+   ]
+  },
+  "pending_verification_platform_ids": {
+   "types": [
+    "string_set"
+   ],
+   "defaults": [
+    {
+     "expr": "set"
+    }
+   ],
+   "files": [
+    "rom_library_discovery"
+   ],
+   "sources": [
+    "rip/moth/cocoonshell/domain/discovery/RomLibraryVerificationWorker.java"
+   ]
+  },
+  "pending_zoom": {
+   "types": [
+    "int"
+   ],
+   "defaults": [
+    0
+   ],
+   "files": [
+    "layout_choice"
+   ],
+   "sources": [
+    "rip/moth/cocoonshell/data/store/c0.java"
+   ]
+  },
+  "picnic_deleted_source_keys": {
+   "types": [
+    "string_set"
+   ],
+   "defaults": [
+    {
+     "expr": "setY1"
+    }
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "cg/i.java",
+    "ze/s1.java"
+   ]
+  },
+  "picnic_enabled": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    true
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "dg/xk.java",
+    "rip/moth/cocoonshell/backup/PicnicRestoreEngine.java",
+    "rip/moth/cocoonshell/utils/q9.java",
+    "ze/s1.java"
+   ]
+  },
+  "picnic_last_scan_at": {
+   "types": [
+    "long"
+   ],
+   "defaults": [
+    0
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "dg/xk.java",
+    "rip/moth/cocoonshell/utils/t9.java"
+   ]
+  },
+  "picnic_music_volume": {
+   "types": [
+    "float"
+   ],
+   "defaults": [
+    0.5
+   ],
+   "files": [
+    "audio_prefs"
+   ],
+   "sources": [
+    "se/c0.java"
+   ]
+  },
+  "picnic_prefer_hero_info_screenshots": {
+   "types": [
+    "bool",
+    "string"
+   ],
+   "defaults": [
+    false
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "rip/moth/cocoonshell/backup/PicnicRestoreEngine.java",
+    "ze/s1.java"
+   ]
+  },
+  "picnic_screenshots_tree_uri": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "dg/xk.java",
+    "rip/moth/cocoonshell/backup/PicnicRestoreEngine.java",
+    "ze/s1.java"
+   ]
+  },
+  "pictoverse_integration_enabled": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    false
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "pid": {
+   "types": [
+    "int"
+   ],
+   "defaults": [],
+   "files": [],
+   "sources": [
+    "ff/k0.java",
+    "rip/moth/cocoonshell/domain/deviceaccess/AynTaskHelper.java"
+   ]
+  },
+  "pinned_app_packages_v1": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "dock_prefs"
+   ],
+   "sources": [
+    "xe/s1.java"
+   ]
+  },
+  "platform_id": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "game_tracking_session"
+   ],
+   "sources": [
+    "gd/g.java"
+   ]
+  },
+  "play_setup_complete": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    false
+   ],
+   "files": [],
+   "sources": [
+    "eg/q3.java",
+    "rip/moth/cocoonshell/MainActivity.java"
+   ]
+  },
+  "players_adopted": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    false
+   ],
+   "files": [],
+   "sources": [
+    "ef/c0.java"
+   ]
+  },
+  "playlist_current_index": {
+   "types": [
+    "int"
+   ],
+   "defaults": [
+    0
+   ],
+   "files": [
+    "audio_prefs"
+   ],
+   "sources": [
+    "dg/pu.java",
+    "se/c0.java"
+   ]
+  },
+  "points": {
+   "types": [
+    "int"
+   ],
+   "defaults": [],
+   "files": [],
+   "sources": [
+    "rip/moth/cocoonshell/data/api/RetroAchievementsHelper.java"
+   ]
+  },
+  "position": {
+   "types": [
+    "int"
+   ],
+   "defaults": [],
+   "files": [],
+   "sources": [
+    "s3/c.java"
+   ]
+  },
+  "prefer_smaller_screen_as_main": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    false
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "published_snapshot_fingerprint": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "rom_library_discovery"
+   ],
+   "sources": [
+    "gf/z.java"
+   ]
+  },
+  "quarantined_platform_selection_reason": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "ui_prefs"
+   ],
+   "sources": [
+    "r8/b.java"
+   ]
+  },
+  "rapid_failure_count": {
+   "types": [
+    "int"
+   ],
+   "defaults": [
+    0
+   ],
+   "files": [
+    "startup_safe_mode"
+   ],
+   "sources": [
+    "rip/moth/cocoonshell/CocoonApp.java",
+    "rip/moth/cocoonshell/utils/sa.java"
+   ]
+  },
+  "release_tag": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "hltb_prefs"
+   ],
+   "sources": [
+    "kf/l.java"
+   ]
+  },
+  "requested_generation": {
+   "types": [
+    "long"
+   ],
+   "defaults": [
+    0
+   ],
+   "files": [
+    "game_media_names"
+   ],
+   "sources": [
+    "rip/moth/cocoonshell/utils/b3.java"
+   ]
+  },
+  "reschedule_needed": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    false
+   ],
+   "files": [
+    "androidx.work.util.preferences"
+   ],
+   "sources": [
+    "z7/d.java"
+   ]
+  },
+  "restore_suppress_columns": {
+   "types": [
+    "int"
+   ],
+   "defaults": [
+    0
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "androidx/room/e1.java",
+    "ze/s1.java"
+   ]
+  },
+  "retroachievements_api_key": {
+   "types": [
+    "string"
+   ],
+   "defaults": [
+    ""
+   ],
+   "files": [
+    "ui_prefs"
+   ],
+   "sources": [
+    "dg/i4.java",
+    "dg/u7.java",
+    "rip/moth/cocoonshell/data/api/RetroAchievementsHelper.java",
+    "rip/moth/cocoonshell/domain/scraping/b.java",
+    "rip/moth/cocoonshell/ui/activity/SettingsActivity.java"
+   ]
+  },
+  "retroachievements_auto_scrape_completed_generation": {
+   "types": [
+    "long"
+   ],
+   "defaults": [
+    0
+   ],
+   "files": [
+    "ui_prefs"
+   ],
+   "sources": [
+    "rip/moth/cocoonshell/domain/scraping/b.java"
+   ]
+  },
+  "retroachievements_auto_scrape_request_generation": {
+   "types": [
+    "long"
+   ],
+   "defaults": [
+    0
+   ],
+   "files": [
+    "ui_prefs"
+   ],
+   "sources": [
+    "rip/moth/cocoonshell/domain/scraping/b.java"
+   ]
+  },
+  "retroachievements_username": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "ui_prefs"
+   ],
+   "sources": [
+    "dg/i4.java",
+    "dg/u7.java",
+    "rip/moth/cocoonshell/data/api/RetroAchievementsHelper.java",
+    "rip/moth/cocoonshell/domain/scraping/b.java",
+    "zg/z1.java"
+   ]
+  },
+  "retry_after_until": {
+   "types": [
+    "long"
+   ],
+   "defaults": [
+    0
+   ],
+   "files": [
+    "cocoon_platform_catalogue",
+    "cocoon_updates"
+   ],
+   "sources": [
+    "ae/h.java",
+    "bg/a0.java",
+    "bg/z.java",
+    "ef/o.java"
+   ]
+  },
+  "rg_rotate_landscape_dock": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    {
+     "expr": "i6.w(appContext"
+    }
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "rollout_bucket": {
+   "types": [
+    "int"
+   ],
+   "defaults": [
+    0
+   ],
+   "files": [
+    "cocoon_updates"
+   ],
+   "sources": [
+    "bg/z.java"
+   ]
+  },
+  "rom_directory": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "jh/q3.java"
+   ]
+  },
+  "rom_directory_saf_uri": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "rom_directory_saf_uri_sync_pending": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "run_progress_json_v2": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "background_scrape_state"
+   ],
+   "sources": [
+    "rip/moth/cocoonshell/domain/scraping/i.java",
+    "yf/p1.java"
+   ]
+  },
+  "run_queue_json_v2": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "background_scrape_state"
+   ],
+   "sources": [
+    "rip/moth/cocoonshell/domain/scraping/i.java"
+   ]
+  },
+  "run_state_json": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "background_scrape_state"
+   ],
+   "sources": [
+    "rip/moth/cocoonshell/domain/scraping/i.java"
+   ]
+  },
+  "safe_mode_latched": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    false
+   ],
+   "files": [
+    "startup_safe_mode"
+   ],
+   "sources": [
+    "rip/moth/cocoonshell/CocoonApp.java",
+    "rip/moth/cocoonshell/utils/sa.java"
+   ]
+  },
+  "scrape_config": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "androidx/lifecycle/q.java",
+    "ze/s1.java"
+   ]
+  },
+  "scrape_on_first_launch": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    false
+   ],
+   "files": [],
+   "sources": [
+    "rip/moth/cocoonshell/MainActivity.java"
+   ]
+  },
+  "screenscraper_password": {
+   "types": [
+    "string"
+   ],
+   "defaults": [
+    ""
+   ],
+   "files": [
+    "ui_prefs"
+   ],
+   "sources": [
+    "dg/i5.java",
+    "dg/u7.java",
+    "rip/moth/cocoonshell/domain/scraping/h.java",
+    "rip/moth/cocoonshell/ui/activity/SettingsActivity.java"
+   ]
+  },
+  "screenscraper_username": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "ui_prefs"
+   ],
+   "sources": [
+    "dg/i5.java",
+    "dg/u7.java",
+    "rip/moth/cocoonshell/domain/scraping/h.java"
+   ]
+  },
+  "settings_defaults_generation": {
+   "types": [
+    "int"
+   ],
+   "defaults": [
+    1
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "setup_completed": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    false,
+    {
+     "expr": "r12"
+    }
+   ],
+   "files": [
+    "ui_prefs"
+   ],
+   "sources": [
+    "ae/h.java",
+    "dg/k8.java",
+    "eg/q3.java",
+    "gh/i6.java",
+    "rip/moth/cocoonshell/CocoonApp.java"
+   ]
+  },
+  "sfx_enabled": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    true
+   ],
+   "files": [
+    "audio_prefs"
+   ],
+   "sources": [
+    "se/c0.java"
+   ]
+  },
+  "sfx_volume": {
+   "types": [
+    "float"
+   ],
+   "defaults": [
+    1.0
+   ],
+   "files": [
+    "audio_prefs"
+   ],
+   "sources": [
+    "dg/l2.java",
+    "hh/k0.java",
+    "rip/moth/cocoonshell/utils/ya.java",
+    "se/c0.java"
+   ]
+  },
+  "show_battery_percent": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    false
+   ],
+   "files": [
+    "ui_prefs"
+   ],
+   "sources": [
+    "dg/td.java",
+    "dg/tp.java",
+    "dg/us.java",
+    "rip/moth/cocoonshell/backup/AppearanceRuntimeSynchronizer.java",
+    "rip/moth/cocoonshell/utils/va.java"
+   ]
+  },
+  "show_dock_background": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    true
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "show_icon_background": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    true
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "show_on_external": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    true
+   ],
+   "files": [
+    "game_tracking_session",
+    "now_playing_session"
+   ],
+   "sources": [
+    "gd/g.java",
+    "rip/moth/cocoonshell/utils/l8.java",
+    "xe/s1.java"
+   ]
+  },
+  "silk_pod_session_expiry_ms": {
+   "types": [
+    "long"
+   ],
+   "defaults": [
+    0
+   ],
+   "files": [
+    "cocoon_prefs"
+   ],
+   "sources": [
+    "yf/a4.java"
+   ]
+  },
+  "silk_pod_session_token": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "cocoon_prefs"
+   ],
+   "sources": [
+    "yf/a4.java"
+   ]
+  },
+  "single_screen_always_wallpaper_mode": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    {
+     "expr": "W1("
+    },
+    {
+     "expr": "s1Var2.W1("
+    }
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "gh/o6.java",
+    "ze/s1.java"
+   ]
+  },
+  "single_screen_auto_default_applied": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    false
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "single_screen_auto_wallpaper_mode": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    true
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "dg/l7.java",
+    "gh/o6.java",
+    "ze/s1.java"
+   ]
+  },
+  "single_screen_custom_hero_split_enabled": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    false
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "eg/q3.java",
+    "gh/o6.java",
+    "ze/s1.java"
+   ]
+  },
+  "single_screen_game_tile_press_action": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "single_screen_hero_split_percent": {
+   "types": [
+    "float"
+   ],
+   "defaults": [
+    0.5
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "single_screen_hero_wallpaper_enabled": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    false
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "gh/o6.java",
+    "ze/s1.java"
+   ]
+  },
+  "single_screen_keep_external": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    false
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "single_screen_mode": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    false
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "single_screen_per_folder_rows_enabled": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    true
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "dg/a6.java",
+    "ze/s1.java"
+   ]
+  },
+  "single_screen_wallpaper_mode_start_rows": {
+   "types": [
+    "int"
+   ],
+   "defaults": [
+    3
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "dg/l7.java",
+    "gh/o6.java",
+    "ze/s1.java"
+   ]
+  },
+  "skipped_version": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "cocoon_updates"
+   ],
+   "sources": [
+    "bg/g0.java",
+    "wg/i.java"
+   ]
+  },
+  "smart_folders_enabled": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    false,
+    {
+     "expr": "this.f47736f"
+    }
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "eg/q3.java",
+    "eg/u.java",
+    "ze/s1.java"
+   ]
+  },
+  "smart_subfolders_enabled": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    false
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "jh/q3.java"
+   ]
+  },
+  "snoozed_until": {
+   "types": [
+    "long"
+   ],
+   "defaults": [
+    0
+   ],
+   "files": [
+    "cocoon_updates"
+   ],
+   "sources": [
+    "bg/g0.java"
+   ]
+  },
+  "snoozed_version": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "cocoon_updates"
+   ],
+   "sources": [
+    "bg/g0.java"
+   ]
+  },
+  "socket": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [],
+   "sources": [
+    "rip/moth/cocoonshell/domain/deviceaccess/AynGameObserver.java"
+   ]
+  },
+  "sort_by": {
+   "types": [
+    "string"
+   ],
+   "defaults": [
+    "MANUAL"
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "sort_folders_last": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    false
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "jh/q3.java",
+    "ng/q2.java",
+    "xe/s1.java",
+    "ze/s1.java"
+   ]
+  },
+  "stale": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    false
+   ],
+   "files": [],
+   "sources": [
+    "ef/c0.java",
+    "jh/w1.java",
+    "rip/moth/cocoonshell/backup/LegacySourcesAndPlayersCategoryHandler.java"
+   ]
+  },
+  "start": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [],
+   "sources": [
+    "ff/k0.java",
+    "rip/moth/cocoonshell/domain/deviceaccess/AynTaskHelper.java"
+   ]
+  },
+  "start_time_ms": {
+   "types": [
+    "long"
+   ],
+   "defaults": [
+    {
+     "expr": "System.currentTimeMillis("
+    }
+   ],
+   "files": [
+    "game_tracking_session"
+   ],
+   "sources": [
+    "gd/g.java"
+   ]
+  },
+  "start_tutorial_on_launch": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [],
+   "files": [],
+   "sources": [
+    "eg/q3.java"
+   ]
+  },
+  "started_at": {
+   "types": [
+    "long"
+   ],
+   "defaults": [
+    0
+   ],
+   "files": [
+    "startup_safe_mode"
+   ],
+   "sources": [
+    "rip/moth/cocoonshell/CocoonApp.java"
+   ]
+  },
+  "startup_splash_boot_count": {
+   "types": [
+    "int"
+   ],
+   "defaults": [
+    -1
+   ],
+   "files": [
+    "ui_prefs"
+   ],
+   "sources": [
+    "rip/moth/cocoonshell/CocoonApp.java"
+   ]
+  },
+  "startup_splash_boot_id": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "ui_prefs"
+   ],
+   "sources": [
+    "rip/moth/cocoonshell/CocoonApp.java"
+   ]
+  },
+  "startup_splash_device_id": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "ui_prefs"
+   ],
+   "sources": [
+    "rip/moth/cocoonshell/CocoonApp.java"
+   ]
+  },
+  "startup_splash_enabled": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    true
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "dg/us.java",
+    "rip/moth/cocoonshell/MainActivity.java",
+    "rip/moth/cocoonshell/ui/activity/SettingsActivity.java",
+    "ze/s1.java"
+   ]
+  },
+  "startup_splash_onboarding_seen_v1": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    false
+   ],
+   "files": [
+    "ui_prefs"
+   ],
+   "sources": [
+    "androidx/room/k0.java",
+    "rip/moth/cocoonshell/ui/activity/onboarding/OnboardingV2Activity.java"
+   ]
+  },
+  "startup_splash_update_showcase_seen_v1": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    false
+   ],
+   "files": [
+    "ui_prefs"
+   ],
+   "sources": [
+    "androidx/room/k0.java",
+    "rip/moth/cocoonshell/MainActivity.java"
+   ]
+  },
+  "steam_account_name": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "steam_secure_prefs"
+   ],
+   "sources": [
+    "rip/moth/cocoonshell/data/api/l0.java"
+   ]
+  },
+  "steam_achievements_enabled": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    true
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "rip/moth/cocoonshell/data/api/b0.java",
+    "rip/moth/cocoonshell/data/api/i.java",
+    "ze/s1.java"
+   ]
+  },
+  "steam_avatar_url": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [],
+   "sources": [
+    "rip/moth/cocoonshell/data/api/h0.java",
+    "rip/moth/cocoonshell/data/api/o.java"
+   ]
+  },
+  "steam_friends_enabled": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    true
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "fg/w7.java",
+    "rip/moth/cocoonshell/data/api/b0.java",
+    "ze/s1.java"
+   ]
+  },
+  "steam_friends_in_game_only": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    false
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "fg/v9.java",
+    "gh/l4.java",
+    "ze/s1.java"
+   ]
+  },
+  "steam_notifications_enabled": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    true
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "rip/moth/cocoonshell/data/api/b0.java",
+    "ze/s1.java"
+   ]
+  },
+  "steam_refresh_token_enc": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "steam_secure_prefs"
+   ],
+   "sources": [
+    "rip/moth/cocoonshell/data/api/l0.java"
+   ]
+  },
+  "steamgriddb_api_key": {
+   "types": [
+    "string"
+   ],
+   "defaults": [
+    ""
+   ],
+   "files": [
+    "ui_prefs"
+   ],
+   "sources": [
+    "dg/u5.java",
+    "og/n4.java",
+    "rip/moth/cocoonshell/domain/scraping/j.java",
+    "rip/moth/cocoonshell/ui/activity/SettingsActivity.java",
+    "wf/r.java"
+   ]
+  },
+  "string1": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [],
+   "sources": [
+    "androidx/core/graphics/drawable/IconCompat.java"
+   ]
+  },
+  "subject": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [],
+   "sources": [
+    "ye/i.java"
+   ]
+  },
+  "surface_material": {
+   "types": [
+    "string"
+   ],
+   "defaults": [
+    "SOLID"
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "swap_controller_ab": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    false
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "swap_controller_face_buttons": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    false
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "swap_controller_xy": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    false
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "swap_screens": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    false
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "gh/o1.java",
+    "rip/moth/cocoonshell/backup/AppearanceRuntimeSynchronizer.java"
+   ]
+  },
+  "task_ids": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "game_tracking_session"
+   ],
+   "sources": [
+    "gd/g.java"
+   ]
+  },
+  "theme_accent_override_enabled": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    false
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "dg/m2.java",
+    "ze/s1.java"
+   ]
+  },
+  "theme_display_settings_sync_pending": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "theme_mode": {
+   "types": [
+    "string"
+   ],
+   "defaults": [
+    "SYSTEM"
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "theme_runtime_sync_pending": {
+   "types": [
+    "int"
+   ],
+   "defaults": [
+    0
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "theme_selection_revision": {
+   "types": [
+    "long"
+   ],
+   "defaults": [
+    0
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "ze/s1.java"
+   ]
+  },
+  "thumb": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [],
+   "sources": [
+    "rip/moth/cocoonshell/domain/scraping/j.java"
+   ]
+  },
+  "time": {
+   "types": [
+    "long"
+   ],
+   "defaults": [],
+   "files": [],
+   "sources": [
+    "s3/g.java"
+   ]
+  },
+  "tint_mode": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [],
+   "sources": [
+    "androidx/core/graphics/drawable/IconCompat.java"
+   ]
+  },
+  "title": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [],
+   "sources": [
+    "rip/moth/cocoonshell/data/api/RetroAchievementsHelper.java"
+   ]
+  },
+  "type": {
+   "types": [
+    "int",
+    "string"
+   ],
+   "defaults": [],
+   "files": [],
+   "sources": [
+    "androidx/core/graphics/drawable/IconCompat.java",
+    "s3/g.java"
+   ]
+  },
+  "uid": {
+   "types": [
+    "int"
+   ],
+   "defaults": [],
+   "files": [],
+   "sources": [
+    "ff/k0.java",
+    "rip/moth/cocoonshell/domain/deviceaccess/AynGameObserver.java",
+    "rip/moth/cocoonshell/domain/deviceaccess/AynTaskHelper.java"
+   ]
+  },
+  "updated_at": {
+   "types": [
+    "long"
+   ],
+   "defaults": [
+    0
+   ],
+   "files": [
+    "now_playing_session"
+   ],
+   "sources": [
+    "rip/moth/cocoonshell/utils/l8.java",
+    "xe/s1.java"
+   ]
+  },
+  "updated_at_ms": {
+   "types": [
+    "long"
+   ],
+   "defaults": [
+    0
+   ],
+   "files": [
+    "game_tracking_session"
+   ],
+   "sources": [
+    "gd/g.java"
+   ]
+  },
+  "uri": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [],
+   "sources": [
+    "s3/j.java"
+   ]
+  },
+  "url": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [],
+   "sources": [
+    "rip/moth/cocoonshell/domain/scraping/j.java"
+   ]
+  },
+  "use_dock": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [
+    true
+   ],
+   "files": [
+    "cocoon_settings"
+   ],
+   "sources": [
+    "rip/moth/cocoonshell/presets/HomePresetSnapshot.java"
+   ]
+  },
+  "user_selected_platforms": {
+   "types": [
+    "string_set"
+   ],
+   "defaults": [
+    {
+     "expr": "set"
+    },
+    {
+     "expr": "set28"
+    }
+   ],
+   "files": [
+    "ui_prefs"
+   ],
+   "sources": [
+    "androidx/lifecycle/h0.java",
+    "dg/bt.java",
+    "dg/go.java",
+    "dg/l2.java",
+    "dg/u2.java"
+   ]
+  },
+  "user_wallpaper_bottom": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "ui_prefs"
+   ],
+   "sources": [
+    "rip/moth/cocoonshell/MainActivity.java"
+   ]
+  },
+  "user_wallpaper_top": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "ui_prefs"
+   ],
+   "sources": [
+    "rip/moth/cocoonshell/ExternalDisplayActivity.java"
+   ]
+  },
+  "verification_generation": {
+   "types": [
+    "long"
+   ],
+   "defaults": [
+    -1
+   ],
+   "files": [
+    "rom_library_discovery"
+   ],
+   "sources": [
+    "gf/d0.java",
+    "rip/moth/cocoonshell/domain/discovery/RomLibraryVerificationWorker.java"
+   ]
+  },
+  "verified_build_v1": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [],
+   "sources": [
+    "ae/h.java",
+    "dg/k8.java"
+   ]
+  },
+  "visible": {
+   "types": [
+    "bool"
+   ],
+   "defaults": [],
+   "files": [],
+   "sources": [
+    "ff/k0.java",
+    "rip/moth/cocoonshell/domain/deviceaccess/AynGameObserver.java",
+    "rip/moth/cocoonshell/domain/deviceaccess/AynTaskHelper.java"
+   ]
+  },
+  "wall_clock_ms": {
+   "types": [
+    "long"
+   ],
+   "defaults": [],
+   "files": [],
+   "sources": [
+    "rip/moth/cocoonshell/utils/e9.java"
+   ]
+  },
+  "wallpaper_video_fps": {
+   "types": [
+    "int"
+   ],
+   "defaults": [],
+   "files": [],
+   "sources": [
+    "dg/n1.java"
+   ]
+  },
+  "watch_active_slot": {
+   "types": [
+    "string"
+   ],
+   "defaults": [
+    "rom_library_content_watch_a"
+   ],
+   "files": [
+    "rom_library_discovery"
+   ],
+   "sources": [
+    "gf/d0.java"
+   ]
+  },
+  "watch_fingerprint": {
+   "types": [
+    "string"
+   ],
+   "defaults": [],
+   "files": [
+    "rom_library_discovery"
+   ],
+   "sources": [
+    "gf/d0.java"
+   ]
+  },
+  "watch_generation": {
+   "types": [
+    "long"
+   ],
+   "defaults": [
+    -1,
+    0
+   ],
+   "files": [
+    "rom_library_discovery"
+   ],
+   "sources": [
+    "gf/d0.java"
+   ]
+  },
+  "width": {
+   "types": [
+    "int"
+   ],
+   "defaults": [],
+   "files": [],
+   "sources": [
+    "ff/k0.java"
+   ]
+  }
+ },
+ "families": [
+  "ach_count_",
+  "backup_",
+  "cocoon_previous_exit_incident_",
+  "console_",
+  "default_player_",
+  "default_player_scope_",
+  "dock_icon_",
+  "dock_slot_",
+  "floating_folder_",
+  "folder_",
+  "folder_new_layout_columns_",
+  "folder_sort_",
+  "folder_view_",
+  "folder_zoom_",
+  "grub_",
+  "media_source_",
+  "music_",
+  "pending_",
+  "picnic_",
+  "player_play_time_tracking_",
+  "quarantined_",
+  "silk_pod_",
+  "silk_pod_asset_",
+  "single_hero_folder_",
+  "single_hero_game_",
+  "time_schedule_"
+ ],
+ "contract": {
+  "enums": {
+   "theme_mode": [
+    "LIGHT",
+    "DARK",
+    "OLED",
+    "SYSTEM"
+   ],
+   "cursor_style": [
+    "ANIMATED",
+    "OUTLINED",
+    "ALTERNATIVE_ANIMATED",
+    "ALTERNATIVE"
+   ],
+   "animation_speed": [
+    "NONE",
+    "SNAPPY",
+    "FAST",
+    "NORMAL"
+   ],
+   "icon_mode": [
+    "COLORED",
+    "ACCENT",
+    "FLAT"
+   ],
+   "surface_material": [
+    "SOLID",
+    "GLASS"
+   ],
+   "controller_layout": [
+    "HANDHELD",
+    "NINTENDO",
+    "PLAYSTATION",
+    "XBOX"
+   ],
+   "hero_display_style": [
+    "FULLSCREEN",
+    "VIGNETTE",
+    "NONE"
+   ],
+   "hero_gradient_style": [
+    "NONE",
+    "BLACK_GRADIENT",
+    "BLUR_GRADIENT"
+   ],
+   "folder_preview_mode": [
+    "ALL",
+    "SMART_ONLY",
+    "NORMAL_ONLY",
+    "NONE"
+   ],
+   "hero_logo_animation_style": [
+    "NONE",
+    "FLOAT",
+    "BREATHE",
+    "SWAY"
+   ],
+   "hero_folder_logo_animation_style": [
+    "NONE",
+    "FLOAT",
+    "BREATHE",
+    "SWAY"
+   ],
+   "logo_transition_style": [
+    "SWIPE",
+    "REVERSE_SWIPE",
+    "FADE",
+    "ZOOM",
+    "REVERSE_ZOOM",
+    "NONE"
+   ],
+   "hero_transition_style": [
+    "SWIPE",
+    "REVERSE_SWIPE",
+    "FADE",
+    "ZOOM",
+    "REVERSE_ZOOM",
+    "NONE"
+   ],
+   "dock_icon_shape": [
+    "CIRCLE",
+    "SQUIRCLE",
+    "ROUNDED_SQUARE",
+    "SQUARE"
+   ]
+  },
+  "float_ranges": {
+   "highlight_thickness_scale": [
+    0.5,
+    1.0
+   ],
+   "glass_blur": [
+    0.0,
+    10.0
+   ],
+   "glass_refraction": [
+    0.0,
+    1.0
+   ],
+   "glass_rim_strength": [
+    0.0,
+    1.0
+   ],
+   "glass_tint": [
+    0.0,
+    1.0
+   ],
+   "hero_logo_scale": [
+    0.1,
+    1.0
+   ],
+   "hero_folder_logo_scale": [
+    0.1,
+    1.0
+   ],
+   "hero_vignette_size": [
+    0.3,
+    1.0
+   ],
+   "logo_animation_speed": [
+    0.0,
+    1.0
+   ],
+   "hero_animation_speed": [
+    0.0,
+    1.0
+   ],
+   "icon_roundness": [
+    0.0,
+    0.5
+   ],
+   "icon_scale": [
+    0.5,
+    1.0
+   ],
+   "icon_hover_scale": [
+    0.5,
+    1.0
+   ],
+   "icon_bg_transparency": [
+    0.0,
+    1.0
+   ],
+   "sound_volume": [
+    0.0,
+    1.0
+   ],
+   "now_playing_dim_alpha": [
+    0.0,
+    1.0
+   ],
+   "now_playing_content_alpha": [
+    0.0,
+    1.0
+   ],
+   "now_playing_idle_saturation": [
+    0.0,
+    1.0
+   ],
+   "now_playing_logo_dim_factor": [
+    0.0,
+    1.0
+   ],
+   "now_playing_gradient_alpha": [
+    0.0,
+    1.0
+   ],
+   "now_playing_logo_scale": [
+    0.0,
+    1.0
+   ],
+   "music_volume": [
+    0.0,
+    1.0
+   ],
+   "picnic_music_volume": [
+    0.0,
+    1.0
+   ],
+   "jingle_volume": [
+    0.0,
+    1.0
+   ],
+   "sfx_volume": [
+    0.0,
+    1.0
+   ]
+  },
+  "int_ranges": {
+   "grid_rows": [
+    1,
+    6
+   ],
+   "dock_icon_count": [
+    1,
+    5
+   ],
+   "now_playing_session_grace_period_sec": [
+    0,
+    86400
+   ],
+   "jingle_auto_fade_seconds": [
+    3,
+    30
+   ]
+  },
+  "int_values": {
+   "wallpaper_video_fps": [
+    10,
+    30,
+    60
+   ]
+  }
+ },
+ "search_index": {
+  "source": "sg/k2.java",
+  "entries": [
+   {
+    "label": "Themes",
+    "section": "Look & feel",
+    "subsection": null,
+    "tab": 0,
+    "card": 0,
+    "action": "open_theme_picker",
+    "keywords": [
+     "theme",
+     "color",
+     "dark",
+     "light",
+     "assets"
+    ]
+   },
+   {
+    "label": "Accent color",
+    "section": "Look & feel",
+    "subsection": null,
+    "tab": 0,
+    "card": 1,
+    "action": null,
+    "keywords": [
+     "color",
+     "tint",
+     "gradient",
+     "highlight"
+    ]
+   },
+   {
+    "label": "Surface material",
+    "section": "Look & feel",
+    "subsection": null,
+    "tab": 0,
+    "card": 2,
+    "action": null,
+    "keywords": [
+     "glass",
+     "blur",
+     "material",
+     "transparent"
+    ]
+   },
+   {
+    "label": "Icon style",
+    "section": "Look & feel",
+    "subsection": null,
+    "tab": 0,
+    "card": 3,
+    "action": null,
+    "keywords": [
+     "icon",
+     "mode",
+     "colored",
+     "flat"
+    ]
+   },
+   {
+    "label": "Cursor style",
+    "section": "Look & feel",
+    "subsection": null,
+    "tab": 0,
+    "card": 4,
+    "action": null,
+    "keywords": [
+     "selection",
+     "highlight",
+     "box",
+     "animated",
+     "outlined",
+     "alternative",
+     "corners"
+    ]
+   },
+   {
+    "label": "Cursor thickness",
+    "section": "Look & feel",
+    "subsection": null,
+    "tab": 0,
+    "card": 5,
+    "action": null,
+    "keywords": [
+     "selection",
+     "highlight",
+     "thickness",
+     "border",
+     "width",
+     "thin",
+     "thick"
+    ]
+   },
+   {
+    "label": "Wallpapers",
+    "section": "Look & feel",
+    "subsection": null,
+    "tab": 0,
+    "card": 6,
+    "action": "open_wallpaper",
+    "keywords": [
+     "background",
+     "video"
+    ]
+   },
+   {
+    "label": "Video performance",
+    "section": "Look & feel",
+    "subsection": "Wallpapers",
+    "tab": 0,
+    "card": 6,
+    "action": "open_wallpaper",
+    "keywords": [
+     "fps",
+     "framerate",
+     "performance",
+     "battery"
+    ]
+   },
+   {
+    "label": "Hero background style",
+    "section": "Look & feel",
+    "subsection": null,
+    "tab": 0,
+    "card": 7,
+    "action": "open_hero_settings",
+    "keywords": [
+     "hero",
+     "background",
+     "logo",
+     "gradient",
+     "vignette"
+    ]
+   },
+   {
+    "label": "Always use No-Split mode",
+    "section": "Look & feel",
+    "subsection": "Hero background style",
+    "tab": 0,
+    "card": 7,
+    "action": "open_hero_settings",
+    "keywords": [
+     "single",
+     "screen",
+     "hero",
+     "grid",
+     "full"
+    ]
+   },
+   {
+    "label": "No-Split mode starts at",
+    "section": "Look & feel",
+    "subsection": "Hero background style",
+    "tab": 0,
+    "card": 7,
+    "action": "open_hero_settings",
+    "keywords": [
+     "single",
+     "screen",
+     "hero",
+     "grid",
+     "rows",
+     "threshold"
+    ]
+   },
+   {
+    "label": "Hero wallpaper",
+    "section": "Look & feel",
+    "subsection": "Hero background style",
+    "tab": 0,
+    "card": 7,
+    "action": "open_hero_settings",
+    "keywords": [
+     "single",
+     "screen",
+     "art",
+     "background",
+     "grid"
+    ]
+   },
+   {
+    "label": "Custom hero split",
+    "section": "Look & feel",
+    "subsection": "Hero background style",
+    "tab": 0,
+    "card": 7,
+    "action": "open_hero_settings",
+    "keywords": [
+     "single",
+     "screen",
+     "hero"
+    ]
+   },
+   {
+    "label": "Hero split",
+    "section": "Look & feel",
+    "subsection": "Hero background style",
+    "tab": 0,
+    "card": 7,
+    "action": "open_hero_settings",
+    "keywords": [
+     "single",
+     "screen",
+     "hero",
+     "percent"
+    ]
+   },
+   {
+    "label": "Sound settings",
+    "section": "Look & feel",
+    "subsection": null,
+    "tab": 0,
+    "card": 8,
+    "action": "open_sounds",
+    "keywords": [
+     "sfx",
+     "audio",
+     "sound effects",
+     "click",
+     "navigate",
+     "music"
+    ]
+   },
+   {
+    "label": "Grid settings",
+    "section": "Grid & layout",
+    "subsection": null,
+    "tab": 1,
+    "card": 0,
+    "action": "open_grid_settings",
+    "keywords": [
+     "grid",
+     "page",
+     "pages",
+     "pagination",
+     "swipe",
+     "rows",
+     "columns",
+     "spacing",
+     "layout"
+    ]
+   },
+   {
+    "label": "Per-folder rows",
+    "section": "Grid & layout",
+    "subsection": "Grid settings",
+    "tab": 1,
+    "card": 0,
+    "action": "open_grid_settings",
+    "keywords": [
+     "folder",
+     "rows",
+     "zoom"
+    ]
+   },
+   {
+    "label": "Icon settings",
+    "section": "Grid & layout",
+    "subsection": null,
+    "tab": 1,
+    "card": 1,
+    "action": "open_app_icon_style",
+    "keywords": [
+     "icon",
+     "shape",
+     "scale",
+     "roundness",
+     "border",
+     "radius",
+     "transparency"
+    ]
+   },
+   {
+    "label": "App icon pack",
+    "section": "Grid & layout",
+    "subsection": "Icon settings",
+    "tab": 1,
+    "card": 1,
+    "action": "open_app_icon_style",
+    "keywords": [
+     "icon",
+     "pack",
+     "icons",
+     "app",
+     "dock",
+     "drawer",
+     "theme"
+    ]
+   },
+   {
+    "label": "Dock settings",
+    "section": "Grid & layout",
+    "subsection": null,
+    "tab": 1,
+    "card": 2,
+    "action": "open_dock_style",
+    "keywords": [
+     "dock",
+     "taskbar"
+    ]
+   },
+   {
+    "label": "Dock icon shape",
+    "section": "Grid & layout",
+    "subsection": "Dock settings",
+    "tab": 1,
+    "card": 2,
+    "action": "open_dock_style",
+    "keywords": [
+     "circle",
+     "square",
+     "squircle",
+     "rounded"
+    ]
+   },
+   {
+    "label": "Number of icons on dock",
+    "section": "Grid & layout",
+    "subsection": "Dock settings",
+    "tab": 1,
+    "card": 2,
+    "action": "open_dock_style",
+    "keywords": [
+     "dock",
+     "count",
+     "slots"
+    ]
+   },
+   {
+    "label": "Hide dock background",
+    "section": "Grid & layout",
+    "subsection": "Dock settings",
+    "tab": 1,
+    "card": 2,
+    "action": "open_dock_style",
+    "keywords": [
+     "transparent",
+     "panel"
+    ]
+   },
+   {
+    "label": "Put dock on top",
+    "section": "Grid & layout",
+    "subsection": "Dock settings",
+    "tab": 1,
+    "card": 2,
+    "action": "open_dock_style",
+    "keywords": [
+     "position"
+    ]
+   },
+   {
+    "label": "Auto-hide dock",
+    "section": "Grid & layout",
+    "subsection": "Dock settings",
+    "tab": 1,
+    "card": 2,
+    "action": "open_dock_style",
+    "keywords": [
+     "auto",
+     "hide"
+    ]
+   },
+   {
+    "label": "Animation settings",
+    "section": "Grid & layout",
+    "subsection": null,
+    "tab": 1,
+    "card": 3,
+    "action": "open_animation_style",
+    "keywords": [
+     "transition",
+     "motion",
+     "animate",
+     "speed"
+    ]
+   },
+   {
+    "label": "Now playing settings",
+    "section": "Grid & layout",
+    "subsection": null,
+    "tab": 1,
+    "card": 4,
+    "action": "open_now_playing",
+    "keywords": [
+     "now playing",
+     "music",
+     "dimming",
+     "saturation"
+    ]
+   },
+   {
+    "label": "Game tile press action",
+    "section": "Grid & layout",
+    "subsection": null,
+    "tab": 1,
+    "card": 100,
+    "action": null,
+    "keywords": [
+     "press",
+     "launch",
+     "info",
+     "show info",
+     "single",
+     "screen",
+     "tile"
+    ]
+   },
+   {
+    "label": "Fullscreen folders",
+    "section": "Grid & layout",
+    "subsection": null,
+    "tab": 1,
+    "card": null,
+    "action": null,
+    "keywords": [
+     "folder"
+    ]
+   },
+   {
+    "label": "Battery percentage",
+    "section": "Grid & layout",
+    "subsection": null,
+    "tab": 1,
+    "card": null,
+    "action": null,
+    "keywords": [
+     "battery",
+     "percent",
+     "status"
+    ]
+   },
+   {
+    "label": "Corner hints",
+    "section": "Grid & layout",
+    "subsection": null,
+    "tab": 1,
+    "card": null,
+    "action": null,
+    "keywords": [
+     "hint",
+     "corner",
+     "guide"
+    ]
+   },
+   {
+    "label": "Platforms",
+    "section": "Library & data",
+    "subsection": null,
+    "tab": 2,
+    "card": 0,
+    "action": null,
+    "keywords": [
+     "platform",
+     "console",
+     "emulator",
+     "player"
+    ]
+   },
+   {
+    "label": "Default sort",
+    "section": "Library & data",
+    "subsection": "Platforms",
+    "tab": 2,
+    "card": 0,
+    "action": null,
+    "keywords": [
+     "sort",
+     "order",
+     "alphabetical",
+     "recent"
+    ]
+   },
+   {
+    "label": "Default games folder",
+    "section": "Library & data",
+    "subsection": "Platforms",
+    "tab": 2,
+    "card": 1,
+    "action": null,
+    "keywords": [
+     "rom",
+     "root",
+     "folder",
+     "games",
+     "storage"
+    ]
+   },
+   {
+    "label": "Hidden games",
+    "section": "Library & data",
+    "subsection": "Platforms",
+    "tab": 2,
+    "card": 2,
+    "action": null,
+    "keywords": [
+     "hide",
+     "show",
+     "hidden"
+    ]
+   },
+   {
+    "label": "Custom players",
+    "section": "Library & data",
+    "subsection": "Platforms",
+    "tab": 2,
+    "card": 3,
+    "action": null,
+    "keywords": [
+     "custom",
+     "player",
+     "emulator",
+     "import",
+     "json",
+     "yaml"
+    ]
+   },
+   {
+    "label": "Smart subfolders",
+    "section": "Library & data",
+    "subsection": "Platforms",
+    "tab": 2,
+    "card": 4,
+    "action": null,
+    "keywords": [
+     "folder",
+     "subfolder",
+     "organize"
+    ]
+   },
+   {
+    "label": "Add platform",
+    "section": "Library & data",
+    "subsection": "Platforms",
+    "tab": 2,
+    "card": 5,
+    "action": "add_platform",
+    "keywords": [
+     "platform",
+     "console",
+     "emulator",
+     "add"
+    ]
+   },
+   {
+    "label": "Rescan games",
+    "section": "Library & data",
+    "subsection": null,
+    "tab": 2,
+    "card": 1,
+    "action": null,
+    "keywords": [
+     "scan",
+     "refresh",
+     "rescan",
+     "libraries"
+    ]
+   },
+   {
+    "label": "Scrape",
+    "section": "Library & data",
+    "subsection": null,
+    "tab": 2,
+    "card": 2,
+    "action": "open_scrape",
+    "keywords": [
+     "scrape",
+     "metadata",
+     "artwork",
+     "boxart"
+    ]
+   },
+   {
+    "label": "Platform filter",
+    "section": "Library & data",
+    "subsection": "Scrape",
+    "tab": 2,
+    "card": 2,
+    "action": "open_scrape",
+    "keywords": [
+     "platform",
+     "filter",
+     "scrape"
+    ]
+   },
+   {
+    "label": "Scrape type",
+    "section": "Library & data",
+    "subsection": "Scrape",
+    "tab": 2,
+    "card": 2,
+    "action": "open_scrape",
+    "keywords": [
+     "force"
+    ]
+   },
+   {
+    "label": "Region/language",
+    "section": "Library & data",
+    "subsection": "Scrape",
+    "tab": 2,
+    "card": 2,
+    "action": "open_scrape",
+    "keywords": [
+     "region",
+     "language",
+     "locale"
+    ]
+   },
+   {
+    "label": "Clear downloaded media",
+    "section": "Library & data",
+    "subsection": "Scrape",
+    "tab": 2,
+    "card": 2,
+    "action": "open_scrape",
+    "keywords": [
+     "clear",
+     "cache",
+     "download"
+    ]
+   },
+   {
+    "label": "Clear LaunchBox cache",
+    "section": "Library & data",
+    "subsection": "Scrape",
+    "tab": 2,
+    "card": 2,
+    "action": "open_scrape",
+    "keywords": [
+     "launchbox",
+     "cache",
+     "clear",
+     "scrape"
+    ]
+   },
+   {
+    "label": "Scrape metadata",
+    "section": "Library & data",
+    "subsection": "Scrape",
+    "tab": 2,
+    "card": 2,
+    "action": "open_scrape",
+    "keywords": [
+     "metadata",
+     "description",
+     "publisher"
+    ]
+   },
+   {
+    "label": "Scrape media",
+    "section": "Library & data",
+    "subsection": "Scrape",
+    "tab": 2,
+    "card": 2,
+    "action": "open_scrape",
+    "keywords": [
+     "art",
+     "icon",
+     "logo",
+     "hero"
+    ]
+   },
+   {
+    "label": "Types of media",
+    "section": "Library & data",
+    "subsection": "Scrape",
+    "tab": 2,
+    "card": 2,
+    "action": "open_scrape",
+    "keywords": [
+     "boxart",
+     "logo"
+    ]
+   },
+   {
+    "label": "Scrape embedded assets",
+    "section": "Library & data",
+    "subsection": "Scrape",
+    "tab": 2,
+    "card": 2,
+    "action": "open_scrape",
+    "keywords": [
+     "embedded",
+     "file",
+     "icon",
+     "banner",
+     "jingle",
+     "offline"
+    ]
+   },
+   {
+    "label": "Achievements",
+    "section": "Library & data",
+    "subsection": "Scrape",
+    "tab": 2,
+    "card": 2,
+    "action": "open_scrape",
+    "keywords": [
+     "achievement",
+     "trophy",
+     "cheevos"
+    ]
+   },
+   {
+    "label": "Export metadata",
+    "section": "Library & data",
+    "subsection": null,
+    "tab": 2,
+    "card": 8,
+    "action": null,
+    "keywords": [
+     "export",
+     "gamelist",
+     "es-de",
+     "xml"
+    ]
+   },
+   {
+    "label": "Jingles settings",
+    "section": "Library & data",
+    "subsection": null,
+    "tab": 2,
+    "card": 3,
+    "action": "open_jingle_repos",
+    "keywords": [
+     "music",
+     "startup",
+     "jingle",
+     "boot",
+     "repo",
+     "repository"
+    ]
+   },
+   {
+    "label": "Game session tracking",
+    "section": "Library & data",
+    "subsection": null,
+    "tab": 2,
+    "card": 4,
+    "action": "open_game_session_settings",
+    "keywords": [
+     "sessions",
+     "tracking",
+     "playtime",
+     "usage",
+     "mode",
+     "auto",
+     "verbose",
+     "grace",
+     "auto-end"
+    ]
+   },
+   {
+    "label": "Backup",
+    "section": "Library & data",
+    "subsection": null,
+    "tab": 2,
+    "card": 5,
+    "action": null,
+    "keywords": [
+     "backup",
+     "save",
+     "data",
+     "layout"
+    ]
+   },
+   {
+    "label": "Restore backup",
+    "section": "Library & data",
+    "subsection": null,
+    "tab": 2,
+    "card": 6,
+    "action": null,
+    "keywords": [
+     "restore",
+     "load",
+     "layout",
+     "backup"
+    ]
+   },
+   {
+    "label": "ES-DE linking",
+    "section": "Library & data",
+    "subsection": null,
+    "tab": 2,
+    "card": 7,
+    "action": null,
+    "keywords": [
+     "es-de",
+     "emulation",
+     "station",
+     "migration",
+     "integration",
+     "link"
+    ]
+   },
+   {
+    "label": "SteamGridDB API key",
+    "section": "Integrations",
+    "subsection": null,
+    "tab": 3,
+    "card": 0,
+    "action": null,
+    "keywords": [
+     "steam",
+     "api",
+     "key",
+     "artwork"
+    ]
+   },
+   {
+    "label": "ScreenScraper login",
+    "section": "Integrations",
+    "subsection": null,
+    "tab": 3,
+    "card": 1,
+    "action": null,
+    "keywords": [
+     "screenscraper",
+     "login",
+     "scrape"
+    ]
+   },
+   {
+    "label": "RetroAchievements login",
+    "section": "Integrations",
+    "subsection": null,
+    "tab": 3,
+    "card": 2,
+    "action": null,
+    "keywords": [
+     "retro",
+     "achievements",
+     "cheevos",
+     "login"
+    ]
+   },
+   {
+    "label": "Notification and conversation access",
+    "section": "Integrations",
+    "subsection": null,
+    "tab": 3,
+    "card": 3,
+    "action": null,
+    "keywords": [
+     "notification",
+     "conversation",
+     "messages",
+     "listener",
+     "restricted settings"
+    ]
+   },
+   {
+    "label": "Conversations in the friends pill",
+    "section": "Integrations",
+    "subsection": null,
+    "tab": 3,
+    "card": 4,
+    "action": null,
+    "keywords": [
+     "friends",
+     "pill",
+     "social",
+     "bar",
+     "conversations",
+     "messages",
+     "chat",
+     "hide"
+    ]
+   },
+   {
+    "label": "Discord Rich Presence",
+    "section": "Integrations",
+    "subsection": null,
+    "tab": 3,
+    "card": 5,
+    "action": null,
+    "keywords": [
+     "discord",
+     "rpc",
+     "status"
+    ]
+   },
+   {
+    "label": "Language",
+    "section": "System & advance",
+    "subsection": null,
+    "tab": 4,
+    "card": 0,
+    "action": null,
+    "keywords": [
+     "language",
+     "locale",
+     "translation"
+    ]
+   },
+   {
+    "label": "Disable animated assets",
+    "section": "System & advance",
+    "subsection": null,
+    "tab": 4,
+    "card": 2,
+    "action": null,
+    "keywords": [
+     "animated",
+     "animation",
+     "gif",
+     "video",
+     "wallpaper",
+     "hero",
+     "logo",
+     "icon",
+     "still",
+     "performance",
+     "smooth",
+     "slow",
+     "battery"
+    ]
+   },
+   {
+    "label": "Smart folders mode",
+    "section": "System & advance",
+    "subsection": null,
+    "tab": 4,
+    "card": 3,
+    "action": null,
+    "keywords": [
+     "smart",
+     "folders",
+     "grid",
+     "layout",
+     "organize"
+    ]
+   },
+   {
+    "label": "Single screen mode",
+    "section": "System & advance",
+    "subsection": null,
+    "tab": 4,
+    "card": 4,
+    "action": null,
+    "keywords": [
+     "single",
+     "dual",
+     "screen",
+     "display"
+    ]
+   }
+  ]
+ },
+ "activities": [
+  "AnimationStyleActivity",
+  "AppIconStyleActivity",
+  "ClearDownloadedMediaActivity",
+  "DockStyleActivity",
+  "ESDEMigrationActivity",
+  "GameSessionSettingsActivity",
+  "GlassOptionsActivity",
+  "GridSettingsActivity",
+  "HeroSettingsActivity",
+  "HiveAuthCallbackActivity",
+  "HomePresetsActivity",
+  "JingleReposActivity",
+  "LanguageSettingsActivity",
+  "LiquidGlassDemoActivity",
+  "LogPodActivity",
+  "NowPlayingSettingsActivity",
+  "PicnicPodActivity",
+  "ScrapeActivity",
+  "SettingsActivity",
+  "SoundsSettingsActivity",
+  "ThemePickerActivity",
+  "ThemeStoreActivity",
+  "WallpaperActivity"
+ ]
+}

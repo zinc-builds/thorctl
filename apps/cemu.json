@@ -1,0 +1,663 @@
+{
+ "name": "cemu",
+ "package": "info.cemu.cemu",
+ "aliases": [
+  "wiiu",
+  "wii-u"
+ ],
+ "category": "emulator",
+ "version_checked": "0.5.2",
+ "stop_before_write": true,
+ "files": {
+  "settings": {
+   "path": "/sdcard/Android/data/info.cemu.cemu/files/settings.xml",
+   "format": "xml",
+   "notes": "Cemu XML config (tinyxml2), UTF-8 with <?xml version=\"1.0\" encoding=\"UTF-8\"?>, root element <content>, 4-space indent. Key = slash path of element names from the root, e.g. content/Graphic/VSync, content/Graphic/Overlay/FPS, content/Audio/TVVolume, content/console_language. Value = the element's text: bools true/false, integers in decimal, floats like 2.2, strings as plain text (may be empty, e.g. <PadDevice></PadDevice>). To set: replace the text of the existing element; if missing, add the element under its parent (missing elements are read as defaults, see each key). Exceptions that need attributes or repeated elements: content/Input/DSUC has attributes host and port; content/GamePaths/Entry repeats; content/GraphicPack/Entry repeats with attribute filename (and optional disabled=\"true\") and child <Preset><category>..</category><preset>..</preset></Preset> elements; content/AccountService/SelectedService has attributes PersistentId and Service. Empty containers are written self-closed (<GraphicPack/>). Read once at app process start (CemuApplication.onCreate -> initializeEmulation -> CemuCommonInit -> GetConfigHandle().Load()). Rewritten in full from memory on MainActivity onPause/onDestroy and right before a game starts, so edit only while the app is stopped. Owner u0_a<N>:ext_data_rw, mode 660, label media_rw_data_file:s0:c<N>,c256,c512,c768."
+  },
+  "app_settings": {
+   "path": "/data/data/info.cemu.cemu/files/datastore/appSettings.json",
+   "format": "json",
+   "template": "{}\n",
+   "notes": "Android-side settings (Jetpack MultiProcess DataStore, kotlinx Json.Default). Can be absent (only appSettings.json.lock and .version exist); then every value is the default. Shape: {\"guiSettings\":{\"language\":..},\"emulationSettings\":{\"gamePadPosition\":\"RIGHT\",\"isPadVisible\":false,\"isPadOnExternalDisplay\":false,\"isExternalScreenRotatedLeft\":false},\"storageSettings\":{\"dataRootPath\":..,\"customRootUri\":..,...},\"inputOverlaySettings\":{...},\"hotkeySettings\":{...}}. The app writes only non-default fields. Strict parser: any unknown key, wrong type or trailing junk makes the WHOLE file parse as defaults with no error, and the next app write then replaces it. Enums are stored by name (\"ABOVE\"), booleans unquoted. Never touch storageSettings (moves the data root). Needs root; create with owner u0_a<N>:u0_a<N>, mode 600, label app_data_file:s0:c<N>,c256,c512,c768. Stop the app first."
+  },
+  "game_profile": {
+   "path": "/sdcard/Android/data/info.cemu.cemu/files/gameProfiles/{game}.ini",
+   "format": "ini",
+   "notes": "User game profile (the per-game file). If the folder gameProfiles/ does not exist, create it (owner u0_a<N>:ext_data_rw, mode 770, same label as settings.xml). If this file exists the shipped default profile is NOT read at all, see per_game.notes."
+  },
+  "default_profile": {
+   "path": "/sdcard/Android/data/info.cemu.cemu/files/data/gameProfiles/default/{game}.ini",
+   "format": "ini",
+   "notes": "Shipped profiles (236 in the checked build), extracted from the APK. Read-only for adapters: at every app start the whole data/ folder is deleted and re-extracted when data/hash.txt differs from the APK's hash.txt (i.e. after an app update). Copy its contents into game_profile before overriding keys."
+  },
+  "title_list_cache": {
+   "path": "/sdcard/Android/data/info.cemu.cemu/files/title_list_cache.xml",
+   "format": "xml",
+   "notes": "Read-only game list. <title_list><title titleId=\"000500001019e500\" version=\"81\" app_type=\"80000000\" ...><name>..</name><path>content://...</path></title>. app_type 80000000 = base game (use its titleId as the game id); 0800001b / titleId 0005000e... = update."
+  },
+  "controller0": {
+   "path": "/sdcard/Android/data/info.cemu.cemu/files/controllerProfiles/controller0.xml",
+   "format": "xml",
+   "notes": "Emulated controller 1 mapping (XML <emulated_controller><type>Wii U Pro Controller</type><controller><api>Android</api><uuid>..</uuid>...<mappings><entry><mapping>N</mapping><button>M</button>). Edit in the app; not covered by this adapter."
+  },
+  "log": {
+   "path": "/sdcard/Android/data/info.cemu.cemu/files/log.txt",
+   "format": "other",
+   "notes": "Last session log. After a game boots it lists '------- Active settings -------' (CPU mode, shared libraries, GX2DrawDone sync, strict shader mul, async compile, console language) and the gameprofile path used: the quickest way to confirm a change took effect."
+  }
+ },
+ "per_game": {
+  "path": "/sdcard/Android/data/info.cemu.cemu/files/gameProfiles/{game}.ini",
+  "format": "ini",
+  "game_id": "16-digit lowercase hex Wii U title id of the BASE game (high half 00050000), e.g. 000500001019e500. Get it from title_list_cache.xml (<title titleId=...> with app_type=\"80000000\"), from the 'Mounting title' line in log.txt, or from the base-game file name of the shipped default profile. Cemu formats the name with {:016x} (lowercase); shipped defaults are mixed case.",
+  "create": true,
+  "notes": "INI, 'key = value' lines, sections [General] [CPU] [Graphics] [Audio] [Controller] [AndroidDriver]; an optional first line '# Game name'. Read at every game boot (CafeSystem::PrepareForegroundTitle -> gameProfile_load), whatever launched the game, so it can be edited while the app sits in the game list, but not while its 'Edit game profile' screen is open. Lookup: <root>/gameProfiles/<id>.ini if it exists, otherwise <root>/data/gameProfiles/default/<id>.ini. The two are NOT merged: a hand-made user file hides every setting of the default profile, so start it as a copy of the default profile. Missing keys mean: cpuMode Auto, loadSharedLibraries true, threadQuantum 45000, accurateShaderMul true, AndroidDriver mode 0 (Global). Only the keys marked per_game exist per game; every settings.xml setting is global-only (except the driver, which has its own per-game keys). The app's 'Edit game profile' screen rewrites the whole file on every change ([General], [CPU], [Graphics], [Controller], [AndroidDriver] in that order), and drops keys it does not write itself (e.g. [Audio] disableAudio). [Graphics] precompiledShaders and graphics_api are parsed but have no effect on Android (precompiled shaders are hard-wired to auto; Android always renders with Vulkan); do not set graphics_api.",
+  "seed_from": "/sdcard/Android/data/info.cemu.cemu/files/data/gameProfiles/default/{game}.ini"
+ },
+ "keys": {
+  "graphics_api": {
+   "file": "settings",
+   "key": "content/Graphic/api",
+   "label": "(none on Android)",
+   "type": "enum",
+   "values": {
+    "1": "Vulkan"
+   },
+   "default": "1",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Enum GraphicAPI {0=OpenGL, 1=Vulkan, 2=Metal}. The Android build always creates a VulkanRenderer, but ActiveSettings::GetGraphicsAPI() still reads this value, so leave it at 1. A missing element is read as 0 (OpenGL), so never delete it."
+  },
+  "vsync": {
+   "file": "settings",
+   "key": "content/Graphic/VSync",
+   "label": "VSync",
+   "type": "enum",
+   "values": {
+    "0": "Off (Vulkan Immediate)",
+    "1": "Double buffering (Vulkan FIFO)",
+    "2": "Triple buffering (Vulkan Mailbox)"
+   },
+   "default": "0",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Vulkan VSync enum: 0 Immediate, 1 FIFO, 2 MAILBOX, 3 SYNC_AND_LIMIT. The Android menu offers 0-2 only. On the Thor's Adreno system driver the log says 'Can't find immediate present mode', so 0 falls back to another present mode. Read live by the renderer each frame (swapchain is recreated on change)."
+  },
+  "async_shader_compile": {
+   "file": "settings",
+   "key": "content/Graphic/AsyncCompile",
+   "label": "Async shader compile",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "true",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Async shader and pipeline compilation. Less stutter, but objects may not render for a short time. Vulkan only."
+  },
+  "accurate_barriers": {
+   "file": "settings",
+   "key": "content/Graphic/vkAccurateBarriers",
+   "label": "Accurate barriers",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "true",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Off can improve speed but causes flickering graphics. Upstream strongly recommends leaving it on."
+  },
+  "upscale_filter": {
+   "file": "settings",
+   "key": "content/Graphic/UpscaleFilter",
+   "label": "Upscale filter",
+   "type": "enum",
+   "values": {
+    "0": "Bilinear",
+    "1": "Bicubic",
+    "2": "Hermite (bicubic Hermite)",
+    "3": "Nearest neighbor"
+   },
+   "default": "1",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Filter used when the game image is scaled up to the screen. Enum UpscalingFilter. Struct default is 1 (Bicubic), but a missing element is read as 2 (Hermite)."
+  },
+  "downscale_filter": {
+   "file": "settings",
+   "key": "content/Graphic/DownscaleFilter",
+   "label": "Downscale filter",
+   "type": "enum",
+   "values": {
+    "0": "Bilinear",
+    "1": "Bicubic",
+    "2": "Hermite (bicubic Hermite)",
+    "3": "Nearest neighbor"
+   },
+   "default": "0",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Filter used when the rendered image (e.g. a 4K graphic pack) is larger than the screen."
+  },
+  "fullscreen_scaling": {
+   "file": "settings",
+   "key": "content/Graphic/FullscreenScaling",
+   "label": "Fullscreen scaling",
+   "type": "enum",
+   "values": {
+    "0": "Keep aspect ratio",
+    "1": "Stretch"
+   },
+   "default": "0",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Enum FullscreenScaling {kKeepAspectRatio, kStretch}. The installed build offers choices 0 and 1."
+  },
+  "gx2_drawdone_sync": {
+   "file": "settings",
+   "key": "content/Graphic/GX2DrawdoneSync",
+   "label": "(none on Android; desktop: Full sync at GX2DrawDone)",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "true",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Still read by the core on Android (logged as 'Full sync at GX2DrawDone' at boot). Off can help speed but breaks games that read GPU results back on the CPU."
+  },
+  "overlay_position": {
+   "file": "settings",
+   "key": "content/Graphic/Overlay/Position",
+   "label": "Overlay > Position",
+   "type": "enum",
+   "values": {
+    "0": "Disabled",
+    "1": "Top left",
+    "2": "Top center",
+    "3": "Top right",
+    "4": "Bottom left",
+    "5": "Bottom center",
+    "6": "Bottom right"
+   },
+   "default": "0",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Performance overlay corner. 0 hides the overlay entirely, even when FPS etc. are on. Enum ScreenPosition."
+  },
+  "overlay_text_scale": {
+   "file": "settings",
+   "key": "content/Graphic/Overlay/TextScale",
+   "label": "Overlay > Scale",
+   "type": "int",
+   "values": {
+    "50-300": "Text size in percent"
+   },
+   "default": "100",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Android slider range 50-300 (OVERLAY_TEXT_SCALE_MIN/MAX)."
+  },
+  "overlay_fps": {
+   "file": "settings",
+   "key": "content/Graphic/Overlay/FPS",
+   "label": "FPS",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "true",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Frames per second, average over 5 s. Shown only when overlay_position is not 0."
+  },
+  "overlay_draw_calls": {
+   "file": "settings",
+   "key": "content/Graphic/Overlay/DrawCalls",
+   "label": "Draw calls per frame",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": ""
+  },
+  "overlay_cpu_usage": {
+   "file": "settings",
+   "key": "content/Graphic/Overlay/CPUUsage",
+   "label": "CPU usage",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "CPU usage of Cemu in percent."
+  },
+  "overlay_cpu_per_core": {
+   "file": "settings",
+   "key": "content/Graphic/Overlay/CPUPerCoreUsage",
+   "label": "(none on Android; desktop: CPU per core usage)",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "No Android toggle. Still drawn by the shared overlay code; not tested on device."
+  },
+  "overlay_ram_usage": {
+   "file": "settings",
+   "key": "content/Graphic/Overlay/RAMUsage",
+   "label": "RAM usage",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Cemu RAM usage in MB."
+  },
+  "overlay_vram_usage": {
+   "file": "settings",
+   "key": "content/Graphic/Overlay/VRAMUsage",
+   "label": "(none on Android; desktop: VRAM usage)",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "No Android toggle; not tested on device."
+  },
+  "overlay_debug": {
+   "file": "settings",
+   "key": "content/Graphic/Overlay/Debug",
+   "label": "Debug",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Internal debug information (Vulkan only)."
+  },
+  "notification_position": {
+   "file": "settings",
+   "key": "content/Graphic/Notification/Position",
+   "label": "Notifications > Position",
+   "type": "enum",
+   "values": {
+    "0": "Disabled",
+    "1": "Top left",
+    "2": "Top center",
+    "3": "Top right",
+    "4": "Bottom left",
+    "5": "Bottom center",
+    "6": "Bottom right"
+   },
+   "default": "1",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Corner for notifications (controller profile, shader compile, friend list). 0 disables them."
+  },
+  "notification_shader_compiling": {
+   "file": "settings",
+   "key": "content/Graphic/Notification/ShaderCompiling",
+   "label": "Shader compiler",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "true",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Notification after shaders have been compiled/loaded."
+  },
+  "notification_controller_profiles": {
+   "file": "settings",
+   "key": "content/Graphic/Notification/ControllerProfiles",
+   "label": "Controller profiles",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "true",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Shows the active controller profile when a game starts."
+  },
+  "audio_latency": {
+   "file": "settings",
+   "key": "content/Audio/delay",
+   "label": "Latency",
+   "type": "int",
+   "values": {
+    "0-23": "Buffer delay in 12 ms steps; the menu shows value x 12 ms (0-276 ms)"
+   },
+   "default": "2",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Stored as a step count, not milliseconds: NativeSettings.setAudioLatency stores ms/12. 2 = 24 ms."
+  },
+  "tv_audio": {
+   "file": "settings",
+   "key": "content/Audio/TVDevice",
+   "label": "TV",
+   "type": "string",
+   "values": {
+    "": "Off (no TV audio)",
+    "Default": "On (what the menu writes)",
+    "default": "On (value in the current file)"
+   },
+   "default": "default",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Android ignores the device name and always uses Cubeb: any non-empty text turns TV audio on, empty turns it off. Read when a game starts."
+  },
+  "tv_channels": {
+   "file": "settings",
+   "key": "content/Audio/TVChannels",
+   "label": "TV channels",
+   "type": "enum",
+   "values": {
+    "0": "Mono",
+    "1": "Stereo",
+    "2": "Surround (5.1)"
+   },
+   "default": "1",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": ""
+  },
+  "tv_volume": {
+   "file": "settings",
+   "key": "content/Audio/TVVolume",
+   "label": "TV volume",
+   "type": "int",
+   "values": {
+    "0-100": "Percent"
+   },
+   "default": "50",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Struct default 50; a missing element is read as 20."
+  },
+  "pad_audio": {
+   "file": "settings",
+   "key": "content/Audio/PadDevice",
+   "label": "Gamepad",
+   "type": "string",
+   "values": {
+    "": "Off (no GamePad audio)",
+    "Default": "On (what the menu writes)"
+   },
+   "default": "",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Same rule as tv_audio."
+  },
+  "pad_channels": {
+   "file": "settings",
+   "key": "content/Audio/PadChannels",
+   "label": "Gamepad channels",
+   "type": "enum",
+   "values": {
+    "0": "Mono",
+    "1": "Stereo",
+    "2": "Surround (5.1)"
+   },
+   "default": "1",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Struct default 1 (Stereo). The GamePad speaker is stereo."
+  },
+  "pad_volume": {
+   "file": "settings",
+   "key": "content/Audio/PadVolume",
+   "label": "Gamepad volume",
+   "type": "int",
+   "values": {
+    "0-100": "Percent"
+   },
+   "default": "0",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": ""
+  },
+  "console_language": {
+   "file": "settings",
+   "key": "content/console_language",
+   "label": "Console language",
+   "type": "enum",
+   "values": {
+    "0": "Japanese",
+    "1": "English",
+    "2": "French",
+    "3": "German",
+    "4": "Italian",
+    "5": "Spanish",
+    "6": "Chinese",
+    "7": "Korean",
+    "8": "Dutch",
+    "9": "Portuguese",
+    "10": "Russian",
+    "11": "Taiwanese"
+   },
+   "default": "1",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Enum CafeConsoleLanguage. Language the emulated Wii U reports to games."
+  },
+  "custom_driver": {
+   "file": "settings",
+   "key": "content/custom_driver_path",
+   "label": "Graphics settings > Custom drivers",
+   "type": "string",
+   "values": {
+    "": "System driver",
+    "<dir>": "Absolute path of an installed driver folder, e.g. /storage/emulated/0/Android/data/info.cemu.cemu/files/customDrivers/<name> (holds meta.json + the .so named in libraryName)"
+   },
+   "default": "",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Global Vulkan driver (adrenotools). Empty means the system driver. The customDrivers folder exists only after a driver is installed in the app, so install one there first. At load the .so is copied to the app's internal dir and opened. A game profile's [AndroidDriver] can override it."
+  },
+  "gamepad_position": {
+   "file": "app_settings",
+   "key": "emulationSettings/gamePadPosition",
+   "label": "General settings > GamePad position",
+   "type": "enum",
+   "values": {
+    "\"ABOVE\"": "Above the TV image",
+    "\"BELOW\"": "Below",
+    "\"LEFT\"": "Left",
+    "\"RIGHT\"": "Right"
+   },
+   "default": "\"RIGHT\"",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Where the GamePad (DRC) view sits next to the TV view on the same screen when Show PAD is on. Kotlin enum GamePadPosition, stored by name. Absent from the file means RIGHT."
+  },
+  "show_pad": {
+   "file": "app_settings",
+   "key": "emulationSettings/isPadVisible",
+   "label": "In-game menu > Show PAD",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Shows the GamePad screen. Set from the in-game side menu; this fork saves it to DataStore when it changes. Read back at emulation start: probable from the decompile, not confirmed."
+  },
+  "pad_on_external_display": {
+   "file": "app_settings",
+   "key": "emulationSettings/isPadOnExternalDisplay",
+   "label": "In-game menu > External PAD screen",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Puts the GamePad view on a second Android display (Presentation). This is the Thor dual-screen option. Only active when show_pad is also true and a second display exists. Not tested on the Thor."
+  },
+  "external_screen_rotated_left": {
+   "file": "app_settings",
+   "key": "emulationSettings/isExternalScreenRotatedLeft",
+   "label": "In-game menu > Rotate external screen left",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Rotates the GamePad image on the external display. Only enabled in the menu when pad_on_external_display is on."
+  },
+  "input_overlay": {
+   "file": "app_settings",
+   "key": "inputOverlaySettings/isOverlayEnabled",
+   "label": "Input overlay > Enable input overlay",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "On-screen touch controls. Related: inputOverlaySettings/alpha (default 64), controllerIndex (0), isVibrateOnTouchEnabled (false)."
+  },
+  "cpu_mode": {
+   "file": "game_profile",
+   "key": "CPU/cpuMode",
+   "label": "Edit game profile > CPU mode",
+   "type": "enum",
+   "values": {
+    "Single-core interpreter": "Single-core interpreter (0)",
+    "Single-core recompiler": "Single-core recompiler (1)",
+    "Multi-core recompiler": "Multi-core recompiler (3)",
+    "Auto": "Auto (recommended) (4)"
+   },
+   "default": "Auto",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Per game only: there is no global CPU mode in settings.xml (the save line is commented out). The app writes the names shown; the reader also accepts the numbers 0/1/3/4 and the legacy names (Singlecore-Interpreter, Singlecore-Recompiler, Dualcore-Recompiler, Triplecore-Recompiler), case-insensitive. Missing = Auto = Multi-core recompiler on 4+ cores (the Thor's log shows 'CPU-Mode: Multi-core recompiler')."
+  },
+  "thread_quantum": {
+   "file": "game_profile",
+   "key": "CPU/threadQuantum",
+   "label": "Edit game profile > Thread quantum",
+   "type": "int",
+   "values": {
+    "20000": "20000",
+    "45000": "45000 (default)",
+    "60000": "60000",
+    "80000": "80000",
+    "100000": "100000"
+   },
+   "default": "45000",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "PPC thread time slice in cycles. Menu offers the five listed; the reader accepts 1000-536870912 (out of range: ignored, logged)."
+  },
+  "load_shared_libraries": {
+   "file": "game_profile",
+   "key": "General/loadSharedLibraries",
+   "label": "Edit game profile > Load shared libraries",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "true",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Load real RPL libraries from the cafeLibs folder instead of HLE. Missing = true. Accepts true/false/1/0."
+  },
+  "accurate_shader_mul": {
+   "file": "game_profile",
+   "key": "Graphics/accurateShaderMul",
+   "label": "Edit game profile > Shader multiplication accuracy",
+   "type": "enum",
+   "values": {
+    "true": "Fully emulate non-IEEE MUL (0*anything = 0)",
+    "false": "Standard IEEE multiplication (faster, may glitch)"
+   },
+   "default": "true",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Enum AccurateShaderMulOption {False=0, True=1}; 0/1 also accepted. Logged as 'Strict shader mul' at boot."
+  },
+  "driver_mode": {
+   "file": "game_profile",
+   "key": "AndroidDriver/mode",
+   "label": "Edit game profile > Custom driver",
+   "type": "enum",
+   "values": {
+    "0": "Global (use custom_driver from settings.xml)",
+    "1": "System driver",
+    "2": "Custom (use AndroidDriver/customPath)"
+   },
+   "default": "0",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Enum DriverSettingMode, written as an integer. 2 with a customPath that does not exist falls back to the global custom_driver."
+  },
+  "driver_custom_path": {
+   "file": "game_profile",
+   "key": "AndroidDriver/customPath",
+   "label": "Edit game profile > Custom driver (chosen driver)",
+   "type": "string",
+   "values": {
+    "<dir>": "Absolute path of an installed driver folder under .../files/customDrivers/"
+   },
+   "default": "",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Read only when AndroidDriver/mode = 2."
+  },
+  "start_with_pad_view": {
+   "file": "game_profile",
+   "key": "General/startWithPadView",
+   "label": "(none on Android; desktop: Start with GamePad view)",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Shows the GamePad image instead of the TV image at boot (ActiveSettings::DisplayDRCEnabled). No Android menu entry; effect on Android not tested. The in-game 'Replace TV with PAD' toggle does the same live but is not saved."
+  }
+ }
+}

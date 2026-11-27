@@ -1,0 +1,460 @@
+{
+ "name": "dusklight",
+ "package": "dev.twilitrealm.dusk",
+ "aliases": [
+  "dusk",
+  "twilight-princess",
+  "tp",
+  "gz2e01"
+ ],
+ "category": "recomp",
+ "version_checked": "2.0.3",
+ "stop_before_write": true,
+ "files": {
+  "config": {
+   "path": "/data/data/dev.twilitrealm.dusk/files/config.json",
+   "format": "json",
+   "notes": "Flat JSON object, nlohmann::json written with 4-space indent via a .config.json.tmp file. Keys are the dotted ConfigVar names (e.g. \"game.bloomMode\") as single top-level keys, not nested. Enums are stored as integers, bools as JSON bools. Only values that were set are written (a value set to its default stays), missing = source default. Read once at start-up; the app rewrites the whole file when any setting changes, so force-stop before editing. Root-only path (owned by the app uid, mode 600)."
+  },
+  "controller_ports": {
+   "path": "/data/data/dev.twilitrealm.dusk/files/controller_ports.dat",
+   "format": "other",
+   "notes": "Binary port-to-controller assignment (80 bytes). Do not edit."
+  },
+  "controller_map": {
+   "path": "/data/data/dev.twilitrealm.dusk/files/Odin Controller_2020_0111.controller",
+   "format": "other",
+   "notes": "Binary per-controller button map for the Thor pad (303 bytes). Edit in the app's controller config UI only."
+  }
+ },
+ "per_game": null,
+ "keys": {
+  "internal_resolution": {
+   "file": "config",
+   "key": "game.internalResolutionScale",
+   "label": "Graphics Tuner > Internal Resolution",
+   "type": "int",
+   "values": {
+    "0": "Auto (window size)",
+    "1": "1x (native 640x528 GameCube)",
+    "2": "2x",
+    "3": "3x",
+    "4": "4x",
+    "6": "6x",
+    "8": "8x",
+    "12": "12x (max)"
+   },
+   "default": "0",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Range 0-12 step 1 (GraphicsSetting bind 0,12). 0 = Auto = render at the surface size. Value seen in a config.json the app wrote after applying the Dusklight preset; effect not tested in game."
+  },
+  "shadow_resolution": {
+   "file": "config",
+   "key": "game.shadowResolutionMultiplier",
+   "label": "Graphics Tuner > Shadow Resolution",
+   "type": "int",
+   "values": {
+    "1": "1x",
+    "2": "2x",
+    "3": "3x",
+    "4": "4x",
+    "5": "5x",
+    "6": "6x",
+    "7": "7x",
+    "8": "8x"
+   },
+   "default": "1",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Range 1-8. Dusklight preset sets 4. Value seen in a config.json the app wrote after applying the Dusklight preset; effect not tested in game."
+  },
+  "frame_interpolation": {
+   "file": "config",
+   "key": "game.enableFrameInterpolation",
+   "label": "Video > Frame Interpolation",
+   "type": "enum",
+   "values": {
+    "0": "Off (original 30 fps game logic)",
+    "1": "Capped (limited by video.maxFrameRate)",
+    "2": "Unlimited"
+   },
+   "default": "0",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "FrameInterpMode. Older configs may hold a bool (true = Unlimited); loader accepts both. Value seen in a config.json the app wrote after applying the Dusklight preset; effect not tested in game."
+  },
+  "max_frame_rate": {
+   "file": "config",
+   "key": "video.maxFrameRate",
+   "label": "Video > Framerate Cap",
+   "type": "int",
+   "default": "240",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "30-540 step 1. Only used when frame interpolation is Capped (UI greys it out otherwise)."
+  },
+  "vsync": {
+   "file": "config",
+   "key": "video.enableVsync",
+   "label": "Video > VSync",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "true",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Default on."
+  },
+  "lock_aspect": {
+   "file": "config",
+   "key": "video.lockAspectRatio",
+   "label": "Video > Lock Aspect Ratio",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "true = keep 4:3/16:9 game aspect instead of filling the window. Classic preset sets true."
+  },
+  "fps_overlay": {
+   "file": "config",
+   "key": "game.enableFpsOverlay",
+   "label": "Video > FPS Overlay",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Corner in game.fpsOverlayCorner (0 Top Left, 1 Top Right, 2 Bottom Left, 3 Bottom Right)."
+  },
+  "bloom": {
+   "file": "config",
+   "key": "game.bloomMode",
+   "label": "Graphics Tuner > Bloom",
+   "type": "enum",
+   "values": {
+    "0": "Off",
+    "1": "Classic",
+    "2": "Dusklight"
+   },
+   "default": "2",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Source default Dusk(2); the tuner's own reset value is Classic(1). Strength in game.bloomMultiplier (float 0.0-1.0, UI 0-100% step 10). Value seen in a config.json the app wrote after applying the Dusklight preset; effect not tested in game."
+  },
+  "depth_of_field": {
+   "file": "config",
+   "key": "game.depthOfFieldMode",
+   "label": "Graphics Tuner > Depth of Field",
+   "type": "enum",
+   "values": {
+    "0": "Off",
+    "1": "Classic",
+    "2": "Dusklight"
+   },
+   "default": "2",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Value seen in a config.json the app wrote after applying the Dusklight preset; effect not tested in game."
+  },
+  "resampler": {
+   "file": "config",
+   "key": "game.resampler",
+   "label": "Graphics Tuner > Resampler",
+   "type": "enum",
+   "values": {
+    "0": "Bilinear",
+    "1": "Area"
+   },
+   "default": "0",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Downscale filter used when internal resolution exceeds the output."
+  },
+  "texture_replacements": {
+   "file": "config",
+   "key": "game.enableTextureReplacements",
+   "label": "Graphics Tuner > Texture Replacements",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "true",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Loads packs from files/texture_replacements."
+  },
+  "water_refraction_off": {
+   "file": "config",
+   "key": "game.disableWaterRefraction",
+   "label": "Disable Water Refraction",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": ""
+  },
+  "letterboxing": {
+   "file": "config",
+   "key": "game.disableLetterboxing",
+   "label": "Video > Disable Letterboxing",
+   "type": "enum",
+   "values": {
+    "0": "Off",
+    "1": "On",
+    "2": "Only During Gameplay",
+    "3": "Only During Cutscenes"
+   },
+   "default": "0",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "LetterboxMode."
+  },
+  "cutscene_pillarbox_off": {
+   "file": "config",
+   "key": "game.disableCutscenePillarboxing",
+   "label": "Video > Disable Cutscene Pillarboxing",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": ""
+  },
+  "menu_scaling": {
+   "file": "config",
+   "key": "game.menuScalingMode",
+   "label": "Menu Scaling",
+   "type": "enum",
+   "values": {
+    "0": "GameCube",
+    "1": "Wii",
+    "2": "Dusklight"
+   },
+   "default": "1",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Value seen in a config.json the app wrote after applying the Dusklight preset; effect not tested in game."
+  },
+  "hud_scale": {
+   "file": "config",
+   "key": "game.hudScale",
+   "label": "HUD Scale",
+   "type": "float",
+   "default": "1.0",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Percent select in UI (1.0 = 100%)."
+  },
+  "graphics_backend": {
+   "file": "config",
+   "key": "backend.graphicsBackend",
+   "label": "Graphics Backend",
+   "type": "enum",
+   "values": {
+    "\"auto\"": "Auto",
+    "\"vulkan\"": "Vulkan",
+    "\"opengles\"": "OpenGL ES"
+   },
+   "default": "\"auto\"",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Restart required. Source also knows d3d11/d3d12/metal/opengl/webgpu/null; only backends Aurora reports as available are shown (Vulkan and OpenGL ES expected on Android, not checked)."
+  },
+  "autosave": {
+   "file": "config",
+   "key": "game.autoSave",
+   "label": "Auto Save",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Value seen in a config.json the app wrote after applying the Dusklight preset; effect not tested in game."
+  },
+  "instant_saves": {
+   "file": "config",
+   "key": "game.instantSaves",
+   "label": "Instant Saves",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Value seen in a config.json the app wrote after applying the Dusklight preset; effect not tested in game."
+  },
+  "fast_climbing": {
+   "file": "config",
+   "key": "game.fastClimbing",
+   "label": "Fast Climbing",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Value seen in a config.json the app wrote after applying the Dusklight preset; effect not tested in game."
+  },
+  "bigger_wallets": {
+   "file": "config",
+   "key": "game.biggerWallets",
+   "label": "Bigger Wallets",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Value seen in a config.json the app wrote after applying the Dusklight preset; effect not tested in game."
+  },
+  "instant_text": {
+   "file": "config",
+   "key": "game.instantText",
+   "label": "Instant Text",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": ""
+  },
+  "fast_transitions": {
+   "file": "config",
+   "key": "game.fastTransitions",
+   "label": "Fast Transitions",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": ""
+  },
+  "gyro_aim": {
+   "file": "config",
+   "key": "game.enableGyroAim",
+   "label": "Gyro Aim",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Sensitivity game.gyroSensitivityX/Y (float, 1.0), smoothing 0.65, deadband 0.04. Value seen in a config.json the app wrote after applying the Dusklight preset; effect not tested in game."
+  },
+  "invert_camera_x": {
+   "file": "config",
+   "key": "game.invertCameraXAxis",
+   "label": "Invert Camera X",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Value seen in a config.json the app wrote after applying the Dusklight preset; effect not tested in game."
+  },
+  "invert_camera_y": {
+   "file": "config",
+   "key": "game.invertCameraYAxis",
+   "label": "Invert Camera Y",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": ""
+  },
+  "touch_controls": {
+   "file": "config",
+   "key": "game.enableTouchControls",
+   "label": "Controls > Touch Controls",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Layout in game.touchControlsLayout (object). Targeting game.touchTargeting 0 Hybrid, 1 Hold, 2 Switch."
+  },
+  "mirror_mode": {
+   "file": "config",
+   "key": "game.enableMirrorMode",
+   "label": "Mirror Mode (Wii layout)",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": ""
+  },
+  "master_volume": {
+   "file": "config",
+   "key": "audio.masterVolume",
+   "label": "Audio > Master Volume",
+   "type": "int",
+   "default": "60",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "0-100."
+  },
+  "skip_prelaunch": {
+   "file": "config",
+   "key": "backend.skipPreLaunchUI",
+   "label": "Skip Pre-Launch UI",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "true = boot straight into the game from Cocoon."
+  }
+ }
+}

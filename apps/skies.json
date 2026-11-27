@@ -1,0 +1,450 @@
+{
+ "name": "skies",
+ "package": "com.skiesofarcadia.recomp",
+ "aliases": [
+  "skiesofarcadia",
+  "soa",
+  "arcadia"
+ ],
+ "category": "recomp",
+ "version_checked": "0.94.0-beta",
+ "stop_before_write": true,
+ "files": {
+  "dolphin": {
+   "path": "/sdcard/Android/data/com.skiesofarcadia.recomp/files/Config/Dolphin.ini",
+   "format": "ini",
+   "notes": "Dolphin-style main config plus the port's own [Skies] section. Written by the launcher's settings panel through NativeConfig (layer 1 = base) and saved at each change; Dolphin bools are True/False. Holds [Analytics] ID: do not print or copy it."
+  },
+  "gfx": {
+   "path": "/sdcard/Android/data/com.skiesofarcadia.recomp/files/Config/GFX.ini",
+   "format": "ini",
+   "notes": "Dolphin graphics config. The app also keeps AspectRatio = 5 and CustomAspectRatioWidth/Height = 16/9 here for its Picture setting: leave those to the app."
+  },
+  "gcpad": {
+   "path": "/sdcard/Android/data/com.skiesofarcadia.recomp/files/Config/GCPadNew.ini",
+   "format": "ini",
+   "notes": "Controller mapping ([GCPad1] = Android/1/Odin Controller for the Thor's built-in pad) and the port's [SkiesHotkeys] (Menu, Invincible)."
+  },
+  "game_settings": {
+   "path": "/sdcard/Android/data/com.skiesofarcadia.recomp/files/GameSettings/{game}.ini",
+   "format": "ini",
+   "notes": "Shipped by the app for GEAE8P/GEAP8P/GEAJ8P: [Core] StaticRecompIdlePC and CPUThread. Engine internals: do not edit."
+  }
+ },
+ "per_game": null,
+ "keys": {
+  "picture": {
+   "file": "dolphin",
+   "key": "Skies/Widescreen",
+   "label": "Graphics > Picture",
+   "type": "enum",
+   "values": {
+    "1": "Widescreen 16:9",
+    "2": "Match screen",
+    "0": "Original 4:3"
+   },
+   "default": "1",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Widescreen patches come from cache/dolpatches/skies-widescreen*.dolpatch."
+  },
+  "hud": {
+   "file": "dolphin",
+   "key": "Skies/Hud",
+   "label": "Graphics > HUD",
+   "type": "enum",
+   "values": {
+    "2": "Screen edges",
+    "3": "21:9 area",
+    "1": "16:9 area",
+    "0": "Original 4:3"
+   },
+   "default": "2",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Only matters with a wide Picture."
+  },
+  "frame_rate": {
+   "file": "dolphin",
+   "key": "Skies/FrameMode",
+   "label": "Graphics > Frame rate",
+   "type": "enum",
+   "values": {
+    "0": "30 fps (original)",
+    "1": "60 fps (interpolated)"
+   },
+   "default": "0",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": ""
+  },
+  "renderer": {
+   "file": "dolphin",
+   "key": "Core/GFXBackend",
+   "label": "Graphics > Renderer",
+   "type": "enum",
+   "values": {
+    "Vulkan": "Vulkan",
+    "OGL": "OpenGL ES"
+   },
+   "default": "Vulkan",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Takes effect when the game starts. v0.94 replaces this with its own Renderer setting."
+  },
+  "internal_resolution": {
+   "file": "gfx",
+   "key": "Settings/InternalResolution",
+   "label": "Graphics > Resolution",
+   "type": "enum",
+   "values": {
+    "1": "Native (480p)",
+    "2": "2x (720p)",
+    "3": "3x (1080p)",
+    "4": "4x (1440p)",
+    "6": "6x (4K)"
+   },
+   "default": "1",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": ""
+  },
+  "msaa": {
+   "file": "gfx",
+   "key": "Settings/MSAA",
+   "label": "Graphics > Anti-aliasing",
+   "type": "enum",
+   "values": {
+    "0x00000001": "Off",
+    "0x00000002": "2x MSAA",
+    "0x00000004": "4x MSAA",
+    "0x00000008": "8x MSAA"
+   },
+   "default": "0x00000001",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Dolphin writes this u32 as hex (e.g. 0x00000002); a plain decimal 1/2/4/8 also parses."
+  },
+  "texture_filtering": {
+   "file": "gfx",
+   "key": "Enhancements/ForceTextureFiltering",
+   "label": "Graphics > Texture filtering",
+   "type": "enum",
+   "values": {
+    "0": "Original",
+    "2": "Smooth",
+    "1": "Sharp"
+   },
+   "default": "0",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Dolphin TextureFilteringMode: 0 default, 1 nearest, 2 linear."
+  },
+  "anisotropy": {
+   "file": "gfx",
+   "key": "Enhancements/MaxAnisotropy",
+   "label": "Graphics > Anisotropic filtering",
+   "type": "enum",
+   "values": {
+    "-1": "Off",
+    "1": "2x",
+    "2": "4x",
+    "3": "8x",
+    "4": "16x"
+   },
+   "default": "-1",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": ""
+  },
+  "scaling": {
+   "file": "gfx",
+   "key": "Enhancements/OutputResampling",
+   "label": "Graphics > Scaling",
+   "type": "enum",
+   "values": {
+    "0": "Default",
+    "5": "Sharp",
+    "6": "Smooth",
+    "4": "Bicubic"
+   },
+   "default": "0",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Dolphin OutputResamplingMode: 5 sharp bilinear, 6 area sampling, 4 Catmull-Rom."
+  },
+  "vsync": {
+   "file": "gfx",
+   "key": "Hardware/VSync",
+   "label": "Graphics > V-Sync",
+   "type": "bool",
+   "values": {
+    "True": "On",
+    "False": "Off"
+   },
+   "default": "False",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": ""
+  },
+  "show_fps": {
+   "file": "gfx",
+   "key": "Settings/ShowFPS",
+   "label": "Graphics > Show FPS",
+   "type": "bool",
+   "values": {
+    "True": "On",
+    "False": "Off"
+   },
+   "default": "False",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Section taken from Dolphin's GFX layout; the panel's section variable was not resolved in the raw dump."
+  },
+  "hd_textures": {
+   "file": "gfx",
+   "key": "Settings/HiresTextures",
+   "label": "Graphics > HD textures",
+   "type": "bool",
+   "values": {
+    "True": "On",
+    "False": "Off"
+   },
+   "default": "False",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Only shown once a texture pack is imported. Section as in Dolphin's GFX layout (not resolved in the raw dump)."
+  },
+  "camera": {
+   "file": "dolphin",
+   "key": "Skies/CameraControl",
+   "label": "Gameplay > Camera",
+   "type": "enum",
+   "values": {
+    "1": "Hold Z to move",
+    "0": "Original"
+   },
+   "default": "1",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": ""
+  },
+  "battle_speed": {
+   "file": "dolphin",
+   "key": "Skies/BattleSpeed",
+   "label": "Gameplay > Battle speed",
+   "type": "enum",
+   "values": {
+    "1": "Normal",
+    "2": "2x",
+    "3": "3x",
+    "4": "4x"
+   },
+   "default": "1",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Tap Z in battle to switch."
+  },
+  "field_speed": {
+   "file": "dolphin",
+   "key": "Skies/FieldSpeed",
+   "label": "Gameplay > Field speed",
+   "type": "enum",
+   "values": {
+    "100": "Normal",
+    "150": "1.5x",
+    "200": "2x",
+    "300": "3x"
+   },
+   "default": "100",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Z+X outside battle switches."
+  },
+  "encounters": {
+   "file": "dolphin",
+   "key": "Skies/Encounters",
+   "label": "Gameplay > Encounters",
+   "type": "enum",
+   "values": {
+    "0": "Off",
+    "25": "1/4",
+    "50": "1/2",
+    "100": "Normal",
+    "200": "2x",
+    "400": "4x"
+   },
+   "default": "100",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": ""
+  },
+  "hold_b": {
+   "file": "dolphin",
+   "key": "Skies/HoldB",
+   "label": "Gameplay > Hold B",
+   "type": "enum",
+   "values": {
+    "0": "Off",
+    "1": "No battles while held"
+   },
+   "default": "0",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": ""
+  },
+  "exp": {
+   "file": "dolphin",
+   "key": "Skies/Exp",
+   "label": "Gameplay > EXP",
+   "type": "enum",
+   "values": {
+    "0": "Off",
+    "50": "1/2",
+    "100": "Normal",
+    "200": "2x",
+    "300": "3x",
+    "400": "4x"
+   },
+   "default": "100",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": ""
+  },
+  "gold": {
+   "file": "dolphin",
+   "key": "Skies/Gold",
+   "label": "Gameplay > Gold",
+   "type": "enum",
+   "values": {
+    "0": "Off",
+    "50": "1/2",
+    "100": "Normal",
+    "200": "2x",
+    "300": "3x",
+    "400": "4x"
+   },
+   "default": "100",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": ""
+  },
+  "magic_exp": {
+   "file": "dolphin",
+   "key": "Skies/MagicExp",
+   "label": "Gameplay > Magic EXP",
+   "type": "enum",
+   "values": {
+    "0": "Off",
+    "50": "1/2",
+    "100": "Normal",
+    "200": "2x",
+    "300": "3x",
+    "400": "4x"
+   },
+   "default": "100",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": ""
+  },
+  "invincible": {
+   "file": "dolphin",
+   "key": "Skies/Invincible",
+   "label": "Gameplay > Invincible",
+   "type": "enum",
+   "values": {
+    "1": "On",
+    "0": "Off"
+   },
+   "default": "0",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "L3 or R3 toggles it in game ([SkiesHotkeys] Invincible)."
+  },
+  "auto_save": {
+   "file": "dolphin",
+   "key": "Skies/AutoSave",
+   "label": "Saves > Auto-save",
+   "type": "enum",
+   "values": {
+    "0": "Off",
+    "5": "Every 5 min",
+    "10": "Every 10 min",
+    "15": "Every 15 min",
+    "30": "Every 30 min"
+   },
+   "default": "10",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": ""
+  },
+  "language": {
+   "file": "dolphin",
+   "key": "Skies/Language",
+   "label": "Language",
+   "type": "enum",
+   "values": {
+    "0": "English",
+    "1": "Deutsch",
+    "2": "Français",
+    "3": "Español"
+   },
+   "default": "0",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "European disc (GEAP8P) only; the USA disc is English only."
+  },
+  "dreamcast_music": {
+   "file": "dolphin",
+   "key": "Skies/DreamcastMusic",
+   "label": "Dreamcast > Music",
+   "type": "enum",
+   "values": {
+    "0": "GameCube",
+    "1": "Dreamcast"
+   },
+   "default": "0",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Needs an imported Dreamcast disc."
+  },
+  "dreamcast_intro": {
+   "file": "dolphin",
+   "key": "Skies/DreamcastIntro",
+   "label": "Dreamcast > Intro music",
+   "type": "enum",
+   "values": {
+    "1": "Dreamcast",
+    "0": "GameCube"
+   },
+   "default": "1",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Needs an imported Dreamcast disc."
+  },
+  "uncensored": {
+   "file": "dolphin",
+   "key": "Skies/Uncensored",
+   "label": "Dreamcast > Uncensored",
+   "type": "enum",
+   "values": {
+    "0": "Off",
+    "1": "On"
+   },
+   "default": "0",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Needs Eternal Arcadia (Japanese Dreamcast) imported."
+  },
+  "volume": {
+   "file": "dolphin",
+   "key": "DSP/Volume",
+   "label": "Sound > Volume",
+   "type": "int",
+   "default": "100",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "0-100 in steps of 10 in the UI."
+  }
+ }
+}

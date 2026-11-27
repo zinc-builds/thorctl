@@ -1,0 +1,1065 @@
+{
+ "name": "droiddeck",
+ "package": "com.droiddeck.launcher",
+ "aliases": [
+  "steam",
+  "pc"
+ ],
+ "version_checked": "0.7.11",
+ "stop_before_write": true,
+ "files": {
+  "session": {
+   "path": "/data/data/com.droiddeck.launcher/shared_prefs/session.xml",
+   "format": "prefs",
+   "notes": "SharedPreferences 'session': every global DroidDeck setting (display, scaling, FEX preset, Wine sync, CPU cores, memory caps, drivers, components, controller, audio), plus per-game texture filtering as a JSON string (gameTextureFiltering). The app holds it in memory and rewrites the whole file on any change, so DroidDeck must be force-stopped before editing. Read when a session starts; a few (upscaler, sharpness, texture filtering) are also pushed live by in-session menus. Owned by the app uid (u0_a<N>) with SELinux label u:object_r:app_data_file:s0:c<N>,c256,c512,c768."
+  },
+  "frame_gen": {
+   "path": "/data/data/com.droiddeck.launcher/shared_prefs/frame_gen.xml",
+   "format": "prefs",
+   "notes": "SharedPreferences 'frame_gen': global frame generation (engine/multiplier/target). Absent until frame generation is first set (means Off). The app creates it the first time Frame generation is picked in the UI; pick it once before editing. Global only, no per-game frame generation in 0.7.1."
+  },
+  "game_env": {
+   "path": "/data/data/com.droiddeck.launcher/files/game-environment.json",
+   "format": "json",
+   "notes": "SOURCE OF TRUTH for per-game and shared environment variables (GameEnvironmentStore, AtomicFile). Shape: {\"version\":1,\"shared\":{VAR:value},\"games\":{\"<appid>\":{VAR:value|null}}}. Every value MUST be a JSON string (\"1\", not 1) or null; one non-string value makes the app and the guest reject the whole file and games launch with no DroidDeck environment at all. Absent until the first override: create it as exactly {\"version\":1,\"shared\":{},\"games\":{}} before adding keys. 'shared' here holds only user overrides; the app adds its built-in defaults and the global FEX preset when it publishes. The app re-reads it from disk on every use (no cache) and copies it to guest_env at every session start and on display changes.",
+   "template": "{\"version\":1,\"shared\":{},\"games\":{}}\n",
+   "string_values": true
+  },
+  "guest_env": {
+   "path": "/data/data/com.droiddeck.launcher/files/linuxfs/root/.config/droiddeck/game-environment.json",
+   "format": "json",
+   "notes": "GENERATED, do not edit. The resolved copy the guest launcher /usr/local/bin/droiddeck-game-env reads at every game launch (Steam's 'waitforexitandrun' step): shared = defaults + global FEX preset + game_env.shared, games = game_env.games, plus dxvkConfig/dxvkConfigGames (texture filtering) and gameDebugLogs. Overwritten from game_env + session at session start and display changes. Useful read-only: shows exactly what the next launch uses. With default settings, shared is MESA_SHADER_CACHE_DISABLE=false, DROIDDECK_ANTICHEAT_OFFLINE=1, DOTNET_GCRegionRange=800000000, DOTNET_EnableWriteXorExecute=0 and the Performance + TSO FEX variables."
+  },
+  "game_proton": {
+   "path": "/data/data/com.droiddeck.launcher/files/linuxfs/root/.local/share/droiddeck-compat/games.json",
+   "format": "json",
+   "notes": "Per-game Proton requests: {\"version\":1,\"games\":{\"<appid>\":{\"valve\":bool,\"dir\":\"<tool folder>\"}|null}}. The guest helper droiddeck-steam-compat watches this file while a Steam session runs and applies it to Steam's own CompatToolMapping through the client's DevTools (so it shows as the game's compatibility tool in Steam). Absent until the first pick: create as {\"version\":1,\"games\":{}}. Valid tools are listed in compat_state 'tools'."
+  },
+  "compat_state": {
+   "path": "/data/data/com.droiddeck.launcher/files/linuxfs/root/.local/share/droiddeck-compat/state.json",
+   "format": "json",
+   "notes": "Guest-written state of the Proton mapper. Read-only. 'tools' lists runnable compat tools as {name, display, dir, valve}; 'default' is the Proton used for every game without its own pick; 'auto' maps app ids to the tool DroidDeck assigned. Checked against 0.7.1: default DroidDeck-Proton-11-11.9 (dir 'DroidDeck-Proton 11-11.9', valve false); Valve tools such as 'Proton Experimental (ARM64)' have valve true."
+  },
+  "components": {
+   "path": "/data/data/com.droiddeck.launcher/files/components/state.json",
+   "format": "json",
+   "notes": "Component packages (DXVK, VKD3D-Proton, FEX) per Proton build ('active') and per game ('profiles': {\"<appid>\":{\"dxvk\"|\"vkd3d\"|\"fex\":\"<package file>.wcp\"}}). The app turns it into the guest's droiddeck-components/desired.tsv and unpacks packages at session start (ComponentsManager.republish), so edits apply from the next session. A package must exist in files/components/packages/. The 'profiles' key is absent until a game has its own package. Also written while the app runs (auto-updates, UI), so stop the app before editing."
+  },
+  "wincomponents": {
+   "path": "/data/data/com.droiddeck.launcher/files/wincomponents.json",
+   "format": "json",
+   "notes": "Windows components (VC++ runtimes, d3dx9 ...) installed per game: {version:1, games:{<appid>:[ids]}, auto:{...}, user:{...}}. Copied to the guest at session start. Usually managed automatically from Steam's redist info; edit only through the Windows components dialog."
+  }
+ },
+ "per_game": {
+  "path": "/data/data/com.droiddeck.launcher/files/game-environment.json",
+  "format": "json",
+  "game_id": "The Steam app id (decimal, 1..4294967295). Sources: the number inside each Roms/Steam/<Name>.steam file (/storage/emulated/0/Roms/Steam), appmanifest_<appid>.acf in the guest Steam library, files/steam-appinfo.json (id -> name), or the store URL. Non-Steam games added to DroidDeck use their 32-bit shortcut id.",
+  "create": true,
+  "notes": "Per-game environment lives under games/{game}/<VAR> in game_env; a game's entry overrides shared/<VAR>, and a null value unsets the variable for that game. The game entry must exist before a key under it can be written ({\"games\":{\"<appid>\":{}}}). Other per-game settings sit in other files and are keyed by the same app id: Proton in game_proton games/{game}, component packages in components profiles/{game}, texture filtering in session gameTextureFiltering#{game}/..., Windows components in wincomponents games/{game}. The UI's 'Default' button for a game clears all five."
+ },
+ "keys": {
+  "no_steam": {
+   "file": "game_env",
+   "key": "games/{game}/DROIDDECK_NO_STEAM",
+   "label": "Settings > Start without Steam",
+   "type": "enum",
+   "values": {
+    "\"1\"": "On (launch through droiddeck-proton-run without the Steam client)"
+   },
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Unset = Off (launch through Steam). The app also accepts on/true/yes. Applies to launches from DroidDeck and the LAUNCH_GAME intent (FrontEndActivity checks it before starting Steam). Steam overlay, cloud saves and achievements are off in this mode. Env var DROIDDECK_NO_STEAM. Value must be a JSON string: pass numbers quoted ('\"60\"'), or the whole file is rejected. Read from DroidDeck 0.7.1 source; not set on the test device, effect not tested by launching a game."
+  },
+  "fex_tso": {
+   "file": "game_env",
+   "key": "games/{game}/FEX_TSOENABLED",
+   "label": "FEX preset (TSO, main)",
+   "type": "enum",
+   "values": {
+    "\"1\"": "On",
+    "\"0\"": "Off"
+   },
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "x86 memory-order emulation. Part of the per-game FEX preset: the UI writes all six FEX_* keys together; if they match no preset the UI shows 'Custom FEX variables'. Presets (TSO,VECTORTSO,MEMCPYTSO,HALFBARRIERTSO,X87REDUCED,MULTIBLOCK): STABILITY 1,1,1,1,0,0; COMPATIBILITY 1,1,1,1,0,1; INTERMEDIATE 1,0,0,1,1,1; PERFORMANCE 0,0,0,0,1,1; PERFORMANCE_TSO (app default) 1,0,0,0,1,1; EXTREME = PERFORMANCE + FEX_SMCCHECKS=none, FEX_DISABLEL2CACHE=1, FEX_DYNAMICL1CACHE=1; EXTREME_TSO same with TSO=1; EXTREME_GN = PERFORMANCE + FEX_SMALLTSCSCALE=1, FEX_VOLATILEMETADATA=1; DENUVO = PERFORMANCE + FEX_SMCCHECKS=full, FEX_HIDEHYPERVISORBIT=1. Missing game keys inherit the global preset. Env var FEX_TSOENABLED. Value must be a JSON string: pass numbers quoted ('\"60\"'), or the whole file is rejected. Read from DroidDeck 0.7.1 source; not set on the test device, effect not tested by launching a game."
+  },
+  "fex_vector_tso": {
+   "file": "game_env",
+   "key": "games/{game}/FEX_VECTORTSOENABLED",
+   "label": "FEX preset (vector TSO)",
+   "type": "enum",
+   "values": {
+    "\"1\"": "On",
+    "\"0\"": "Off"
+   },
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "See fex_tso. Env var FEX_VECTORTSOENABLED. Value must be a JSON string: pass numbers quoted ('\"60\"'), or the whole file is rejected. Read from DroidDeck 0.7.1 source; not set on the test device, effect not tested by launching a game."
+  },
+  "fex_memcpy_tso": {
+   "file": "game_env",
+   "key": "games/{game}/FEX_MEMCPYSETTSOENABLED",
+   "label": "FEX preset (memcpy TSO)",
+   "type": "enum",
+   "values": {
+    "\"1\"": "On",
+    "\"0\"": "Off"
+   },
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "See fex_tso. Env var FEX_MEMCPYSETTSOENABLED. Value must be a JSON string: pass numbers quoted ('\"60\"'), or the whole file is rejected. Read from DroidDeck 0.7.1 source; not set on the test device, effect not tested by launching a game."
+  },
+  "fex_half_barrier_tso": {
+   "file": "game_env",
+   "key": "games/{game}/FEX_HALFBARRIERTSOENABLED",
+   "label": "FEX preset (half-barrier TSO)",
+   "type": "enum",
+   "values": {
+    "\"1\"": "On",
+    "\"0\"": "Off"
+   },
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "See fex_tso. Env var FEX_HALFBARRIERTSOENABLED. Value must be a JSON string: pass numbers quoted ('\"60\"'), or the whole file is rejected. Read from DroidDeck 0.7.1 source; not set on the test device, effect not tested by launching a game."
+  },
+  "fex_x87_reduced_precision": {
+   "file": "game_env",
+   "key": "games/{game}/FEX_X87REDUCEDPRECISION",
+   "label": "FEX preset (x87 reduced precision)",
+   "type": "enum",
+   "values": {
+    "\"1\"": "On (faster)",
+    "\"0\"": "Off (accurate)"
+   },
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "See fex_tso. droiddeck-game-env forces 0 with full TSO for .NET games it detects. Env var FEX_X87REDUCEDPRECISION. Value must be a JSON string: pass numbers quoted ('\"60\"'), or the whole file is rejected. Read from DroidDeck 0.7.1 source; not set on the test device, effect not tested by launching a game."
+  },
+  "fex_multiblock": {
+   "file": "game_env",
+   "key": "games/{game}/FEX_MULTIBLOCK",
+   "label": "FEX preset (multiblock JIT)",
+   "type": "enum",
+   "values": {
+    "\"1\"": "On",
+    "\"0\"": "Off"
+   },
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "See fex_tso. Env var FEX_MULTIBLOCK. Value must be a JSON string: pass numbers quoted ('\"60\"'), or the whole file is rejected. Read from DroidDeck 0.7.1 source; not set on the test device, effect not tested by launching a game."
+  },
+  "fex_smc_checks": {
+   "file": "game_env",
+   "key": "games/{game}/FEX_SMCCHECKS",
+   "label": "FEX self-modifying-code checks",
+   "type": "enum",
+   "values": {
+    "\"none\"": "None (Extreme presets)",
+    "\"mtrack\"": "Memory tracking (FEX's normal mode)",
+    "\"full\"": "Full (Denuvo preset)"
+   },
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Only the Extreme and Denuvo presets set it. Env var FEX_SMCCHECKS. Value must be a JSON string: pass numbers quoted ('\"60\"'), or the whole file is rejected. Read from DroidDeck 0.7.1 source; not set on the test device, effect not tested by launching a game."
+  },
+  "game_sync_ntsync": {
+   "file": "game_env",
+   "key": "games/{game}/BL_SYNC",
+   "label": "Wine sync (per game)",
+   "type": "enum",
+   "values": {
+    "\"1\"": "On",
+    "\"0\"": "Off"
+   },
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Per-game Wine sync = four keys written together: ntsync BL_SYNC=1,BL_FSYNC_FIRST=0,BL_SYNC_FALLBACK=1; fsync BL_SYNC=0,BL_FSYNC_FIRST=1,BL_SYNC_FALLBACK=1,PROTON_NO_ESYNC=1; esync BL_SYNC=0,BL_FSYNC_FIRST=0,BL_SYNC_FALLBACK=1; wineserver BL_SYNC=0,BL_FSYNC_FIRST=0,BL_SYNC_FALLBACK=0. Any other mix shows as 'Custom sync variables'. Unset all four to use the global sync. Env var BL_SYNC. Value must be a JSON string: pass numbers quoted ('\"60\"'), or the whole file is rejected. Read from DroidDeck 0.7.1 source; not set on the test device, effect not tested by launching a game."
+  },
+  "game_sync_fsync_first": {
+   "file": "game_env",
+   "key": "games/{game}/BL_FSYNC_FIRST",
+   "label": "Wine sync: droiddeck-fsync first",
+   "type": "enum",
+   "values": {
+    "\"1\"": "On",
+    "\"0\"": "Off"
+   },
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "See game_sync_ntsync. Env var BL_FSYNC_FIRST. Value must be a JSON string: pass numbers quoted ('\"60\"'), or the whole file is rejected. Read from DroidDeck 0.7.1 source; not set on the test device, effect not tested by launching a game."
+  },
+  "game_sync_fallback": {
+   "file": "game_env",
+   "key": "games/{game}/BL_SYNC_FALLBACK",
+   "label": "Wine sync: fall back to esync/fsync (0 = wineserver only)",
+   "type": "enum",
+   "values": {
+    "\"1\"": "On",
+    "\"0\"": "Off"
+   },
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "See game_sync_ntsync. Env var BL_SYNC_FALLBACK. Value must be a JSON string: pass numbers quoted ('\"60\"'), or the whole file is rejected. Read from DroidDeck 0.7.1 source; not set on the test device, effect not tested by launching a game."
+  },
+  "proton_no_esync": {
+   "file": "game_env",
+   "key": "games/{game}/PROTON_NO_ESYNC",
+   "label": "Turn droiddeck-esync off",
+   "type": "enum",
+   "values": {
+    "\"1\"": "esync off"
+   },
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Set by the fsync choice; also a standalone Game environment option. Env var PROTON_NO_ESYNC. Value must be a JSON string: pass numbers quoted ('\"60\"'), or the whole file is rejected. Read from DroidDeck 0.7.1 source; not set on the test device, effect not tested by launching a game."
+  },
+  "proton_no_ntsync": {
+   "file": "game_env",
+   "key": "games/{game}/PROTON_NO_NTSYNC",
+   "label": "Keep this game off ntsync",
+   "type": "enum",
+   "values": {
+    "\"1\"": "ntsync off"
+   },
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Env var PROTON_NO_NTSYNC. Value must be a JSON string: pass numbers quoted ('\"60\"'), or the whole file is rejected. Read from DroidDeck 0.7.1 source; not set on the test device, effect not tested by launching a game."
+  },
+  "proton_no_fsync": {
+   "file": "game_env",
+   "key": "games/{game}/PROTON_NO_FSYNC",
+   "label": "Keep this game off droiddeck-fsync",
+   "type": "enum",
+   "values": {
+    "\"1\"": "fsync off"
+   },
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Env var PROTON_NO_FSYNC. Value must be a JSON string: pass numbers quoted ('\"60\"'), or the whole file is rejected. Read from DroidDeck 0.7.1 source; not set on the test device, effect not tested by launching a game."
+  },
+  "game_cores": {
+   "file": "game_env",
+   "key": "games/{game}/DROIDDECK_GAME_CORES",
+   "label": "Game environment > DROIDDECK_GAME_CORES (CPU cores for this game)",
+   "type": "string",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Core list like '3-7' or '3,4,5,6,7', replacing the session's Game cores for this game; also sets WINE_CPU_TOPOLOGY so Windows sees only those cores. AYN Thor (SD 8 Gen 2): cpu0-2 small (capacity 280, 2.02 GHz), cpu3-6 medium (855, 2.80 GHz), cpu7 prime (1024, 3.19 GHz). Invalid lists are ignored with a log line. Env var DROIDDECK_GAME_CORES. Value must be a JSON string: pass numbers quoted ('\"60\"'), or the whole file is rejected. Read from DroidDeck 0.7.1 source; not set on the test device, effect not tested by launching a game."
+  },
+  "fastest_cores": {
+   "file": "game_env",
+   "key": "games/{game}/DROIDDECK_FASTEST_CORES",
+   "label": "Order cores fastest first for Wine",
+   "type": "enum",
+   "values": {
+    "\"0\"": "Off"
+   },
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Default on (unset): Windows sees cores sorted fastest first, trimmed to Proton's per-game CPU limit. 0 turns that off. Env var DROIDDECK_FASTEST_CORES. Value must be a JSON string: pass numbers quoted ('\"60\"'), or the whole file is rejected. Read from DroidDeck 0.7.1 source; not set on the test device, effect not tested by launching a game."
+  },
+  "dxvk_hud": {
+   "file": "game_env",
+   "key": "games/{game}/DXVK_HUD",
+   "label": "Game environment > DXVK_HUD",
+   "type": "string",
+   "values": {
+    "\"fps\"": "FPS counter",
+    "\"fps,frametimes\"": "FPS + frame-time graph",
+    "\"fps,gpuload,memory\"": "FPS, GPU load, memory",
+    "\"full\"": "Everything"
+   },
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "D3D9-11 overlay; comma list from: scale=0.5, opacity=0.7, devinfo, fps, frametimes, submissions, drawcalls, pipelines, descriptors, memory, gpuload, version, api, cs, compiler, samplers. Env var DXVK_HUD. Value must be a JSON string: pass numbers quoted ('\"60\"'), or the whole file is rejected. Read from DroidDeck 0.7.1 source; not set on the test device, effect not tested by launching a game."
+  },
+  "dxvk_config": {
+   "file": "game_env",
+   "key": "games/{game}/DXVK_CONFIG",
+   "label": "Game environment > DXVK_CONFIG",
+   "type": "string",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Semicolon-separated dxvk.conf lines, e.g. 'dxvk.maxFrameRate = 60; d3d11.samplerAnisotropy = 16'. DroidDeck appends its texture-filtering and VRAM-cap options to it. Per-game FPS cap for D3D9-11: dxvk.maxFrameRate = N. Env var DXVK_CONFIG. Value must be a JSON string: pass numbers quoted ('\"60\"'), or the whole file is rejected. Read from DroidDeck 0.7.1 source; not set on the test device, effect not tested by launching a game."
+  },
+  "dxvk_frame_rate": {
+   "file": "game_env",
+   "key": "games/{game}/DXVK_FRAME_RATE",
+   "label": "DXVK frame-rate limit (not in the app's list)",
+   "type": "string",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Standard DXVK env var for a D3D9-11 FPS cap; not in DroidDeck's option catalog (dxvk_config with dxvk.maxFrameRate is the app's suggestion). The app's own hint prefers Steam's Quick Access frame limiter, which is Steam's setting, not a DroidDeck file. Env var DXVK_FRAME_RATE. Value must be a JSON string: pass numbers quoted ('\"60\"'), or the whole file is rejected. Read from DroidDeck 0.7.1 source; not set on the test device, effect not tested by launching a game."
+  },
+  "vkd3d_frame_rate": {
+   "file": "game_env",
+   "key": "games/{game}/VKD3D_FRAME_RATE",
+   "label": "Game environment > VKD3D_FRAME_RATE",
+   "type": "string",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "D3D12 FPS cap; 0 disables. Env var VKD3D_FRAME_RATE. Value must be a JSON string: pass numbers quoted ('\"60\"'), or the whole file is rejected. Read from DroidDeck 0.7.1 source; not set on the test device, effect not tested by launching a game."
+  },
+  "vkd3d_feature_level": {
+   "file": "game_env",
+   "key": "games/{game}/VKD3D_FEATURE_LEVEL",
+   "label": "Game environment > VKD3D_FEATURE_LEVEL",
+   "type": "enum",
+   "values": {
+    "\"12_2\"": "12_2 (DX12 Ultimate)",
+    "\"12_1\"": "12_1",
+    "\"12_0\"": "12_0",
+    "\"11_1\"": "11_1",
+    "\"11_0\"": "11_0"
+   },
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Unset = automatic. Env var VKD3D_FEATURE_LEVEL. Value must be a JSON string: pass numbers quoted ('\"60\"'), or the whole file is rejected. Read from DroidDeck 0.7.1 source; not set on the test device, effect not tested by launching a game."
+  },
+  "vkd3d_shader_model": {
+   "file": "game_env",
+   "key": "games/{game}/VKD3D_SHADER_MODEL",
+   "label": "Game environment > VKD3D_SHADER_MODEL",
+   "type": "enum",
+   "values": {
+    "\"6_9\"": "6_9",
+    "\"6_8\"": "6_8",
+    "\"6_7\"": "6_7",
+    "\"6_6\"": "6_6",
+    "\"6_5\"": "6_5",
+    "\"6_4\"": "6_4",
+    "\"6_3\"": "6_3",
+    "\"6_2\"": "6_2",
+    "\"6_1\"": "6_1",
+    "\"6_0\"": "6_0",
+    "\"5_1\"": "5_1"
+   },
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Unset = automatic. Env var VKD3D_SHADER_MODEL. Value must be a JSON string: pass numbers quoted ('\"60\"'), or the whole file is rejected. Read from DroidDeck 0.7.1 source; not set on the test device, effect not tested by launching a game."
+  },
+  "vkd3d_config": {
+   "file": "game_env",
+   "key": "games/{game}/VKD3D_CONFIG",
+   "label": "Game environment > VKD3D_CONFIG",
+   "type": "string",
+   "values": {
+    "\"nodxr\"": "Ray tracing off",
+    "\"single_queue\"": "Single queue",
+    "\"no_upload_hvv\"": "No upload to host-visible VRAM"
+   },
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Comma list. Env var VKD3D_CONFIG. Value must be a JSON string: pass numbers quoted ('\"60\"'), or the whole file is rejected. Read from DroidDeck 0.7.1 source; not set on the test device, effect not tested by launching a game."
+  },
+  "proton_use_wined3d": {
+   "file": "game_env",
+   "key": "games/{game}/PROTON_USE_WINED3D",
+   "label": "Game environment > PROTON_USE_WINED3D",
+   "type": "enum",
+   "values": {
+    "\"1\"": "WineD3D instead of DXVK for D3D9-11",
+    "\"0\"": "DXVK"
+   },
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Env var PROTON_USE_WINED3D. Value must be a JSON string: pass numbers quoted ('\"60\"'), or the whole file is rejected. Read from DroidDeck 0.7.1 source; not set on the test device, effect not tested by launching a game."
+  },
+  "wine_d3d_config": {
+   "file": "game_env",
+   "key": "games/{game}/WINE_D3D_CONFIG",
+   "label": "Game environment > WINE_D3D_CONFIG",
+   "type": "enum",
+   "values": {
+    "\"renderer=vulkan\"": "WineD3D on Vulkan",
+    "\"renderer=gl\"": "WineD3D on OpenGL (Zink)"
+   },
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Renderer for DirectDraw / D3D1-7 and for games run with WineD3D. Vulkan is much faster on Adreno for old DirectDraw/D3D7 games. Env var WINE_D3D_CONFIG. Value must be a JSON string: pass numbers quoted ('\"60\"'), or the whole file is rejected. Read from DroidDeck 0.7.1 source; not set on the test device, effect not tested by launching a game."
+  },
+  "proton_dxvk_d3d8": {
+   "file": "game_env",
+   "key": "games/{game}/PROTON_DXVK_D3D8",
+   "label": "Game environment > PROTON_DXVK_D3D8",
+   "type": "enum",
+   "values": {
+    "\"1\"": "D3D8 through DXVK",
+    "\"0\"": "D3D8 through WineD3D"
+   },
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Env var PROTON_DXVK_D3D8. Value must be a JSON string: pass numbers quoted ('\"60\"'), or the whole file is rejected. Read from DroidDeck 0.7.1 source; not set on the test device, effect not tested by launching a game."
+  },
+  "winedlloverrides": {
+   "file": "game_env",
+   "key": "games/{game}/WINEDLLOVERRIDES",
+   "label": "Game environment > WINEDLLOVERRIDES",
+   "type": "string",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "e.g. 'dinput8=n,b;dxgi=n'. DroidDeck prepends its own overrides for installed Windows components. Env var WINEDLLOVERRIDES. Value must be a JSON string: pass numbers quoted ('\"60\"'), or the whole file is rejected. Read from DroidDeck 0.7.1 source; not set on the test device, effect not tested by launching a game."
+  },
+  "mesa_glthread": {
+   "file": "game_env",
+   "key": "games/{game}/mesa_glthread",
+   "label": "Game environment > mesa_glthread",
+   "type": "enum",
+   "values": {
+    "\"true\"": "On",
+    "\"false\"": "Off"
+   },
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "OpenGL games only. Env var mesa_glthread. Value must be a JSON string: pass numbers quoted ('\"60\"'), or the whole file is rejected. Read from DroidDeck 0.7.1 source; not set on the test device, effect not tested by launching a game."
+  },
+  "proton_log": {
+   "file": "game_env",
+   "key": "games/{game}/PROTON_LOG",
+   "label": "Game environment > PROTON_LOG",
+   "type": "enum",
+   "values": {
+    "\"1\"": "Write a Proton log",
+    "\"0\"": "Off"
+   },
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Env var PROTON_LOG. Value must be a JSON string: pass numbers quoted ('\"60\"'), or the whole file is rejected. Read from DroidDeck 0.7.1 source; not set on the test device, effect not tested by launching a game."
+  },
+  "proton_use_xalia": {
+   "file": "game_env",
+   "key": "games/{game}/PROTON_USE_XALIA",
+   "label": "Game environment > PROTON_USE_XALIA",
+   "type": "enum",
+   "values": {
+    "\"0\"": "Off",
+    "\"1\"": "On"
+   },
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Env var PROTON_USE_XALIA. Value must be a JSON string: pass numbers quoted ('\"60\"'), or the whole file is rejected. Read from DroidDeck 0.7.1 source; not set on the test device, effect not tested by launching a game."
+  },
+  "anticheat_offline": {
+   "file": "game_env",
+   "key": "games/{game}/DROIDDECK_ANTICHEAT_OFFLINE",
+   "label": "Game environment > DROIDDECK_ANTICHEAT_OFFLINE",
+   "type": "enum",
+   "values": {
+    "\"1\"": "Start EAC games without anti-cheat (offline)",
+    "\"0\"": "Launch through Easy Anti-Cheat"
+   },
+   "default": "\"1\"",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Shared default is 1. Env var DROIDDECK_ANTICHEAT_OFFLINE. Value must be a JSON string: pass numbers quoted ('\"60\"'), or the whole file is rejected. Read from DroidDeck 0.7.1 source; not set on the test device, effect not tested by launching a game."
+  },
+  "large_address_aware": {
+   "file": "game_env",
+   "key": "games/{game}/WINE_LARGE_ADDRESS_AWARE",
+   "label": "Game environment > WINE_LARGE_ADDRESS_AWARE",
+   "type": "enum",
+   "values": {
+    "\"1\"": "On",
+    "\"0\"": "Off"
+   },
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Env var WINE_LARGE_ADDRESS_AWARE. Value must be a JSON string: pass numbers quoted ('\"60\"'), or the whole file is rejected. Read from DroidDeck 0.7.1 source; not set on the test device, effect not tested by launching a game."
+  },
+  "tu_debug": {
+   "file": "game_env",
+   "key": "games/{game}/TU_DEBUG",
+   "label": "Game environment > TU_DEBUG",
+   "type": "string",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Turnip debug flags, comma list (sysmem, gmem, nolrz, noubwc, forcebin, ...). Rendering workarounds for glitches. Env var TU_DEBUG. Value must be a JSON string: pass numbers quoted ('\"60\"'), or the whole file is rejected. Read from DroidDeck 0.7.1 source; not set on the test device, effect not tested by launching a game."
+  },
+  "mesa_shader_cache_max_size": {
+   "file": "game_env",
+   "key": "games/{game}/MESA_SHADER_CACHE_MAX_SIZE",
+   "label": "Game environment > MESA_SHADER_CACHE_MAX_SIZE",
+   "type": "enum",
+   "values": {
+    "\"512M\"": "512 MB",
+    "\"1G\"": "1 GB",
+    "\"2G\"": "2 GB",
+    "\"4G\"": "4 GB"
+   },
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Env var MESA_SHADER_CACHE_MAX_SIZE. Value must be a JSON string: pass numbers quoted ('\"60\"'), or the whole file is rejected. Read from DroidDeck 0.7.1 source; not set on the test device, effect not tested by launching a game."
+  },
+  "pulse_latency_msec": {
+   "file": "game_env",
+   "key": "games/{game}/PULSE_LATENCY_MSEC",
+   "label": "Game environment > PULSE_LATENCY_MSEC",
+   "type": "string",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Audio buffer for PulseAudio; raise if audio crackles. Env var PULSE_LATENCY_MSEC. Value must be a JSON string: pass numbers quoted ('\"60\"'), or the whole file is rejected. Read from DroidDeck 0.7.1 source; not set on the test device, effect not tested by launching a game."
+  },
+  "audio_direct_ms": {
+   "file": "game_env",
+   "key": "games/{game}/AUDIO_DIRECT_MS",
+   "label": "Game environment > AUDIO_DIRECT_MS",
+   "type": "string",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "DirectAudio buffer length (when DirectAudio for games is on). Env var AUDIO_DIRECT_MS. Value must be a JSON string: pass numbers quoted ('\"60\"'), or the whole file is rejected. Read from DroidDeck 0.7.1 source; not set on the test device, effect not tested by launching a game."
+  },
+  "game_proton_dir": {
+   "file": "game_proton",
+   "key": "games/{game}/dir",
+   "label": "Proton (per game)",
+   "type": "enum",
+   "values": {
+    "\"DroidDeck-Proton 11-11.9\"": "DroidDeck-Proton 11-11.9 (valve=false)",
+    "\"Proton Experimental (ARM64)\"": "Proton Experimental ARM64 (valve=true)"
+   },
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Folder name of the compat tool (compat_state tools[].dir), not its display name. Set game_proton_valve to match: false for tools in compatibilitytools.d, true for Valve tools in steamapps/common. Remove the game's entry to follow the default Proton. Watched live by the guest while a Steam session runs; applied to Steam's CompatToolMapping. Read from DroidDeck 0.7.1 source; not set on the test device, effect not tested by launching a game."
+  },
+  "game_proton_valve": {
+   "file": "game_proton",
+   "key": "games/{game}/valve",
+   "label": "Proton (per game): Valve tool",
+   "type": "bool",
+   "values": {
+    "false": "Custom tool (compatibilitytools.d)",
+    "true": "Valve tool (steamapps/common)"
+   },
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "See game_proton_dir. Read from DroidDeck 0.7.1 source; not set on the test device, effect not tested by launching a game."
+  },
+  "game_dxvk_package": {
+   "file": "components",
+   "key": "profiles/{game}/dxvk",
+   "label": "Components > DXVK (per game)",
+   "type": "string",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "File name of a .wcp in files/components/packages, e.g. DD-dxvk-arm64ec-3.1.1+235-nightly.wcp. Unset = the package active for the Proton build. Applied at the next session start. If 'profiles' or profiles/{game} does not exist, create it as an object first. Read from DroidDeck 0.7.1 source; not set on the test device, effect not tested by launching a game."
+  },
+  "game_vkd3d_package": {
+   "file": "components",
+   "key": "profiles/{game}/vkd3d",
+   "label": "Components > VKD3D-Proton (per game)",
+   "type": "string",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "File name of a .wcp in files/components/packages, e.g. DD-dxvk-arm64ec-3.1.1+235-nightly.wcp. Unset = the package active for the Proton build. Applied at the next session start. If 'profiles' or profiles/{game} does not exist, create it as an object first. Read from DroidDeck 0.7.1 source; not set on the test device, effect not tested by launching a game."
+  },
+  "game_fex_package": {
+   "file": "components",
+   "key": "profiles/{game}/fex",
+   "label": "Components > FEXCore (per game)",
+   "type": "string",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "File name of a .wcp in files/components/packages, e.g. DD-dxvk-arm64ec-3.1.1+235-nightly.wcp. Unset = the package active for the Proton build. Applied at the next session start. If 'profiles' or profiles/{game} does not exist, create it as an object first. Read from DroidDeck 0.7.1 source; not set on the test device, effect not tested by launching a game."
+  },
+  "game_texture_anisotropy": {
+   "file": "session",
+   "key": "gameTextureFiltering#{game}/anisotropy",
+   "label": "Anisotropic filtering (game)",
+   "type": "enum",
+   "values": {
+    "0": "Off",
+    "2": "2x",
+    "4": "4x",
+    "8": "8x",
+    "16": "16x"
+   },
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Per-game override of texture_anisotropy, stored as JSON inside the session pref string gameTextureFiltering (absent until first set; it must exist as \"{}\" before '#' paths can be written). Becomes DXVK d3d9/d3d11.samplerAnisotropy for this game. Read from DroidDeck 0.7.1 source; not set on the test device, effect not tested by launching a game."
+  },
+  "game_texture_lod_bias": {
+   "file": "session",
+   "key": "gameTextureFiltering#{game}/lodBias",
+   "label": "Texture sharpness (game)",
+   "type": "enum",
+   "values": {
+    "\"0\"": "Off",
+    "\"auto\"": "Auto (match scaling)",
+    "\"-0.25\"": "-0.25",
+    "\"-0.5\"": "-0.5",
+    "\"-0.75\"": "-0.75",
+    "\"-1.0\"": "-1.0"
+   },
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Per-game override of texture_lod_bias (negative mip bias). See game_texture_anisotropy. Read from DroidDeck 0.7.1 source; not set on the test device, effect not tested by launching a game."
+  },
+  "resolution": {
+   "file": "session",
+   "key": "displayResolution.steam",
+   "label": "Steam session > Display > Resolution",
+   "type": "string",
+   "values": {
+    "\"720p\"": "720p (default)",
+    "\"900p\"": "900p",
+    "\"1080p\"": "1080p",
+    "\"screen\"": "Native",
+    "\"follow\"": "Follow screen",
+    "\"follow/2\"": "Follow screen /2 (scales 1.5,2,2.5,3,4)",
+    "\"1280x720\"": "Custom WxH (320-3840 x 240-2160, even)"
+   },
+   "default": "\"720p\"",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Gamescope output size for the whole Steam session (games render at or are scaled to it). Not per game. Applies next session."
+  },
+  "hdr": {
+   "file": "session",
+   "key": "hdr.steam",
+   "label": "Steam session > Display > HDR",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Needs app restart."
+  },
+  "upscaler": {
+   "file": "session",
+   "key": "upscaler",
+   "label": "Scaling filter",
+   "type": "enum",
+   "values": {
+    "0": "Linear",
+    "2": "Nearest",
+    "4": "AMD FSR 1",
+    "3": "Snapdragon GSR",
+    "8": "Snapdragon GSR (quality)",
+    "7": "NVIDIA NIS",
+    "6": "Sharpen only"
+   },
+   "default": "0",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "How the session image is enlarged to the panel. Legacy 1 maps to 0 and 5 to 4."
+  },
+  "upscale_sharpness": {
+   "file": "session",
+   "key": "upscaleSharpness",
+   "label": "Filter sharpness",
+   "type": "int",
+   "default": "75",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "0-100 in steps of 5; used by GSR, FSR, NIS and Sharpen only."
+  },
+  "fex_preset": {
+   "file": "session",
+   "key": "fexPreset",
+   "label": "FEX preset (general)",
+   "type": "enum",
+   "values": {
+    "\"\"": "Stock FEX",
+    "\"STABILITY\"": "Stability",
+    "\"COMPATIBILITY\"": "Compatibility",
+    "\"INTERMEDIATE\"": "Intermediate",
+    "\"PERFORMANCE\"": "Performance",
+    "\"PERFORMANCE_TSO\"": "Performance + TSO",
+    "\"EXTREME\"": "Extreme",
+    "\"EXTREME_TSO\"": "Extreme + TSO",
+    "\"EXTREME_GN\"": "Extreme-gn",
+    "\"DENUVO\"": "Denuvo"
+   },
+   "default": "\"PERFORMANCE_TSO\"",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Global FEX tuning for Proton games, published into guest_env shared at session start. Unset means the default; guest_env then shows the Performance + TSO variables. Per-game: the fex_* keys."
+  },
+  "force_ssbs": {
+   "file": "session",
+   "key": "forceSsbs",
+   "label": "Force SSBS",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Adds DROIDDECK_FORCE_SSBS=1; mainly helps Snapdragon 8 Elite. Applies next game launch after a session restart."
+  },
+  "sync_ntsync": {
+   "file": "session",
+   "key": "fastSync",
+   "label": "Performance > droiddeck-ntsync",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "true",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Global Wine sync is three bools: ntsync = fastSync true; fsync = fastSync false + fsyncFirst true; esync = both false + syncFallback true; wineserver = all false."
+  },
+  "sync_fsync_first": {
+   "file": "session",
+   "key": "fsyncFirst",
+   "label": "Performance > droiddeck-fsync first",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "See sync_ntsync."
+  },
+  "sync_fallback": {
+   "file": "session",
+   "key": "syncFallback",
+   "label": "Performance > droiddeck-esync",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off (wineserver)"
+   },
+   "default": "true",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "See sync_ntsync."
+  },
+  "game_cores_global": {
+   "file": "session",
+   "key": "gameCpus",
+   "label": "Performance > Game cores",
+   "type": "string",
+   "default": "\"\"",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Comma list of cores for all games, e.g. \"3,4,5,6,7\". Empty = every core (Android schedules). Per game: game_cores."
+  },
+  "client_cores_override": {
+   "file": "session",
+   "key": "clientCpusOverride",
+   "label": "Performance > Override Steam's core choice",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": ""
+  },
+  "client_cores": {
+   "file": "session",
+   "key": "clientCpus",
+   "label": "Performance > Client cores",
+   "type": "string",
+   "default": "\"\"",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Cores for Steam, its UI helper and gamescope when the override is on."
+  },
+  "vram_cap_mb": {
+   "file": "session",
+   "key": "vramCapMb",
+   "label": "Performance > VRAM cap",
+   "type": "int",
+   "values": {
+    "0": "Off"
+   },
+   "default": "0",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "MB reported to D3D9-12 games (dxgi.maxDeviceMemory). Advisory."
+  },
+  "ram_cap_mb": {
+   "file": "session",
+   "key": "ramCapMb",
+   "label": "Performance > RAM cap",
+   "type": "int",
+   "values": {
+    "0": "Off"
+   },
+   "default": "0",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Needs zRAM."
+  },
+  "gpu_clock_pin": {
+   "file": "session",
+   "key": "gpuClockPin",
+   "label": "Performance > Hold the GPU at its top clock",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Adreno only; more heat and battery use."
+  },
+  "texture_anisotropy": {
+   "file": "session",
+   "key": "textureAnisotropy",
+   "label": "Anisotropic filtering",
+   "type": "enum",
+   "values": {
+    "0": "Off",
+    "2": "2x",
+    "4": "4x",
+    "8": "8x",
+    "16": "16x"
+   },
+   "default": "0",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Global; per game: game_texture_anisotropy."
+  },
+  "texture_lod_bias": {
+   "file": "session",
+   "key": "textureLodBias",
+   "label": "Texture sharpness",
+   "type": "enum",
+   "values": {
+    "\"0\"": "Off",
+    "\"auto\"": "Auto (match scaling)",
+    "\"-0.25\"": "-0.25",
+    "\"-0.5\"": "-0.5",
+    "\"-0.75\"": "-0.75",
+    "\"-1.0\"": "-1.0"
+   },
+   "default": "\"0\"",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Global; per game: game_texture_lod_bias."
+  },
+  "steam_client_arch": {
+   "file": "session",
+   "key": "steamClientArch",
+   "label": "Steam session > Client > Steam client",
+   "type": "enum",
+   "values": {
+    "\"arm64\"": "ARM64",
+    "\"x86_64\"": "x86-64 (FEX)"
+   },
+   "default": "\"arm64\"",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Which Steam client build runs. Not a per-game setting."
+  },
+  "steam_controller": {
+   "file": "session",
+   "key": "steamController",
+   "label": "Steam session > Controller",
+   "type": "enum",
+   "values": {
+    "\"deck\"": "Steam Deck controller",
+    "\"xbox360\"": "Xbox 360",
+    "\"steamcontroller\"": "Steam Controller",
+    "\"dualshock4\"": "DualShock 4",
+    "\"dualsense\"": "DualSense",
+    "\"none\"": "None"
+   },
+   "default": "\"deck\"",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "How Steam sees the built-in pad. Applies next session. Per-game button layouts are Steam Input's (Steam UI)."
+  },
+  "gpu_driver_mode": {
+   "file": "session",
+   "key": "gpuDriverMode",
+   "label": "Components > GPU drivers",
+   "type": "enum",
+   "values": {
+    "\"auto\"": "Auto",
+    "\"manual\"": "Manual",
+    "\"mix\"": "Mix"
+   },
+   "default": "\"auto\"",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": ""
+  },
+  "android_driver": {
+   "file": "session",
+   "key": "androidDriver",
+   "label": "GPU driver (display/compositor side)",
+   "type": "string",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Turnip build id used by the Android-side compositor. Example: \"DD-Turnip_v0.9.1\". Must name a folder in files/graphics_driver."
+  },
+  "linux_driver": {
+   "file": "session",
+   "key": "linuxDriver",
+   "label": "GPU driver (games / Linux side)",
+   "type": "string",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Turnip build used by games inside the runtime. Must name a folder in files/linux_vulkan_drivers/<id>, e.g. \"DD-Turnip_v0.9.1\"."
+  },
+  "component_mode_dxvk": {
+   "file": "session",
+   "key": "componentMode.dxvk",
+   "label": "Components > dxvk updates",
+   "type": "enum",
+   "values": {
+    "\"auto\"": "Auto (follow nightly updates)",
+    "\"manual\"": "Manual",
+    "\"\"": "Original (Proton's own)"
+   },
+   "default": "\"auto\"",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": ""
+  },
+  "component_mode_vkd3d": {
+   "file": "session",
+   "key": "componentMode.vkd3d",
+   "label": "Components > vkd3d updates",
+   "type": "enum",
+   "values": {
+    "\"auto\"": "Auto (follow nightly updates)",
+    "\"manual\"": "Manual",
+    "\"\"": "Original (Proton's own)"
+   },
+   "default": "\"auto\"",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": ""
+  },
+  "component_mode_fex": {
+   "file": "session",
+   "key": "componentMode.fex",
+   "label": "Components > fex updates",
+   "type": "enum",
+   "values": {
+    "\"auto\"": "Auto (follow nightly updates)",
+    "\"manual\"": "Manual",
+    "\"\"": "Original (Proton's own)"
+   },
+   "default": "\"auto\"",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": ""
+  },
+  "direct_audio": {
+   "file": "session",
+   "key": "directAudio",
+   "label": "Steam session > Audio > DirectAudio for games",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off (PulseAudio)"
+   },
+   "default": "true",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": ""
+  },
+  "performance_overlay": {
+   "file": "session",
+   "key": "mangoapp",
+   "label": "Steam session > Client > Performance overlay",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "true",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Turn off if games crash or go black in Deck mode. Applies next session."
+  },
+  "osc": {
+   "file": "session",
+   "key": "osc",
+   "label": "Steam session > On-screen controls",
+   "type": "enum",
+   "values": {
+    "\"auto\"": "Auto",
+    "\"always\"": "Always",
+    "\"steam-qam\"": "Steam + QAM",
+    "\"steam-touch\"": "Steam touch",
+    "\"never\"": "Never"
+   },
+   "default": "\"auto\"",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": ""
+  },
+  "suspend_policy": {
+   "file": "session",
+   "key": "suspendPolicy.steam",
+   "label": "Steam session > Background behavior",
+   "type": "enum",
+   "values": {
+    "\"auto\"": "Auto",
+    "\"native\"": "Native",
+    "\"manual\"": "Manual",
+    "\"never\"": "Never"
+   },
+   "default": "\"auto\"",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": ""
+  },
+  "frame_gen_engine": {
+   "file": "frame_gen",
+   "key": "engine",
+   "label": "Frame generation",
+   "type": "enum",
+   "values": {
+    "\"off\"": "Off",
+    "\"ddfg\"": "DD-FG",
+    "\"lsfg\"": "LSFG (Lossless Scaling, needs the Steam app 993090)"
+   },
+   "default": "\"off\"",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Global; the compositor generates frames. LSFG uses Lossless.dll (files/lsfg) from your own copy of Lossless Scaling (Steam app 993090)."
+  },
+  "frame_gen_multiplier": {
+   "file": "frame_gen",
+   "key": "multiplier",
+   "label": "Frame generation multiplier",
+   "type": "enum",
+   "values": {
+    "2": "2x",
+    "3": "3x",
+    "4": "4x"
+   },
+   "default": "2",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Ignored by LSFG adaptive."
+  },
+  "frame_gen_target": {
+   "file": "frame_gen",
+   "key": "target",
+   "label": "LSFG Adaptive target",
+   "type": "enum",
+   "values": {
+    "0": "Fixed multiplier",
+    "60": "Adaptive 60",
+    "90": "Adaptive 90",
+    "120": "Adaptive 120"
+   },
+   "default": "0",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "LSFG only."
+  }
+ }
+}

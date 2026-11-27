@@ -1,0 +1,919 @@
+{
+ "built": "2026-11-27",
+ "recomps": [
+  {
+   "package": "io.github.otpr26.dekuifork",
+   "name": "Majora ReMasked",
+   "original": {
+    "title": "The Legend of Zelda: Majora's Mask 3D",
+    "platform": "3DS",
+    "year": 2015
+   },
+   "kind": "wrapper",
+   "project": {
+    "name": "Majora ReMasked (a DekUI fork)",
+    "repo": "https://github.com/OTPR26/ReMasked",
+    "android_repo": "https://github.com/OTPR26/ReMasked",
+    "license": "GPL-2.0"
+   },
+   "version_checked": "0.4.6",
+   "update": {
+    "channel": "GitHub releases",
+    "url": "https://github.com/OTPR26/ReMasked/releases"
+   },
+   "assets": {
+    "needs": "Your own decrypted Majora's Mask 3D USA Rev 1 (v1.1) ROM as .3ds/.cci, chosen in the app's setup. Optional for model mods: a decrypted Ocarina of Time 3D ROM (Adult/Dark Link) and a Twilight Princess GameCube ISO/RVZ (TP Link).",
+    "location": "Picked with the system file picker and copied to <root>/game/game.cci, where <root> is /sdcard/mm3dport once the app has All files access (shared-v1 in shared_prefs/dekui-storage.xml) or /data/data/io.github.otpr26.dekuifork/files/dekui before that.",
+    "notes": "With All files access granted and the ROM imported, it boots into the game."
+   },
+   "settings": {
+    "adapter": "majoraremasked",
+    "files": [
+     "/sdcard/mm3dport/config/config.ini",
+     "/sdcard/mm3dport/config/mm3d-local/presentation.json"
+    ],
+    "in_app_menu": "Launcher > Settings (pages General, Controls, Touch, Graphics, Audio, HUD, Difficulty, Restoration, Quality of life, Mods, Cheats, About); the same settings are in the in-game menu.",
+    "summary": "Graphics page: frame rate (Original 30 FPS / 60 FPS CPU interpolation, the default / 60 FPS GPU interpolation), Field of View 45-70 (65), camera distance, enemy and prop draw distance, internal resolution 1-9x, Fix bloom, VSync, shader cache, async shaders, custom textures. Gameplay: Difficulty (damage taken, potion healing, prices), Restoration (Project Restoration options), Quality of life (walk/climb/swim speed, no low-heart beep, no Tatl reminders), player-model mods."
+   },
+   "controls": "Azahar input layer: controllers map on the Controls page; an on-screen touch HUD (ReMaskedTouchHud) with its own Touch page. Bindings are stored in the data folder. Not tested on the Thor.",
+   "display": "Single-screen Majora's Mask 3D (DekUI moves the bottom-screen HUD onto the main picture, Wii U style). Built on Azahar, which can drive a second display (SecondaryDisplayPresentation; Layout/secondary_display_layout default 4 'Opposite Screen'); what it shows on the Thor's bottom screen was not checked.",
+   "saves": "Under the data root (/sdcard/mm3dport once shared storage is on): Azahar's sdmc/nand tree plus mods and HUD settings.",
+   "notes": "The app asks for MANAGE_EXTERNAL_STORAGE to use /sdcard/mm3dport. 0.4.6 released 2026-11-22. Release APKs share one signer (73e73470...), so updates install over. Uses Azahar (3DS emulator), Python via Chaquopy (mod generation) and Project Restoration. The repo was renamed from OTPR26/DekUI-Fork (the old URL redirects); it is a fork of tgacquin/mm3d-dekui.",
+   "verified": "Device: dumpsys (version, install time, permissions), data dirs, the ROM's header bytes. APK: jadx of DekuiSettingsActivity, DekuiStorage, DekuiPresentationStore, SettingsFile, Int/BooleanSetting; arrays.xml. Web: GitHub API for the repo (name, license, parent, releases) and the Recompa index (package -> OTPR26/ReMasked, same signer). Not checked: controls, second-screen behaviour, save paths after first run."
+  },
+  {
+   "package": "io.github.kalasyan.recompa",
+   "name": "Recompa",
+   "original": {
+    "title": null,
+    "platform": "Android (ports hub)",
+    "year": null
+   },
+   "kind": "wrapper",
+   "project": {
+    "name": "Recompa",
+    "repo": "https://github.com/kalasyan/recompa",
+    "android_repo": "https://github.com/kalasyan/recompa",
+    "license": "GPL-3.0"
+   },
+   "version_checked": "0.5.1",
+   "update": {
+    "channel": "GitHub releases (recompa.apk)",
+    "url": "https://github.com/kalasyan/recompa/releases"
+   },
+   "assets": {
+    "needs": "None for itself. It is a launcher/store that finds, installs and updates native Android ports; each port needs its own game data.",
+    "location": "Not applicable.",
+    "notes": "Its catalogue (https://recompa.app/index.json, 734 ports) lists six of the other recomps here with their upstream repos and signing keys: Majora ReMasked, Mareshine, Mario Kart DS, Metroid Fusion, Paper Cut and Skies of Arcadia. PokeDaisy is not in it."
+   },
+   "settings": {
+    "adapter": null,
+    "files": [
+     "/data/data/io.github.kalasyan.recompa/shared_prefs/user_prefs.xml (launcher preferences)"
+    ],
+    "in_app_menu": "Inside Recompa.",
+    "summary": "Launcher preferences only; no game settings. No adapter."
+   },
+   "controls": "Controller-navigable launcher (not tested).",
+   "display": "Has a SecondScreenActivity for dual-screen handhelds (not tested).",
+   "saves": "None.",
+   "notes": "v0.5.1 released 2026-11-23. Needs REQUEST_INSTALL_PACKAGES/REQUEST_DELETE_PACKAGES to install and remove ports; it could replace manual updates for the ports above, but an app signed with a different key (Mario Kart DS) still needs an uninstall.",
+   "verified": "Device: dumpsys, data dirs. APK: jadx manifest and prefs names. Web: GitHub API, recompa.app/index.json."
+  },
+  {
+   "package": "com.pokedaisy.app",
+   "name": "PokeDaisy",
+   "original": {
+    "title": "Pokemon Game Boy, Game Boy Color, GBA and DS games and ROM hacks",
+    "platform": "GB / GBC / GBA / Nintendo DS",
+    "year": null
+   },
+   "kind": "wrapper",
+   "project": {
+    "name": "PokeDaisy",
+    "repo": null,
+    "android_repo": null,
+    "license": null
+   },
+   "version_checked": "1.6.1",
+   "update": {
+    "channel": "manual APK from pokedaisy.com (latest listed there: 1.6.2.2)",
+    "url": "https://pokedaisy.com/"
+   },
+   "assets": {
+    "needs": "Your own Pokemon ROMs (.gb/.gbc/.gba/.nds) and ROM hacks.",
+    "location": "Scans the folders in prefs key roms_folders (one entry per ROM folder, e.g. /storage/<sd-card>/Roms/GBA). Cocoon also lists it as a player, so it can be launched with a ROM file.",
+    "notes": "files/rom-titles.tsv lists the games it recognises; other ROMs in the scanned folders are marked unsupported (U) in rom-folder-scan.tsv."
+   },
+   "settings": {
+    "adapter": "pokedaisy",
+    "files": [
+     "/data/data/com.pokedaisy.app/shared_prefs/pokedaisy.xml"
+    ],
+    "in_app_menu": "Library > Settings (tabs), plus a quick menu in game.",
+    "summary": "Picture aspect (Original/Stretch/Expand; Expand is stored as WIDE), smoothing (xBRZ/xBR/ScaleFX), screen filter (LCD/scanlines/CRT), DS layout, DS resolution 1-8x, DS core (Auto/melonDS/DSperate), fast-forward and rewind, swap screens, single-screen mode, and many Pokemon-specific helpers (instant text, EXP share, level cap, HM-free, reusable TMs, shiny odds, day/night, follower)."
+   },
+   "controls": "Built-in controller support with hotkeys (hotkeys_enabled), on-screen touch controls with skins, layouts and opacity.",
+   "display": "Made for dual-screen handhelds: game on the top screen and a live companion (party, battle info, boxes) on the bottom screen; DS games can use both screens in several layouts; single_screen and swap_screens options.",
+   "saves": "/sdcard/Android/data/com.pokedaisy.app/files/saves/ by default, or the folder in saves_dir_override; extra_save_dirs adds more. Save backups (save_backups_keep, default 10).",
+   "notes": "The prefs file counts launches (app_open_count). It can hold secrets once you sign in (ra_token, ra_web_api_key, ss_password, steamgriddb_api_key): never print them. Firebase Crashlytics is bundled (crash_reports_enabled, off by default). GitHub source: a search result named lidor30/pokedaisy but the GitHub API returns 404 for it (deleted or private); github.com/tommiperfect31/pokedaisy has the same description but no releases or license, so its relation is unconfirmed. No repo URL recorded.",
+   "verified": "Device: dumpsys, prefs file, files/*.tsv, external folders. APK: jadx of Prefs, NewFeatures, enums (GameAspect, Smoothing, ScreenFilter, GridStrength, FfMode, DsCore, DsLayout), SavesLocation. Web: pokedaisy.com (version), GitHub search. Not checked: the repo, the license."
+  },
+  {
+   "package": "dev.picori.tmc",
+   "name": "The Minish Cap",
+   "original": {
+    "title": "The Legend of Zelda: The Minish Cap",
+    "platform": "GBA",
+    "year": 2004
+   },
+   "kind": "decompilation",
+   "project": {
+    "name": "Project Picori (zeldaret/tmc PC port) - Minish Cap Dual Screen",
+    "repo": "https://github.com/zeldaret/tmc",
+    "android_repo": "https://github.com/samyost1/tmc-android",
+    "license": null
+   },
+   "version_checked": "0.8.3",
+   "update": {
+    "channel": "GitHub releases",
+    "url": "https://github.com/samyost1/tmc-android/releases"
+   },
+   "assets": {
+    "needs": "The Minish Cap GBA ROM, USA (SHA-1 b4bd50e4131b027c334547b4524e2dbbd4227130), named baserom.gba. EU/JP ROMs also load (baserom_eu.gba / baserom_jp.gba) but run as a hybrid on the USA build.",
+    "location": "/sdcard/Android/data/dev.picori.tmc/files/baserom.gba; the port extracts rom_data/ (2,789 chunk files), assets/ and assets_src/ next to it on first run.",
+    "notes": "baserom.gba is 16,777,216 bytes. The port extracts rom_data and assets on the first run."
+   },
+   "settings": {
+    "adapter": "tmc",
+    "files": [
+     "/sdcard/Android/data/dev.picori.tmc/files/config.json"
+    ],
+    "in_app_menu": "Port settings menu: Select+Start on a gamepad (F8 on keyboard). Bottom screen > Settings tab: hide top HUD, widescreen, panel backdrop, map toggles and the port-wide toggles.",
+    "summary": "config.json (nlohmann JSON, 4-space indent) is rewritten on every setting change. Worth knowing: render_backend (software on Android by default; gpu needed for CRT/LCD shaders and .glslp presets), upscale_method (nearest/linear/xbrz_nearest/xbrz_linear), frame_time_ns (60 FPS cap), widescreen_enabled and aspect_mode, hide_top_hud, second_screen_* panel options, autosave, touch controls, randomizer options, accessibility audio cues and TTS."
+   },
+   "controls": "SDL3 gamepad and keyboard bindings in config.json 'bindings' (SDL_GAMEPAD button ids / SDLK codes). Defaults: A=0, B=1, soft X/Y on 2/3, L=9, R=10, Start=6, Select=4, roll-attack macro on 8, L2/R2 axes 4/5. Touch overlay on by default (touch_controls, joystick scheme). Select+Start opens the port menu. Start opens the game's pause menu unless game_pause_menu is false.",
+   "display": "Game on the top screen; bottom screen is a Presentation with Map (follow cam, zoom, Windcrest pins), Dungeon automap, Quest, Items (touch equip) and Settings. second_screen_swap puts the game on the bottom panel instead (read by TMCLauncherActivity at launch). Built with a 384-pixel widescreen path (widescreen_enabled, aspect_mode).",
+   "saves": "/sdcard/Android/data/dev.picori.tmc/files/tmc.sav (8 KB, active_save_profile), state_quick.bin and state_auto_0..2.bin (autosave every 60 s), tmc.randomizer.",
+   "notes": "Release v1.2 (tmc-dual-screen-v1.2.apk, 2026-08-19, SHA-256 9f666877...) is the latest release. versionName 0.8.3 is the Picori port version. Lineage: zeldaret/tmc decompilation -> MatheoVignaud/tmc (PC port) -> 999sian/tmc ('Project Picori') -> Raekwon1603/tmc-android -> samyost1/tmc-android (Thor dual-screen mod). The native binary has a GitHub update check against MatheoVignaud/tmc (TMC_NO_UPDATE_CHECK disables it); that is the PC port's channel, not this APK's.",
+   "verified": "Device: version, install time, config.json content, ROM and extracted data present, save files. APK: SHA-256 against GitHub release, libmain.so strings. Source at tag v1.2: port/port_runtime_config.cpp (keys, defaults, value parsing), port_ppu.cpp (upscale names), port_gpu_renderer.cpp, TMCLauncherActivity.java, README. Not checked: changing a setting and relaunching."
+  },
+  {
+   "package": "com.akouzoukos.apotris",
+   "name": "Apotris",
+   "original": {
+    "title": "Apotris",
+    "platform": "GBA (homebrew)",
+    "year": null
+   },
+   "kind": "source port",
+   "project": {
+    "name": "Apotris (official native Android build)",
+    "repo": "https://github.com/akouzoukos/apotris",
+    "android_repo": null,
+    "license": null
+   },
+   "version_checked": "4.2.0",
+   "update": {
+    "channel": "manual APK",
+    "url": "https://github.com/akouzoukos/apotris"
+   },
+   "assets": {
+    "needs": "Nothing. Apotris is free original homebrew; the APK carries all music, sound and shaders.",
+    "location": "/sdcard/Documents/Apotris/assets (extracted from the APK on first run; extracted.txt marks it)",
+    "notes": "Not a recomp of a commercial game: an original block-stacking game written for the GBA that ships native PC/Android builds. The GBA ROM build can also sit in Cocoon's library as a separate game."
+   },
+   "settings": {
+    "adapter": null,
+    "files": [
+     "/sdcard/Documents/Apotris/Apotris.sav",
+     "/sdcard/Documents/Apotris/preferences.txt"
+    ],
+    "in_app_menu": "Main menu > Settings (in-game, controller-driven).",
+    "summary": "All options (handling DAS/ARR, skins, ghost piece, shaders such as crt-lottes/zfast_lcd, audio) are stored inside the 32 KB binary save Apotris.sav, the same savefile struct as the GBA build. No text config, so no adapter. preferences.txt holds only '1' plus a newline (meaning not checked)."
+   },
+   "controls": "SDL2 game controller (gamecontrollerdb). Remapping in the in-game Controls menu, stored in Apotris.sav. No touch overlay in the Java layer (plain SDLActivity).",
+   "display": "Single screen (top). Plain SDLActivity with no secondary-display code.",
+   "saves": "/sdcard/Documents/Apotris/Apotris.sav (32 KB; settings and high scores together). storage_path.txt in /data/data/com.akouzoukos.apotris/files points the game at /storage/emulated/0/Documents/Apotris/.",
+   "notes": "The official release zip Apotris-v4.2.0Android.zip holds Apotris.apk (15,116,136 bytes); the checked APK matched it in size. A separate unofficial port exists (github.com/SanGraphic/Apotris-Android, package not checked); this entry covers the official build.",
+   "verified": "On device: dumpsys version/install date, storage_path.txt, /sdcard/Documents/Apotris listing, preferences.txt contents, APK contents. From web: GitHub repo akouzoukos/apotris exists (no releases or licence listed there). Original release year not confirmed. Save format not decoded."
+  },
+  {
+   "package": "com.companyname.AM2RWrapper",
+   "name": "AM2R",
+   "original": {
+    "title": "Metroid II: Return of Samus (AM2R fan remake)",
+    "platform": "Game Boy",
+    "year": 1991
+   },
+   "kind": "fan remake",
+   "project": {
+    "name": "AM2R Community Updates",
+    "repo": "https://github.com/AM2R-Community-Developers/AM2R-Community-Updates",
+    "android_repo": "https://github.com/AM2R-Community-Developers/AM2RLauncher",
+    "license": null
+   },
+   "version_checked": "1.5.3",
+   "update": {
+    "channel": "manual APK",
+    "url": "https://github.com/AM2R-Community-Developers/AM2RLauncher"
+   },
+   "assets": {
+    "needs": "Original AM2R 1.1 (AM2R_11.zip), patched into an Android APK on a PC with AM2RLauncher or with AM2R-Autopatcher-Android. The resulting APK contains the whole game (assets/game.droid), so nothing is read from storage at run time.",
+    "location": "Inside the installed APK (assets/game.droid, music .ogg, lang/*.ini).",
+    "notes": "The game data string in game.droid reads 'V1.5.5' (Community Updates 1.5.5); the APK versionName 1.5.3 comes from the wrapper template. The patched APK installs with the system package installer."
+   },
+   "settings": {
+    "adapter": "am2r",
+    "files": [
+     "/data/data/com.companyname.AM2RWrapper/files/config.ini"
+    ],
+    "in_app_menu": "Title screen or pause > Options: Display, Sound, Controls, Joypad, Extras, Gameplay.",
+    "summary": "config.ini is a GameMaker ini (values written as quoted reals, e.g. Widescreen=\"1.000000\"). Display: Widescreen, Scale, VSync, HUD/map/hints, Metroid counter. Controls: aiming style, missile toggle/hold, classic morph ball, spiderball style, auto-climb, auto-morph, analog walking, touch control scale, joystick/XInput button ids. Extras: Fusion suit style, early baby Metroid, extreme lab Metroids, IGT display, low health alarm, controller button prompts. Gameplay: Insanity mode."
+   },
+   "controls": "GameMaker joystick and XInput-style pad mappings in [Control] (EnableXBJoypad, EnableJoystick). Android touch controls scale TouchScale (1-8, shown in the menu as 9-value). Controller button tips: Controller=0 is XBox. Not tested on the Thor.",
+   "display": "Single screen. Widescreen=1 gives a 16:9 view (needs a room transition to apply). Old GameMaker runner (target SDK 23, armeabi-v7a only), so it runs as a 32-bit app.",
+   "saves": "/data/data/com.companyname.AM2RWrapper/files/save1 (also save2, save3 when used). Root needed; files are mode 600 owned by the app uid.",
+   "notes": "Package com.companyname.AM2RWrapper is the AM2RLauncher/Autopatcher Android wrapper template. AM2R-Community-Updates publishes source only (no GitHub releases); updates come by re-patching with AM2RLauncher's 'Community Updates (Latest)' profile and reinstalling.",
+   "verified": "Device: version, install time and installer, config.ini and save file. APK: contents, options.ini, game.droid strings (V1.5.5, config.ini, save names). Source: scripts/load_gameoptions.gml and objects/oOptions*.object.gmx from AM2R-Community-Updates (HEAD, not tag-matched to 1.5.5), labels from the APK's lang/english.ini."
+  },
+  {
+   "package": "io.github.genissonemilio.metroidfusion.albumtest",
+   "name": "Metroid Fusion",
+   "original": {
+    "title": "Metroid Fusion",
+    "platform": "Game Boy Advance",
+    "year": 2002
+   },
+   "kind": "static recompilation",
+   "project": {
+    "name": "MetroidFusionAndroid (gbarecomp)",
+    "repo": "https://github.com/GenissonEmilio/MetroidFusionAndroid",
+    "android_repo": "https://github.com/GenissonEmilio/MetroidFusionAndroid",
+    "license": null
+   },
+   "version_checked": "0.1.0",
+   "update": {
+    "channel": "GitHub releases (manual APK)",
+    "url": "https://github.com/GenissonEmilio/MetroidFusionAndroid/releases"
+   },
+   "assets": {
+    "needs": "Your own Metroid Fusion USA ROM (.gba or .zip), SHA-1 ca33f4348c2c05dd330d37b97e2c5a69531dfe87. No BIOS needed: the open Cult-of-GBA BIOS is bundled.",
+    "location": "Imported with 'Importar ROM' and stored at /data/data/io.github.genissonemilio.metroidfusion.albumtest/files/roms/fusion_usa.gba (root-only).",
+    "notes": "The app has no option to hide the touch controls. The opacity pref in fusion.xml can be set below the menu's 30 % minimum (15 % was used in testing)."
+   },
+   "settings": {
+    "adapter": "metroidfusion",
+    "files": [
+     "/data/data/io.github.genissonemilio.metroidfusion.albumtest/shared_prefs/fusion.xml"
+    ],
+    "in_app_menu": "Launcher buttons 'Imagem' (pixel mode) and 'Controles' (touch size, opacity, sound). The UI is in Portuguese.",
+    "summary": "Image: Pixel perfeito (sharp integer scaling) or Suave (Scale2x, the default). Touch controls size 80-130 %, opacity 30-90 %, sound on/off. Nothing else."
+   },
+   "controls": "Touch controls by default; controller input through SDL2. D-pad move, A/B actions, L/R secondary, Start map; the BSL Album (screenshot gallery) opens from the map with R.",
+   "display": "Single screen, original aspect ratio with integer scaling (margins on some screens).",
+   "saves": "/data/data/io.github.genissonemilio.metroidfusion.albumtest/files/saves/fusion.sav (32 KB SRAM, root-only); 'Exportar save' copies it out. Quick states from the in-game menu.",
+   "notes": "Repo license shows NOASSERTION in the GitHub API (no recognised license file). Derived from the author's ZeldaMinishCapAndroid and MinishCapRecomp/gbarecomp. The package name ends in .albumtest; it is the 0.1.0 release (only release, 2026-10-29); Recompa lists it with one 'great' report on an AYN Thor.",
+   "verified": "Device: dumpsys, data dirs, sha1sum of a USA ROM. APK: jadx of FusionSetupActivity, RomImporter, GbaGameConfig; assets/payload/variants/fusion/game.toml. Web: GitHub search/API, Recompa index."
+  },
+  {
+   "package": "com.personal.luigismansion",
+   "name": "Luigis Mansion Recomp",
+   "original": {
+    "title": "Luigi's Mansion",
+    "platform": "GameCube",
+    "year": 2001
+   },
+   "kind": "static recompilation",
+   "project": {
+    "name": "Luigi's Mansion Recompiled (Android port by MsBunnana & JayElDragon)",
+    "repo": "https://github.com/rob646464/luigis-mansion-recompiled",
+    "android_repo": "https://github.com/JayElDragon/luigis-mansion-android",
+    "license": null
+   },
+   "version_checked": "3.2.1",
+   "update": {
+    "channel": "GitHub releases",
+    "url": "https://github.com/JayElDragon/luigis-mansion-android/releases"
+   },
+   "assets": {
+    "needs": "Luigi's Mansion USA disc image (.iso or .rvz), picked in Game Files; play it in place (SAF link, recommended) or copy it into the app. Optional DLC 'Premium Deluxe 2.2.1' (.xdelta or GameBanana .zip) is built from an .iso (not .rvz).",
+    "location": "Linked SAF document (pref in lm.xml, DiscLink) or a copy inside /data/data/com.personal.luigismansion/files.",
+    "notes": "Options > Controls > Hide with Controller hides the touch controls while a controller is in use."
+   },
+   "settings": {
+    "adapter": "luigismansion",
+    "files": [
+     "/data/data/com.personal.luigismansion/shared_prefs/lm.xml",
+     "/data/data/com.personal.luigismansion/files/xdg/Luigi's Mansion Recompiled/settings.ini"
+    ],
+    "in_app_menu": "Launcher > Options (tabs: Graphics, Controls, Audio, Help). Presets Low-end/Balanced/Smooth/High quality/Maximum set FPS, resolution and MSAA together.",
+    "summary": "Frame rate 30/60 or any display rate up to 240 (default 120), resolution 1-4x, MSAA off/4x, screen format (4:3, Auto, 16:9, 16:10, 21:9, 32:9), HUD centred 4:3, VSync, sharp picture, Performance Mode, Auto Cool-down, Boost CPU, custom texture packs, cheats (no damage, vacuum x4, mirror world, skip cutscenes)."
+   },
+   "controls": "SDL gamepad; on-screen touch controls (on by default, opacity, haptics, hide with controller). Stick response curve (StickCurve). Controller mapping kept in settings.ini [controls] (port1_device).",
+   "display": "Single screen, sensorLandscape (no secondary-display code in the APK).",
+   "saves": "/data/data/com.personal.luigismansion/files/xdg/Luigi's Mansion Recompiled/USA/ (memory card). Automatic zip backups to /sdcard/Download/Luigi's Mansion Android/ after play; restore in Options > Help > Restore Saves.",
+   "notes": "GitHub release V3.2 is versionName 3.2.1, versionCode 8 (2026-11-18); an older build reports versionCode 3, versionName 1.2. On first launch the app picks a device-tier preset (writes g_fps/g_res/g_msaa) unless those prefs already exist. A Safe Mode (after a crash) temporarily forces 30 fps, 1x, no AA, no texture pack. Two engine libs: libmain.so (base game) and libmain_pd.so (DLC).",
+   "verified": "On device: dumpsys, data dir. APK (versionName 1.2 build): GameSettings.write (prefs -> settings.ini mapping), OptionsView (keys, labels, ranges), DisplayRates, SaveBackup. Web: JayElDragon/luigis-mansion-android build.gradle and releases; rob646464 upstream repo. Settings of newer releases may differ."
+  },
+  {
+   "package": "com.skiesofarcadia.recomp",
+   "name": "Skies of Arcadia Legends",
+   "original": {
+    "title": "Skies of Arcadia Legends",
+    "platform": "GameCube",
+    "year": 2002
+   },
+   "kind": "static recompilation",
+   "project": {
+    "name": "SkiesOfArcadiaLegends-Recomp",
+    "repo": "https://github.com/ogdanimal/SkiesOfArcadiaLegends-Recomp",
+    "android_repo": "https://github.com/ogdanimal/SkiesOfArcadiaLegends-Recomp",
+    "license": "GPL-3.0"
+   },
+   "version_checked": "0.94.0-beta",
+   "update": {
+    "channel": "GitHub releases, pre-releases included (the release has several assets; the Android one matches android\\.apk$)",
+    "url": "https://github.com/ogdanimal/SkiesOfArcadiaLegends-Recomp/releases"
+   },
+   "assets": {
+    "needs": "Your own Skies of Arcadia Legends disc: USA GEAE8P, Europe GEAP8P or Japan GEAJ8P (RVZ, ISO, GCM, GCZ, WIA or CISO). Optional: Dreamcast discs (CHD) for Dreamcast music and the uncensored models, an HD texture pack.",
+    "location": "Imported once in Settings > Disc, extracted and patched into <data>/Games/<discID>/, where <data> is /sdcard/Android/data/com.skiesofarcadia.recomp/files (the default; 'Data folder > Change' can move it).",
+    "notes": "An imported USA disc takes 1.3 GB in <data>/Games/GEAE8P. Widescreen patches are cached in /data/data/com.skiesofarcadia.recomp/cache/dolpatches/."
+   },
+   "settings": {
+    "adapter": "skies",
+    "files": [
+     "/sdcard/Android/data/com.skiesofarcadia.recomp/files/Config/Dolphin.ini",
+     "/sdcard/Android/data/com.skiesofarcadia.recomp/files/Config/GFX.ini",
+     "/sdcard/Android/data/com.skiesofarcadia.recomp/files/Config/GCPadNew.ini"
+    ],
+    "in_app_menu": "Launcher > Settings (tabs Graphics, Gameplay, Language, Sound, Dreamcast, Controls, Saves, Disc, About); in game hold Z and press Start, or Select (SkiesHotkeys Menu).",
+    "summary": "Graphics: Picture (Widescreen 16:9 / Match screen / 4:3), HUD position, Frame rate 30 or 60 (interpolated), Resolution 1-6x, MSAA, texture filtering, anisotropy, scaling, V-Sync, FPS, HD textures, renderer Vulkan/OpenGL ES, custom GPU driver. Gameplay: camera control, battle and field speed, encounter rate, Hold B, EXP/Gold/Magic EXP multipliers, Invincible. Saves: auto-save interval."
+   },
+   "controls": "Dolphin input layer. GCPad1 maps to the Thor's built-in pad as Android/1/Odin Controller, with rumble on the device motor. [SkiesHotkeys] in GCPadNew.ini: Menu = Select, Invincible = L3 | R3. The touch overlay is Android/ShowInputOverlay.",
+   "display": "Single screen. Ini values: Widescreen 1 = 16:9, FrameMode 1 = 60 fps, InternalResolution 3 = 1080p, OutputResampling 5 = Sharp; renderer Vulkan or OpenGL ES.",
+   "saves": "Memory card: <data>/GC/USA/Card A/ (GCI folder). Save states: <data>/StateSaves/state-skies-slot<N>.sav (about 30 MB each). Back up with Settings > Saves > Back up saves before updating. Play time is kept per disc ID in TimePlayed.ini (milliseconds, hex).",
+   "notes": "0.83.0-beta runs on a Dolphin-derived engine (org.dolphinemu.dolphinemu.skies.*). v0.94.0-beta (2026-11-25) brings a new engine on the Aurora renderer: settings, saves and the data folder carry over, but save states made by the new engine do not load in 0.83, and its Renderer setting replaces Dolphin's video backend settings. Upstream says to back up saves before updating. Releases are signed with upstream's key (e2c00b0b...), so updates install over. The app asks for MANAGE_EXTERNAL_STORAGE.",
+   "verified": "Device: dumpsys, the Obtainium app JSON, every Config ini, GameSettings, shared_prefs, folder sizes. APK: jadx of SkiesSettingsPanel (show() dumped as raw code), SkiesLauncherActivity; libmain strings. Web: GitHub API releases; v0.94 release notes from Obtainium's stored changelog."
+  },
+  {
+   "package": "dev.ttyd.port.us",
+   "name": "Paper Cut (US)",
+   "original": {
+    "title": "Paper Mario: The Thousand-Year Door",
+    "platform": "GameCube",
+    "year": 2004
+   },
+   "kind": "decompilation",
+   "project": {
+    "name": "Paper Cut",
+    "repo": "https://github.com/LLCOOLT/ttyd",
+    "android_repo": "https://github.com/LLCOOLT/paper-cut",
+    "license": "MIT"
+   },
+   "version_checked": "0.5.1",
+   "update": {
+    "channel": "GitHub releases (one APK per disc release: papercut-<v>-eu-android-arm64.apk); the app can download and install its own updates",
+    "url": "https://github.com/LLCOOLT/paper-cut/releases"
+   },
+   "assets": {
+    "needs": "Your own US disc image, game ID G8ME01 (.iso, .gcm or .rvz). This is the US app; upstream ships separate EU (G8MP01) and JP (G8MJ01) APKs.",
+    "location": "Added to the launcher's library with the system file picker (persistable content:// URI); nothing is copied to a fixed path.",
+    "notes": "Add the disc with 'Add a disc image'. With 'Skip to this disc next time' on, the app boots straight to the game. Settings > Gameplay has presets such as Vanilla+."
+   },
+   "settings": {
+    "adapter": "papercut",
+    "files": [
+     "/data/data/dev.ttyd.port.us/files/settings.txt"
+    ],
+    "in_app_menu": "Launcher > Settings, or in game: the Start menu's settings page (controller Back/Select, or a three-finger tap).",
+    "summary": "framerate 60/120/144/240/display (frame interpolation), resolution (window or 1-8x 640x480), widescreen, wide HUD, 4x MSAA, sharp texture filter, no pop-in, VSync, FPS overlay; text speed, skip intro, run speed, fast-forward speed; EU: language and 50 Hz."
+   },
+   "controls": "SDL3/Aurora input: controllers, keyboard and mouse, and touch (on-screen stick and buttons with size/opacity, auto-run, fixed stick, tap = A).",
+   "display": "Dual-screen aware: when a second display exists it shows a companion page there (Party, Map, Battle info, Crystal Stars) through an Android Presentation (TtydCompanion). Recompa's index also marks it dual_screen. Any aspect ratio; landscape by default.",
+   "saves": "Memory cards beside settings.txt in Aurora's user folder (expected /data/data/dev.ttyd.port.us/files/, root-only).",
+   "notes": "The EU and US builds are separate apps; install the one that matches the disc's region. Touch buttons hide when the controller is used.",
+   "verified": "Device: dumpsys, data dirs. APK: jadx (TtydActivity, TtydCompanion), native strings (settings.txt, disc IDs). Source: settings_aurora.c and settings.h at tag v0.5.1 (key list, ranges, defaults), README, docs. Not checked: the user-folder path on Android (SDL pref path assumed), whether the EU app takes a US disc."
+  },
+  {
+   "package": "dev.twilitrealm.dusk",
+   "name": "Dusklight",
+   "original": {
+    "title": "The Legend of Zelda: Twilight Princess",
+    "platform": "GameCube",
+    "year": 2006
+   },
+   "kind": "decompilation",
+   "project": {
+    "name": "Dusklight (TwilitRealm, Aurora/Dawn renderer)",
+    "repo": "https://github.com/TwilitRealm/dusklight",
+    "android_repo": "https://github.com/TwilitRealm/dusklight",
+    "license": "CC0-1.0"
+   },
+   "version_checked": "2.0.3",
+   "update": {
+    "channel": "GitHub releases",
+    "url": "https://github.com/TwilitRealm/dusklight/releases"
+   },
+   "assets": {
+    "needs": "Twilight Princess GameCube USA disc image (GZ2E01), ISO/CISO/RVZ-style image, picked in the pre-launch UI.",
+    "location": "Read in place through a SAF document URI (content://...) stored in config.json backend.isoPath.",
+    "notes": "backend.isoVerification = 1 (Success) means the picked image passed the hash check."
+   },
+   "settings": {
+    "adapter": "dusklight",
+    "files": [
+     "/data/data/dev.twilitrealm.dusk/files/config.json",
+     "/data/data/dev.twilitrealm.dusk/files/controller_ports.dat",
+     "/data/data/dev.twilitrealm.dusk/files/keyboard_bindings.dat",
+     "/data/data/dev.twilitrealm.dusk/files/Odin Controller_2020_0111.controller"
+    ],
+    "in_app_menu": "Pre-launch screen > Settings, or in game via the Dusklight menu (bindable action openDusklightMenu). A Graphics Tuner carousel covers resolution, shadows, bloom, depth of field and texture packs.",
+    "summary": "Internal resolution (Auto or 1-12x), shadow resolution 1-8x, frame interpolation (Off/Capped/Unlimited) with framerate cap 30-540, bloom and depth of field (Off/Classic/Dusklight), letterboxing, menu scaling, many QoL toggles (fast climbing, instant saves, bigger wallets...), gyro aim, touch controls. Presets include 'Dusklight'."
+   },
+   "controls": "SDL gamepad; the Thor pad is saved as 'Odin Controller_2020_0111.controller' mapping. Per-port action bindings (call Midna, first-person, map, turbo) in config.json actionBindings.*_port0..3. Gyro aim option. Optional on-screen touch controls (game.enableTouchControls).",
+   "display": "Official build is single-screen (no secondary-display code in the APK). A dual-screen fork exists (github.com/igawa6/dusklight; also Darkaxt/Dusklight-Android-Dual-Screen-Bleeding-Edge).",
+   "saves": "Memory card GCI folder: /data/data/dev.twilitrealm.dusk/files/USA/Card A/01-GZ2E-gczelda2.gci (backend.cardFileType 1 = GCI Folder). Root-only path; back up with su.",
+   "notes": "v2.0.3 released 2026-09-30. Ships bundled mods (cosmetics, luau_runtime, randomizer .dusk files) and a Dawn pipeline cache. Launch args can be passed with am start --es borealis_args \"--backend vulkan\". Logs in files/logs; a run that stops with 'Surface present failed' there is a renderer failure (seen with v2.0.2).",
+   "verified": "On device: dumpsys, config.json (read in full), files listing, save folder, log. Source: TwilitRealm/dusklight at tag v2.0.2 (settings.h/.cpp, ui/settings.cpp, ui/graphics_tuner.cpp, ui/preset.cpp, config.cpp, platforms/android/README.md). LICENSE.md is CC0 1.0."
+  },
+  {
+   "package": "io.github.them3dium.mareshine",
+   "name": "Mareshine",
+   "original": {
+    "title": "Super Mario Sunshine",
+    "platform": "GameCube",
+    "year": 2002
+   },
+   "kind": "decompilation",
+   "project": {
+    "name": "Mareshine",
+    "repo": "https://github.com/TheM3dium/mareshine",
+    "android_repo": "https://github.com/TheM3dium/mareshine",
+    "license": "MIT"
+   },
+   "version_checked": "2.2.0",
+   "update": {
+    "channel": "GitHub releases (the app also checks for updates itself at start, setting SMS_UPDATE_CHECK)",
+    "url": "https://github.com/TheM3dium/mareshine/releases"
+   },
+   "assets": {
+    "needs": "Your own Super Mario Sunshine disc image, USA GMSE01 (a PAL disc goes in iso/pal).",
+    "location": "Imported into <data>/iso/, where <data> is /sdcard/Android/data/io.github.them3dium.mareshine/files by default or the folder in shared_prefs/sunshine.xml key data_dir.",
+    "notes": "An imported USA disc lands at <data>/iso/GMSE01.iso. The game boots in 16:9."
+   },
+   "settings": {
+    "adapter": "mareshine",
+    "files": [
+     "/sdcard/Android/data/io.github.them3dium.mareshine/files/settings.txt"
+    ],
+    "in_app_menu": "Launcher > Settings (Video presets Recommended/Low/Medium/High/Ultra, then Resolution, Picture, Effects, Graphics driver, Controls, Cheats, Mods, Achievements, Updates).",
+    "summary": "render_scale 0.5-4x (1.5 default), frame_rate 30/60/120, widescreen 16:9/16:10/20:9/21:9/off, HUD at edges or 4:3 area, draw distance 0.7-5x, MSAA, anisotropic, FXAA, shadows/reflections/water/shimmer toggles, copy write-back, ANGLE (Vulkan) alpha, cheats (god mode, infinite lives/FLUDD, speed, jump, moon jump, coins)."
+   },
+   "controls": "SDL2 controller input with remapping (ControllerSettingsActivity, stored in settings.txt), on-screen touch buttons (Classic or GameCube style), optional gyro aiming. Select opens the quick menu.",
+   "display": "Single screen, widescreen by camera (not stretched), up to 120 fps. No second-display code found in the APK.",
+   "saves": "<data>/saves/ (memory card card-a and the shader cache). Save states via SaveStatesActivity; optional Wi-Fi sync between devices.",
+   "notes": "v2.2.0 released 2026-11-26 ('Winter Update'). Release APKs share one signer (ad9c2bb0...), so updates install over. Mods (Eclipse, Sunburn, example) and achievements are built in. Fork of jbcgames/sms-android, built from the doldecomp/sms decompilation with the chasem PC port (assets/licenses).",
+   "verified": "Device: dumpsys, data dirs, GMSE01 header bytes. APK: jadx of DataDir, Settings (DEFAULTS), SettingsActivity (every Choice/Toggle). Web: GitHub API (repo, license, parent, releases), Recompa index. Not checked: rvz import, in-game behaviour."
+  },
+  {
+   "package": "com.aure.banjorecomp",
+   "name": "Banjo: Recompiled",
+   "original": {
+    "title": "Banjo-Kazooie",
+    "platform": "N64",
+    "year": 1998
+   },
+   "kind": "static recompilation",
+   "project": {
+    "name": "Banjo: Recompiled (N64Recomp + RT64)",
+    "repo": "https://github.com/BanjoRecomp/BanjoRecomp",
+    "android_repo": "https://github.com/AurelioB/BanjoRecomp-Android",
+    "license": "GPL-3.0"
+   },
+   "version_checked": "0.1.2",
+   "update": {
+    "channel": "GitHub releases",
+    "url": "https://github.com/AurelioB/BanjoRecomp-Android/releases"
+   },
+   "assets": {
+    "needs": "Banjo-Kazooie USA ROM (rev 0 / v1.0; the app's dev path is baserom.us.v10.z64). Picked once with the in-app Android document picker; the runtime verifies it and stores its own copy.",
+    "location": "Picked via SAF, then stored inside /data/data/com.aure.banjorecomp/files/data/ (APP_FOLDER_PATH) under the game's stored file name.",
+    "notes": "The picker's MIME list does not accept .zip files. Whether it accepts byte-swapped .n64 dumps was not checked."
+   },
+   "settings": {
+    "adapter": "banjorecomp",
+    "files": [
+     "/data/data/com.aure.banjorecomp/files/data/general.json",
+     "/data/data/com.aure.banjorecomp/files/data/graphics.json",
+     "/data/data/com.aure.banjorecomp/files/data/sound.json",
+     "/data/data/com.aure.banjorecomp/files/data/controls.json"
+    ],
+    "in_app_menu": "Main menu > Settings (RecompFrontend tabs: General, Controls, Graphics, Sound, Save Management, Mods). Also opens in-game from the pause/escape menu.",
+    "summary": "Graphics: Resolution (Original/Original2x/Auto), Downsampling, Aspect Ratio (Original/Expand), Framerate (Original/Display/Manual 20-240), MSAA (None/2x/4x), HUD Placement, Cutscene Aspect Ratio, custom Turnip/Vulkan driver import. General: Note Saving, Analog Camera, invert modes, rumble, deadzone. Sound: master and BGM volume."
+   },
+   "controls": "SDL2 gamecontroller with recompcontrollerdb; full remapping in Settings > Controls (controls.json). Tested by the porter on the AYN Thor. No touch overlay.",
+   "display": "Game on the top screen. On a second display (Thor bottom screen) a Java Presentation companion shows live stats (health, lives, notes, eggs, feathers, Jiggies, Mumbo tokens, Jinjos) and area backgrounds; double-tap it to toggle off.",
+   "saves": "Runtime save /data/data/com.aure.banjorecomp/files/data/saves/bk.n64.us.1.0.bin (EEPROM, path not checked on device). Settings > Save Management imports/exports banjo-kazooie.bin and can bind a SAF folder (pref save-folder/tree-uri) whose copy becomes authoritative and is written back on pause.",
+   "notes": "Custom Vulkan driver loader (adrenotools): Graphics > Graphics Driver imports a Turnip zip into files/gpu-drivers; intent extra banjo_force_system_driver forces the system driver. Mods (.nrm, texture packs such as BK Reloaded) install from Settings > Mods into files/data/mods. Same developer (AurelioB) as ClusterTune.",
+   "verified": "On device: dumpsys, data dir. APK: BanjoSDLActivity (paths, MIME types, save names, GPU driver code), libmain.so strings. Source: AurelioB/BanjoRecomp-Android (latest release android-v0.1.2 = version checked), its README and RecompFrontend/N64ModernRuntime config code. Save sub-path inside files/data not confirmed on device."
+  },
+  {
+   "package": "com.lighthouse.android",
+   "name": "Lighthouse",
+   "original": {
+    "title": "Banjo-Kazooie",
+    "platform": "N64",
+    "year": 1998
+   },
+   "kind": "decompilation",
+   "project": {
+    "name": "Lighthouse (HarbourMasters Banjo-Kazooie PC port on libultraship)",
+    "repo": "https://github.com/HarbourMasters/Lighthouse",
+    "android_repo": "https://github.com/izzy2lost/Lighthouse",
+    "license": "CC0-1.0 (as reported by GitHub)"
+   },
+   "version_checked": "1.0.2",
+   "update": {
+    "channel": "GitHub releases",
+    "url": "https://github.com/izzy2lost/Lighthouse/releases"
+   },
+   "assets": {
+    "needs": "Banjo-Kazooie .z64 ROM (USA rev0/rev1, PAL or JP are recognised by the bundled Torch config). The app verifies it, copies it as baserom.us.z64 and converts it into bk.o2r on the device.",
+    "location": "/sdcard/Android/data/com.lighthouse.android/files/ (GameAssets: getExternalFilesDir, falling back to internal files). Mods go in the mods folder there.",
+    "notes": "The picker text asks for a .z64, so a byte-swapped .n64 dump may need converting first (not checked)."
+   },
+   "settings": {
+    "adapter": "lighthouse",
+    "files": [
+     "/sdcard/Android/data/com.lighthouse.android/files/lighthouse.cfg.json",
+     "/sdcard/Android/data/com.lighthouse.android/files/imgui.ini"
+    ],
+    "in_app_menu": "In game: the libultraship ImGui menu bar (Settings, Enhancements, Network, Developer Tools); controller combo or touch to open (not checked on device).",
+    "summary": "Settings > Graphics: Internal Resolution 0.5-2.0, MSAA 1-8, Current FPS 30 up to display rate (frame interpolation), Match Refresh Rate, VSync, Texture Filter (Three-Point/Linear/None), renderer API. Enhancements: Extended Draw Distance 1-6x, Disable LOD, cutscene aspect, camera free-look/invert, note/Jinjo retention, cutscene skips, many bug fixes and cheats."
+   },
+   "controls": "SDL2 gamecontroller (bundled gamecontrollerdb.txt); remapping in the libultraship input editor, stored under CVars.gSettings.Controllers in lighthouse.cfg.json. Controls scheme options (Talon Trot toggle, etc.).",
+   "display": "Single screen (no secondary-display code in the APK).",
+   "saves": "In the app folder /sdcard/Android/data/com.lighthouse.android/files/ (SaveStore/SavesActivity manage them; file names not checked).",
+   "notes": "Same game as Banjo: Recompiled but a different technique (decomp + libultraship, so it has HarbourMasters enhancements, randomizer and Anchor multiplayer upstream). The official HarbourMasters releases (latest 1.2.2, 2026-10-30) ship no Android build; izzy2lost's fork has one release (1.0.2, 2026-08-07, based on an older upstream). Listed in the RetroHandhelds Obtainium recomp list as id com.lighthouse.android.",
+   "verified": "On device: dumpsys, data dir. APK: GameAssets/LauncherActivity (paths, ROM name), assets/gamedata.zip config.yml (Banjo-Kazooie hashes), libmain.so strings (lighthouse.cfg.json, CVar names). Source: izzy2lost/Lighthouse at HEAD (src/port/UI/LighthouseMenuSettings.cpp, LighthouseMenuEnhancements.cpp). libultraship submodule not cloned, so texture-filter default is from libultraship convention."
+  },
+  {
+   "package": "com.mkds.port",
+   "name": "Mario Kart DS",
+   "original": {
+    "title": "Mario Kart DS",
+    "platform": "Nintendo DS",
+    "year": 2005
+   },
+   "kind": "decompilation",
+   "project": {
+    "name": "mkds-android",
+    "repo": "https://github.com/RonyxDumb/mkds",
+    "android_repo": "https://github.com/RonyxDumb/mkds-android",
+    "license": "MIT (decompilation RonyxDumb/mkds); the Android repo has no license file"
+   },
+   "version_checked": "0.50",
+   "update": {
+    "channel": "GitHub releases (manual APK)",
+    "url": "https://github.com/RonyxDumb/mkds-android/releases"
+   },
+   "assets": {
+    "needs": "Your own Mario Kart DS ROM, Europe only (game code AMCP).",
+    "location": "Picked with the system file picker at first start and copied once to /data/data/com.mkds.port/files/rom.nds (root-only). The ROM header must carry game code AMCP.",
+    "notes": "Tested: after import the game boots to the title screen."
+   },
+   "settings": {
+    "adapter": null,
+    "files": [],
+    "in_app_menu": "None. The Java side has no settings screen; language follows the device locale (Native.setLanguage).",
+    "summary": "No settings file. The app picks the display's highest refresh-rate mode itself."
+   },
+   "controls": "Gamepads via Android InputDevice (hot-plug aware); an on-screen touch overlay (ControlsView) during races when no gamepad is connected.",
+   "display": "Both DS screens are laid out on one surface on the display the app opens on (Native.setLayout/setWideAspect). No second-display code. Not checked on the Thor.",
+   "saves": "/data/data/com.mkds.port/files/mkds.sav (root-only; back up with root). crash.txt and log.txt sit beside it.",
+   "notes": "Upstream's v0.23 build reports versionName 0.1 (signer f2be4574..., the v0.23 key in Recompa's index). v0.28 and v0.50 (2026-11-24) are signed with different keys, so updating from an older build means uninstalling first, which deletes mkds.sav (back it up with root). Supports local Wi-Fi multiplayer (multicast lock).",
+   "verified": "Device: dumpsys, data dirs, ROM header bytes. APK: jadx of MainActivity/Native; native strings. Web: GitHub API releases, Recompa index (package and signer history). Not checked: in-game display layout and controls."
+  },
+  {
+   "package": "com.opende.deusex",
+   "name": "openDE",
+   "original": {
+    "title": "Deus Ex (Game of the Year Edition)",
+    "platform": "PC",
+    "year": 2000
+   },
+   "kind": "engine reimplementation",
+   "project": {
+    "name": "OpenDE (OpenDE-Android)",
+    "repo": "https://github.com/jarmitage99/OpenDE",
+    "android_repo": "https://github.com/JMAccorsi/OpenDE-Android",
+    "license": "MIT"
+   },
+   "version_checked": "0.7-beta",
+   "update": {
+    "channel": "GitHub releases (built-in updater)",
+    "url": "https://github.com/JMAccorsi/OpenDE-Android/releases"
+   },
+   "assets": {
+    "needs": "Deus Ex GOTY (version 1112fm) game folder: System/, Maps/, Textures/, Sounds/, Music/. The app can also extract a GOG setup_deus_ex_goty*.exe on the device or download from Steam (app 6910) after sign-in.",
+    "location": "Game root chosen in the app and cached in /data/data/com.opende.deusex/shared_prefs/opende_prefs.xml (game_root) and files/opende_game_root.txt. The app overlays its own DeusEx.u and DXController.u in /sdcard/Android/data/com.opende.deusex/files/System.",
+    "notes": "A Steam-style install folder works as the game root (installscript.vdf, GOTY_1/, Maps/, System/ with 85 files, Textures/, Sounds/, Music/, Help/, Manual/)."
+   },
+   "settings": {
+    "adapter": "opende",
+    "files": [
+     "/sdcard/Android/data/com.opende.deusex/files/DeusEx.ini",
+     "/sdcard/Android/data/com.opende.deusex/files/User.ini"
+    ],
+    "in_app_menu": "In-game Options > Display (Anisotropic Filtering, Trilinear, MSAA, FXAA, Smooth Lighting, Detail Distance, VSync, Frame Rate Limit, Limit Texture Animation, Ambient Occlusion, UI Scale, Performance HUD), plus touch-overlay and gyro options. DXController settings for stick curves and deadzones.",
+    "summary": "OpenDE reads the user copies of DeusEx.ini and User.ini from the app's external files dir (config.cc userDirectory), not the ones in the game folder. OpenDE-specific keys sit in [WinDrv.WindowsClient] as menu indices: Anisotropy 0-4, Multisampling 0-3, FXAA, SmoothLightmaps, DetailDistance 0-2, VSync 0-2, FrameRateLimit 0-7, AmbientOcclusion 0-3, UIScale 0-11, PerformanceHUD 0-2, FieldOfViewIndex 0-12, touch overlay and gyro keys. [DXController.ControllerSettings] holds stick deadzones and curves; [DXController.AutoSaveManager] periodic autosaves. User.ini holds HUD/gameplay toggles and key bindings."
+   },
+   "controls": "SDL2 gamepad through DXController (radial weapon/aug wheels, on-screen keyboard, menu navigation). Touch overlay on by default (TouchOverlaysEnabled=1), gyro aim off (GyroAimMode=0). Stick curves: left Power, right Sigmoid, right stick scale 0.4.",
+   "display": "Single screen, OpenGL ES (GlideDrv.GlideRenderDevice is the configured RenderDevice name; the renderer itself is OpenDE's). Hor+ widescreen FOV via FieldOfViewIndex (60 + 5*index degrees, default 3 = 75).",
+   "saves": "/sdcard/Android/data/com.opende.deusex/files/Save/ (savegame.cc: userDirectory/System/<SavePath ..\\Save>). The game folder's own Save/ (only dummy.txt in a Steam install) is not used.",
+   "notes": "v0.5 (2026-11-20) APK SHA-256 3f1fec60.... Newer pre-releases: v0.6, v0.6.1, v0.6.2 and v0.7-beta (2026-11-27), which replaces the Java launcher with an SDL3 launcher. The app's own updater checks api.github.com/repos/JMAccorsi/OpenDE-Android/releases. Built on SDL2 2.32.10 in v0.5. Settings keys and ranges are from the v0.5 source; later versions may change them.",
+   "verified": "Device: version, install time, prefs, both ini files, game folder contents, save folder. APK: SHA-256 against GitHub release, jadx (GameLocator, UpdateChecker, OverlayInstaller), libmain.so strings. Source tarball at tag v0.5: src/game/main.cc (menu keys, ranges, labels), src/core/config.cc (user ini location), src/engine/savegame.cc (save path)."
+  },
+  {
+   "package": "igawa6.dualsouls",
+   "name": "DualSouls (Hollow Knight)",
+   "original": {
+    "title": "Hollow Knight",
+    "platform": "PC (Steam/GOG v1.5.12620)",
+    "year": 2017
+   },
+   "kind": "source port",
+   "project": {
+    "name": "HK: Dual Souls",
+    "repo": "https://github.com/igawa6/dualsouls",
+    "android_repo": "https://github.com/igawa6/dualsouls",
+    "license": null
+   },
+   "version_checked": "1.0.3",
+   "update": {
+    "channel": "GitHub releases",
+    "url": "https://github.com/igawa6/dualsouls/releases"
+   },
+   "assets": {
+    "needs": "Your own Hollow Knight PC folder (Steam layout hollow_knight_Data or GOG Hollow Knight_Data, v1.5.12620, all 1761 files unmodified) plus hk-android-gog.xdelta from the same release. The app's Import Game screen patches them into its own OBB (~1 GB).",
+    "location": "Source: a Hollow Knight PC folder plus hk-android-gog.xdelta (924 MB), picked in Import Game. Built data: /sdcard/Android/data/igawa6.dualsouls/files/ (main.1.igawa6.dualsouls.obb + hk_data_stamp.txt).",
+    "notes": "Needs Files permission on Android 13+ or Unity will not mount the data. The xdelta must come from the same release as the APK (1.0.3)."
+   },
+   "settings": {
+    "adapter": "dualsouls",
+    "files": [
+     "/sdcard/Android/data/igawa6.dualsouls/files/hkds_options.json",
+     "/sdcard/Android/data/igawa6.dualsouls/files/hkds_layout.json",
+     "/sdcard/Android/data/igawa6.dualsouls/files/tweaks.json"
+    ],
+    "in_app_menu": "Hub screen at launch (Import Game, Save Files, Skins, Mod menu toggle). In game: Hollow Knight's own Options > Game/Controller screens carry two added rows (Dual Screen, Touch Controls); the bottom-screen gear opens the mod pane when Mod menu is ticked.",
+    "summary": "Dual Screen on/off, Touch Controls auto/on/off, controller glyph type and Nintendo face-button swap, bottom-screen companion, FPS/battery readout. Framerate is forced to 120 (vSync off) by the port; Hollow Knight's own video options live in Unity PlayerPrefs."
+   },
+   "controls": "Built-in Thor pad detected (vid 8224 / name 'odin' or 'ayn') and gets Nintendo glyphs with A/B and X/Y swapped by default (swapFaceButtons=1). External Xbox/PS4/PS5/Switch pads get their own glyphs. Touch controls appear when no pad is present. Rumble through the Thor motor.",
+   "display": "Built for the Thor: game on top; bottom screen (Presentation display) shows the HUD mirror plus Map/Inventory/Charms companion panes (touch), dialogue/tutorial overlays, FPS and battery. Set Dual Screen off to put the HUD back on top.",
+   "saves": "/sdcard/Android/data/igawa6.dualsouls/files/ (Hollow Knight's four save slots, per README; file names not checked). Hub > Save Files exports/imports slots. PC saves are not directly compatible. Uninstalling deletes saves and built data; Clear storage is a factory reset.",
+   "notes": "A same-version Unity (il2cpp) rebuild of the game made with AssetRipper; some shaders are hand-reconstructed, cutscenes re-encoded to VP8. Never uninstall to update: install over the top. If release notes say 'game data rebuild required', re-run Build game data with the new patch. Same author (igawa6) maintains a dual-screen Dusklight fork and other Thor ports.",
+   "verified": "On device: dumpsys, data dirs. APK: com.radit.hkaux (HKAux presentation display, HKPicker patch applier, HKController pad detection). Source: igawa6/dualsouls README and Assets/*.cs at main (pushed 2026-11-26, later than the 1.0.3 release of 2026-08-23, so field defaults may have moved). Save file names not checked on device."
+  },
+  {
+   "package": "com.ff7recomp",
+   "name": "Final Fantasy VII",
+   "original": {
+    "title": "Final Fantasy VII",
+    "platform": "PC (current Steam release; game first released on PS1 1997, PC 1998)",
+    "year": 1998
+   },
+   "kind": "static recompilation",
+   "project": {
+    "name": "FF7Recomp (pcrecomp-style x86 to C, FFNx renderer, 7th Heaven-style mod launcher)",
+    "repo": "https://github.com/bhuiyah/ff7-recomp-android",
+    "android_repo": "https://github.com/bhuiyah/ff7-recomp-android",
+    "license": "GPL-3.0"
+   },
+   "version_checked": "1.1.63",
+   "update": {
+    "channel": "GitHub releases (the launcher also checks for updates itself; pref update_checked)",
+    "url": "https://github.com/bhuiyah/ff7-recomp-android/releases"
+   },
+   "assets": {
+    "needs": "FINAL FANTASY VII (current Steam release, not the 2013 Edition) game files: downloaded by the launcher from the user's Steam account (QR sign-in, ~3.3 GB) or imported from an install folder. The launcher then recompiles ff7_en.exe on the device (once, ~8-10 min).",
+    "location": "/sdcard/Android/data/com.ff7recomp/files/game (ff7_en.exe + data/); compiled game /data/data/com.ff7recomp/files/game/libff7.so.",
+    "notes": "After an app update, the launcher's 'Update the game' relinks the compiled game."
+   },
+   "settings": {
+    "adapter": "ff7recomp",
+    "files": [
+     "/data/data/com.ff7recomp/shared_prefs/launcher.xml",
+     "/sdcard/Android/data/com.ff7recomp/files/game/FFNx.toml"
+    ],
+    "in_app_menu": "Launcher > Settings (Frame rate, Performance, Display aspect, Resolution, Renderer, CRT filter, Screen/second screen, On-screen controls, Controller, boosters). Launcher > FFNx settings for raw FFNx.toml overrides.",
+    "summary": "Frame rate (Original / fixed / 30 FPS battles / 60 / 120 experimental / 60 with 30 battles), Performance (Cooler/Balanced/Best), Resolution (Auto or 1-4x), aspect (4:3, 16:9, 16:9 stretched), Vulkan or OpenGL ES, CRT filter, bottom-screen companion, booster speed / no encounters / battle enhancement, EXP/AP/Gil multipliers."
+   },
+   "controls": "Controller support (A confirms, B cancels), any-button swaps in Settings > Controller, keyboard map, on-screen touch controls (Automatic/Always/Off), rumble (None/Light/Strong).",
+   "display": "Game on the top screen; Thor bottom screen shows party status, location, enemy HP, world map with party position, and a touch deck (menu, save/load state, speed, random battles). Option to swap screens or free the bottom screen for Pixel Guide or other apps.",
+   "saves": "/sdcard/Android/data/com.ff7recomp/files/game/save (save00.ff7...save09.ff7). Save states in a savestates folder (SaveStates.java). Optional Steam Cloud sync (cloud_saves).",
+   "notes": "Mods from the 7th Heaven catalogs go in files/mods. FFNx.toml is regenerated from FFNx.template.toml before every start, so edit the launcher prefs, not the toml. Project states it was written with Claude Code and not human-reviewed.",
+   "verified": "On device: dumpsys, launcher.xml, steam.xml key names only, files/game and build.log tail, sdcard layout. APK: LauncherActivity/GameInstall (pref keys, option labels, FFNx.toml writer). Web: GitHub repo README and releases."
+  },
+  {
+   "package": "com.owaissseeee.godhand",
+   "name": "GodHandAndroid",
+   "original": {
+    "title": "God Hand",
+    "platform": "PS2",
+    "year": 2006
+   },
+   "kind": "static recompilation",
+   "project": {
+    "name": "God Hand Android Port (PS2 static recompilation, PCSX2 GS renderer)",
+    "repo": "https://github.com/LasVola/godhand-recomp",
+    "android_repo": "https://github.com/owaissseeee/godhand-android-port",
+    "license": "GPL-3.0 (upstream LasVola/godhand-recomp); Android repo lists none"
+   },
+   "version_checked": "2.2",
+   "update": {
+    "channel": "GitHub releases",
+    "url": "https://github.com/owaissseeee/godhand-android-port/releases"
+   },
+   "assets": {
+    "needs": "God Hand USA disc (SLUS-215.03) as an ISO, picked in the launcher; it is extracted and indexed into the app's cache (SLUS_215.03, GODHAND.AFS/_DATA.AFS, MODULES/IRX.IMS).",
+    "location": "Picked via SAF, extracted to /data/data/com.owaissseeee.godhand/files/godhand_cache. Fallback: an already-extracted folder at /sdcard/Download/God Hand (USA)/.",
+    "notes": null
+   },
+   "settings": {
+    "adapter": "godhand",
+    "files": [
+     "/data/data/com.owaissseeee.godhand/shared_prefs/godhand_settings.xml"
+    ],
+    "in_app_menu": "Launcher main screen settings (GRAPHICS / CONTROLS / AUDIO & SYSTEM tabs) and the in-game settings dialog. Renderer, resolution, aspect and FPS are locked while a game is running.",
+    "summary": "Renderer (Vulkan PCSX2-GS recommended, OpenGL ES 3.2, native GLES), resolution 0.5x-8x (default 1x native 512x448), aspect 16:9/4:3/full, 30 or 60 FPS (60 marked buggy), frameskip, audio scheduling/buffer, controller mode, dodge mode, touch opacity, FPS overlay."
+   },
+   "controls": "Auto-detects a physical gamepad (or force touch-only/gamepad-only); touch overlay auto-hides with a pad. Custom touch button layout stored in the same prefs. Dodge on right stick, swipe, or 4 dodge buttons.",
+   "display": "Single screen (no secondary-display code in the APK).",
+   "saves": "PS2 memory card Mcd001.ps2 (and Mcd002.ps2) plus save states under /data/data/com.owaissseeee.godhand/files (exact sub-folder not confirmed).",
+   "notes": "The checked build reports versionName 1.0.0-godhand-recomp, which does not say which release it is. GitHub releases are tagged Beta (2026-10-25), release/v2.1 (2026-11-21, app-release-v2.1.apk) and v2.2 (2026-11-22).",
+   "verified": "On device: dumpsys, data dir. APK: SettingsRepository (prefs file, keys, defaults, ranges), SettingsDialog/MainActivity labels, IsoCacheProcessor paths, libgodhand_android.so strings. Web: GitHub repos and releases. Nothing tested in the running app."
+  },
+  {
+   "package": "org.projectcane.cane",
+   "name": "Sly Cooper (ProjectCane)",
+   "original": {
+    "title": "Sly Cooper and the Thievius Raccoonus",
+    "platform": "PS2",
+    "year": 2002
+   },
+   "kind": "decompilation",
+   "project": {
+    "name": "ProjectCane",
+    "repo": "https://github.com/theclub654/ProjectCane",
+    "android_repo": null,
+    "license": null
+   },
+   "version_checked": "0.5.0-android.1",
+   "update": {
+    "channel": "manual APK",
+    "url": null
+   },
+   "assets": {
+    "needs": "Sly Cooper and the Thievius Raccoonus NTSC-U PS2 disc image (.iso, SCUS-97198). The app checks SYSTEM.CNF and SCUS_971.98 in the ISO root, then extracts levels, audio and cutscenes on the device (about 4 GB free needed).",
+    "location": "Picked once with Android's document picker (ImportActivity: 'Select PS2 ISO and extract'); extracted data goes to /sdcard/Android/data/org.projectcane.cane/files (Worlds/, Cutscenes/, SecondScreen/). The ISO itself is not read again after extraction.",
+    "notes": "Extracted data takes about 2.8 GB. After extraction the game boots to the title screen."
+   },
+   "settings": {
+    "adapter": null,
+    "files": [
+     "/sdcard/Android/data/org.projectcane.cane/files/Saves/system_settings.dat",
+     "/data/data/org.projectcane.cane/shared_prefs/cane.xml"
+    ],
+    "in_app_menu": "In-game Settings menu (Video..., keyboard/controller configuration, 'Reset Video Settings'). Save backup/restore and the debug-log export are a separate Android screen (SavesActivity) reached from the game.",
+    "summary": "Game and video settings live in system_settings.dat, a binary file with the magic PCANESYS (SavesActivity backs it up with the saves), so there is no text file to edit and no adapter. Android SharedPreferences 'cane' hold two dual-screen keys: secondScreen (bool, default true: show episode art / cutscene frames on the Thor's bottom screen) and secondScreenArt (int 0-9, art style, cycled in game). The app also picks the display refresh rate from the panel's supported modes (CaneActivity.supportedRefreshRates). Other native files named in libmain.so: touch_settings.cfg, gui_proportions.cfg, imgui.ini, content_settings.json."
+   },
+   "controls": "SDL2 game controller input plus a touch overlay (touch_settings.cfg). Keyboard and controller remapping screens exist in the game's menu (strings 'Configuration de la manette', 'Keyboard'). Not tested on the Thor.",
+   "display": "Game on the top screen. On a device with a second presentation display (the Thor's bottom screen) it starts SecondScreenActivity there, showing episode art and cutscene frames; toggled with the secondScreen pref. Native GPU renderer needs vertex SSBOs (it shows an error naming SSBO limits on weak GPUs); the Adreno 740 should pass but this is not checked.",
+   "saves": "/sdcard/Android/data/org.projectcane.cane/files/Saves/slot1.sav ... slot9.sav (magic PCANESAV) plus system_settings.dat. Uninstalling the app deletes them; the in-app 'Back up saves to a file' writes a zip.",
+   "notes": "The Android wrapper's source could not be identified. Upstream ProjectCane (theclub654) publishes Windows/Linux builds only (release 'decompilation', 2026-10-21). Tried: GitHub code search for 'org.projectcane.cane' and 'CaneActivity' (no hits), repo search 'ProjectCane' (theclub654/ProjectCane, FridiNaTor1/ProjectCane-old, sinzcyro/ProjectCane, Raihwy3/ThieviusCTR 3DS port, baconspaceman/ProjectCane-AP), FridiNaTor1/SafeHouse (its Android app is org.safehouse.android, a different package), web search, and strings in the APK (no URL, no update checker; version-control-info says NO_SUPPORTED_VCS_FOUND). APK SHA-256 5604f4d60d364b93a9f4acc79aea15fe0449db0050538b872dfe56ac571ec553. Package also ships FFmpeg (libavcodec/libavformat) for the m2v cutscenes and libbrxrebuild.so, which rebuilds the extracted levels.",
+   "verified": "Device: version, install time, data dirs, ISO size, free space. APK decompiled with jadx: ISO checks, extraction paths, Saves dir, PCANESYS/PCANESAV magics, 'cane' prefs keys, second-screen behaviour. Web/GitHub: upstream repo only. Not checked: any in-game setting, controls or performance."
+  },
+  {
+   "package": "com.dishii.zelda3",
+   "name": "Zelda3",
+   "original": {
+    "title": "The Legend of Zelda: A Link to the Past",
+    "platform": "SNES",
+    "year": 1991
+   },
+   "kind": "decompilation",
+   "project": {
+    "name": "snesrev/zelda3 (zelda3-android dual-screen fork)",
+    "repo": "https://github.com/snesrev/zelda3",
+    "android_repo": "https://github.com/samyost1/zelda3-android",
+    "license": null
+   },
+   "version_checked": "2.0",
+   "update": {
+    "channel": "GitHub releases (Obtainium can track them)",
+    "url": "https://github.com/samyost1/zelda3-android"
+   },
+   "assets": {
+    "needs": "zelda3_assets.dat, built on the device from 'Legend of Zelda, The - A Link to the Past (USA)' ROM on first run (SetupActivity applies zelda3_assets.bps). Fan translations are supported from v2.0 (pick the translated ROM, then the US ROM).",
+    "location": "/sdcard/Android/data/com.dishii.zelda3/files/zelda3_assets.dat",
+    "notes": "The app does not need the ROM after extraction. MSU-1 packs go in files/msu/."
+   },
+   "settings": {
+    "adapter": "zelda3",
+    "files": [
+     "/sdcard/Android/data/com.dishii.zelda3/files/zelda3.ini",
+     "/data/data/com.dishii.zelda3/shared_prefs/secondscreen.xml"
+    ],
+    "in_app_menu": "Bottom screen > Settings list (save states, button remap, quick save/load, autosave, widescreen, CRT top/bottom, hide top HUD, X item ring, swap screens, MSU music, and 12 [Features] toggles). Everything else in zelda3.ini.",
+    "summary": "zelda3.ini (snesrev format) is read at game start and rewritten line by line by the bottom-screen settings (MinimapView.updateIni). Enhancements worth knowing: ExtendedAspectRatio (16:9 is the v2.0 default), EnhancedMode7, NoSpriteLimits, NewRenderer, CrtFilter, DimFlashes, MSU-1, and the [Features] quality-of-life fixes (item switch on L/R, collect items with sword, break pots with sword, skip intro, more bombs, 9999 rupees, bug fixes). Bottom-screen keys SecondScreenXItemRing/Swap/Crt live in [General]; hideTopHud is a SharedPreference (default true)."
+   },
+   "controls": "SDL2 gamepad. [GamepadMap] Controls sets the button layout; the Nintendo layout (A right, B bottom) matches the Thor. Buttons can be remapped from the bottom screen (writes [GamepadMap] Controls). No gameplay touch controls; the bottom screen is touch (map, inventory, equipping items).",
+   "display": "Game on the top screen, fullscreen. Bottom screen (Presentation) shows hearts/magic/counters, world map with pins, dungeon map, touch inventory and the settings list. SecondScreenSwap = 1 runs the game on the bottom panel (takes effect at next launch). With ExtendedAspectRatio = 4:3 the game is pillarboxed.",
+   "saves": "/sdcard/Android/data/com.dishii.zelda3/files/saves/: sram.dat (+ sram.bak) is the in-game save; save0.sav = autosave state, save1.sav = quick save state, save2+ = the four bottom-screen state slots; saves/ref/ holds 13 reference chapter saves copied from the APK. map_pins.txt next to zelda3.ini holds map pins.",
+   "notes": "Release v2.0 (zelda3-dualscreen.apk, 2026-07-24, SHA-256 ccea2445...) is the latest release. Fork chain: snesrev/zelda3 -> Waterdish/zelda3-android -> samyost1/zelda3-android (branch dual-screen). A zelda3.ini written before v2.0 has no SecondScreenSwap line (the app had inserted Autosave, SecondScreenCrt and CrtFilter into the one checked); updates never overwrite an existing ini. zelda3.user.ini, if present, replaces zelda3.ini entirely.",
+   "verified": "Device: version, install times, Obtainium app JSON, zelda3.ini content, prefs, assets and saves. APK: SHA-256 against GitHub release. Source at tag v2.0: config.c (keys, ParseBool, sections), MinimapView.java (which rows write which keys), MainActivity/SetupActivity (copy on first run, swap display), README."
+  },
+  {
+   "package": "com.example.supermarioworldremasteredplus",
+   "name": "Super Mario World Remastered+",
+   "original": {
+    "title": "Super Mario World",
+    "platform": "SNES",
+    "year": 1990
+   },
+   "kind": "fan remake",
+   "project": {
+    "name": "Super Mario World Remastered Plus (Godot 4.4)",
+    "repo": "https://github.com/BTFighter/Super-Mario-World-Remastered-Plus",
+    "android_repo": "https://github.com/BTFighter/Super-Mario-World-Remastered-Plus",
+    "license": "ISC"
+   },
+   "version_checked": "1.0.0",
+   "update": {
+    "channel": "GitHub releases",
+    "url": "https://github.com/BTFighter/Super-Mario-World-Remastered-Plus/releases"
+   },
+   "assets": {
+    "needs": "An unheadered or headered Super Mario World ROM named baserom.sfc. The game checks its SHA-256 against 7 known dumps (USA 1.0 with/without header, JPN 1.0 with/without header, EU 1.0, EU 1.1, one more USA). Graphics are the remake's own; the ROM is only verified, not loaded for content (rom_checker.gd).",
+    "location": "/storage/emulated/0/Documents/baserom.sfc (OS.get_system_dir(DOCUMENTS); needs the storage permission), else /data/data/com.example.supermarioworldremasteredplus/files/baserom.sfc (user://), else inside the APK.",
+    "notes": "Put the ROM at /storage/emulated/0/Documents/baserom.sfc and grant the storage permission."
+   },
+   "settings": {
+    "adapter": "smwr",
+    "files": [
+     "/data/data/com.example.supermarioworldremasteredplus/files/settings.cfg"
+    ],
+    "in_app_menu": "Main menu > Options (Display, Audio, Gameplay, Moveset, Sprites sections).",
+    "summary": "settings.cfg is JSON written by SettingsManager.gd (despite the .cfg name). Display: resolution, window_type (Windowed/Borderless/Fullscreen; the release notes say switch to Fullscreen on Android to hide the status and navigation bars), vsync, drop shadows. Gameplay: level layouts SNES/GBA, lives system, speedrun timer, autumn style, damage style, character physics. Moveset add-ons: wall jump, ground pound, air twirl, dive, Yoshi flutter, coyote time, jump buffer. Per-sprite style choices in sprite_settings. Created on first launch."
+   },
+   "controls": "Godot input with controller support and a touch UI (this is the 'SuperMarioWorldRemasteredPlus.apk' build with touch controls; the release also has a No Touch UI APK). Touch controls can be disabled in the game. Up to 4-player co-op (CoopManager). Not tested on the Thor.",
+   "display": "Single screen; Godot viewport stretch mode 'viewport', aspect 'ignore'. Windowed by default on Android, so system bars cover part of the game until Window Type is set to Fullscreen (BTFighter v1.1 release notes).",
+   "saves": "/data/data/com.example.supermarioworldremasteredplus/files/Saves/*.sav (JSON, SaveManager.gd, three slots). Root needed to back up.",
+   "notes": "Godot 4.4.stable.official engine (libgodot_android.so). Fan remake originally by JHDev2006 (Super-Mario-World-Remastered-Public), continued as Remastered Plus by Boswer811; BTFighter's fork published the 'experimental Android build' on the v1.1 release on 2026-03-22. That release's SuperMarioWorldRemasteredPlus.apk has SHA-256 28bff031.... The package name com.example.* is the Godot export default. Godot's Android user:// is getFilesDir() regardless of the project's custom_user_dir_name (checked in Godot 4.4 source).",
+   "verified": "Device: version, install time, data dir, ROM lookup. APK: SHA-256 against the GitHub release asset, project.binary (app name, custom user dir, autoloads), decompressed GDScript bytecode of SettingsManager, SaveManager and rom_checker (paths, keys, Android Documents lookup). Source of BTFighter's repo for defaults and option labels. Not checked: running the game."
+  },
+  {
+   "package": "com.raekwon.supermetroid",
+   "name": "Super Metroid",
+   "original": {
+    "title": "Super Metroid",
+    "platform": "SNES",
+    "year": 1994
+   },
+   "kind": "decompilation",
+   "project": {
+    "name": "snesrev/sm (Super Metroid Android dual-screen fork)",
+    "repo": "https://github.com/snesrev/sm",
+    "android_repo": "https://github.com/Raekwon1603/super_metroid-android",
+    "license": null
+   },
+   "version_checked": "0.1",
+   "update": {
+    "channel": "GitHub releases",
+    "url": "https://github.com/Raekwon1603/super_metroid-android/releases"
+   },
+   "assets": {
+    "needs": "Super Metroid (Japan, USA) (En,Ja) SNES ROM. Picked once with the document picker on first launch; the app copies it to sm.smc.",
+    "location": "/sdcard/Android/data/com.raekwon.supermetroid/files/sm.smc (AndroidImpl_GetRomPath = SDL external storage path + /sm.smc).",
+    "notes": "The first start right after import shows a black screen; later starts work."
+   },
+   "settings": {
+    "adapter": "supermetroid",
+    "files": [
+     "/sdcard/Android/data/com.raekwon.supermetroid/files/sm.ini",
+     "/data/data/com.raekwon.supermetroid/shared_prefs/secondscreen.xml"
+    ],
+    "in_app_menu": "Bottom screen > Setup tab (status strip on map, hide main HUD, save states, clear map markers, autosave on exit). Everything else only in sm.ini.",
+    "summary": "sm.ini (snesrev format) is copied from the APK on first launch and read once at game start: NewRenderer, EnhancedMode7, NoSpriteLimits, IgnoreAspectRatio, LinearFiltering, audio rate/buffer, DisableFrameDelay, Autosave, gamepad map, quicksave/quickload combos (L1+R1+Start / L1+R1+Back). Android ignores OutputMethod (always SDL_Renderer), Fullscreen and WindowSize; AutoRun currently does nothing (gameplay runs on the bundled SNES emulator core). Bottom-screen toggles are in SharedPreferences 'secondscreen'. No widescreen option."
+   },
+   "controls": "SDL2 gamepad. On the Thor, A/B are remapped to the Nintendo-style layout in main.c, and L2/R2 cycle the armed ammo (handled in MainActivity.dispatchKeyEvent, keycodes 104/105). Quicksave L1+R1+Start, quickload L1+R1+Back (slot 0). No touch controls for gameplay; the bottom screen is touch.",
+   "display": "Game on the top screen (immersive fullscreen, 4:3). Bottom screen is an Android Presentation with Map (live explored map, HP/ammo strip, markers), Items and Setup tabs. Known issue from the README: an occasional black screen when launched right after another game from Cocoon; closing and relaunching fixes it.",
+   "saves": "/sdcard/Android/data/com.raekwon.supermetroid/files/saves/ (sm.srm in-game SRAM plus sm.srm.bak, save%d.sav save states, autosave_thumb.bin).",
+   "notes": "The v1.1 (Super.Metroid.Dual.Screen.apk) and v1.2 (app-debug.apk) release assets share SHA-256 57dddd0b...; v1.2 (2026-09-08) is the latest. The author has stopped work on this repo and moved to MetroidArch, a dual-screen RetroArch fork (https://github.com/Raekwon1603/RetroArch, branch metroidarch-dual-screen, package com.metroidarch.app.aarch64). Gameplay runs on snesrev/sm's bundled 65816/SPC700 emulator core rather than the decompiled C. Known open bug: rapid uncharged beam shots are silent after the first.",
+   "verified": "Device: version, install time, data dir, ROM location. APK: SHA-256 against GitHub releases, sm.ini asset, jadx of MainActivity/SetupActivity/MapStatusView (paths, prefs keys), libmain.so strings. GitHub: README, src/config.c and src/main.c (ini parsing, sm.user.ini precedence, chdir to external files dir). Not checked: running the game."
+  }
+ ]
+}

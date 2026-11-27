@@ -1,0 +1,522 @@
+{
+  "name": "tmc",
+  "package": "dev.picori.tmc",
+  "aliases": [
+    "minish-cap",
+    "minishcap",
+    "picori"
+  ],
+  "category": "recomp",
+  "version_checked": "0.8.3",
+  "stop_before_write": true,
+  "files": {
+    "config": {
+      "path": "/sdcard/Android/data/dev.picori.tmc/files/config.json",
+      "format": "json",
+      "notes": "Port runtime config (port/port_runtime_config.cpp, nlohmann::json, dump(4)). Read at game start; kept in memory and rewritten in full on every setter (SaveConfig), so stop the app first. A key with the wrong JSON type falls back to its default; malformed JSON falls back to all defaults. TMCLauncherActivity reads second_screen_swap from this file before the game starts."
+    }
+  },
+  "per_game": null,
+  "keys": {
+    "render_backend": {
+      "file": "config",
+      "key": "render_backend",
+      "label": "F8 > Renderer",
+      "type": "enum",
+      "values": {
+        "\"software\"": "SDL_Renderer (software composite; Android default)",
+        "\"gpu\"": "SDL_GPU (shaders, CRT/LCD filters, .glslp)",
+        "\"auto\"": "GPU, falling back to SDL_Renderer"
+      },
+      "default": "\"software\"",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "Restart needed. 'sw' is accepted as software. CRT/LCD filters and shader presets need gpu."
+    },
+    "gpu_raster": {
+      "file": "config",
+      "key": "gpu_raster",
+      "label": "F8 > GPU rasterizer",
+      "type": "bool",
+      "values": {
+        "false": "Off",
+        "true": "On"
+      },
+      "default": "true",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "GPU PPU rasterizer with CPU fallback; no effect unless the GPU backend is active."
+    },
+    "gpu_raster_gles": {
+      "file": "config",
+      "key": "gpu_raster_gles",
+      "label": "F8 > GPU rasterizer (GLES compute)",
+      "type": "bool",
+      "values": {
+        "false": "Off",
+        "true": "On"
+      },
+      "default": "false",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "Opt-in GLES compute rasterizer, used only when the Vulkan raster is unavailable."
+    },
+    "upscale_method": {
+      "file": "config",
+      "key": "upscale_method",
+      "label": "F8 > Upscale",
+      "type": "enum",
+      "values": {
+        "\"nearest\"": "nearest",
+        "\"linear\"": "linear",
+        "\"xbrz_nearest\"": "xBRZ sharp",
+        "\"xbrz_linear\"": "xBRZ smooth"
+      },
+      "default": "\"nearest\"",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "Any unrecognised name selects xBRZ smooth (port_ppu.cpp)."
+    },
+    "internal_scale": {
+      "file": "config",
+      "key": "internal_scale",
+      "label": "F8 > Internal scale",
+      "type": "int",
+      "values": {
+        "1": "1x",
+        "2": "2x",
+        "3": "3x",
+        "4": "4x",
+        "5": "5x",
+        "6": "6x",
+        "7": "7x",
+        "8": "8x",
+        "9": "9x",
+        "10": "10x"
+      },
+      "default": "1",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "1-10; out-of-range resets to 1. Only matters when a shader or the widescreen path resamples the image."
+    },
+    "shader_preset": {
+      "file": "config",
+      "key": "shader_preset",
+      "label": "F8 > Shader preset",
+      "type": "string",
+      "default": "\"\"",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "Path to a .glslp preset; empty = none. Needs render_backend gpu."
+    },
+    "target_fps": {
+      "file": "config",
+      "key": "frame_time_ns",
+      "label": "F8 > Target FPS",
+      "type": "int",
+      "values": {
+        "0": "Uncapped (VSync off)",
+        "33333333": "30",
+        "16666666": "60",
+        "13333333": "75",
+        "11111111": "90",
+        "8333333": "120",
+        "6944444": "144",
+        "6666666": "150",
+        "4166666": "240"
+      },
+      "default": "16666666",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "Nanoseconds per frame = 1e9 / fps (integer division). Presets {0,30,60,75,90,120,144,150,240}. With decouple_render on, the game logic stays at 60 Hz whatever the cap (Port_Config_TickTimeNs); 0 also disables VSync."
+    },
+    "vsync": {
+      "file": "config",
+      "key": "vsync",
+      "label": "F8 > VSync",
+      "type": "bool",
+      "values": {
+        "false": "Off",
+        "true": "On"
+      },
+      "default": "true",
+      "per_game": false,
+      "verified_on_device": true
+    },
+    "decouple_render": {
+      "file": "config",
+      "key": "decouple_render",
+      "label": "F8 > Decouple render",
+      "type": "bool",
+      "values": {
+        "false": "Off",
+        "true": "On"
+      },
+      "default": "true",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "Decoupled pacing: game logic ticks at a fixed 60 Hz (59.7275 Hz in console parity) while rendering follows the FPS cap."
+    },
+    "widescreen_enabled": {
+      "file": "config",
+      "key": "widescreen_enabled",
+      "label": "Settings > WIDESCREEN / F8 > Widescreen (WIP)",
+      "type": "bool",
+      "values": {
+        "false": "Off",
+        "true": "On"
+      },
+      "default": "true",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "Wider camera/reveal using the 384-px build. Forced off by console_parity."
+    },
+    "aspect_mode": {
+      "file": "config",
+      "key": "aspect_mode",
+      "label": "F8 > Aspect ratio",
+      "type": "enum",
+      "values": {
+        "\"native\"": "Native 3:2",
+        "\"16:9\"": "16:9",
+        "\"21:9\"": "21:9",
+        "\"32:9\"": "32:9"
+      },
+      "default": "\"native\"",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "Also accepts widescreen, ultrawide, super_ultrawide. Unknown = native."
+    },
+    "bg_fill": {
+      "file": "config",
+      "key": "bg_fill",
+      "label": "F8 > Background fill",
+      "type": "enum",
+      "values": {
+        "\"black\"": "Black bars",
+        "\"solid\"": "Solid colour (bg_fill_color)",
+        "\"blurred\"": "Blurred frame"
+      },
+      "default": "\"black\"",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "Android default black; desktop default blurred. 'solid_color' and 'blurred_frame' also accepted."
+    },
+    "color_correction": {
+      "file": "config",
+      "key": "color_correction",
+      "label": "F8 > COLOR CORRECTION",
+      "type": "bool",
+      "values": {
+        "false": "Off",
+        "true": "On"
+      },
+      "default": "false",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "GBA LCD colour correction. Android default off."
+    },
+    "lcd_persistence": {
+      "file": "config",
+      "key": "lcd_persistence",
+      "label": "F8 > LCD persistence",
+      "type": "bool",
+      "values": {
+        "false": "Off",
+        "true": "On"
+      },
+      "default": "false",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "GBA LCD ghosting effect; strength lcd_persistence_rho."
+    },
+    "lcd_persistence_rho": {
+      "file": "config",
+      "key": "lcd_persistence_rho",
+      "label": "F8 > LCD persistence strength",
+      "type": "float",
+      "default": "0.35",
+      "per_game": false,
+      "verified_on_device": true
+    },
+    "show_fps": {
+      "file": "config",
+      "key": "show_fps",
+      "label": "F8 > SHOW FPS",
+      "type": "bool",
+      "values": {
+        "false": "Off",
+        "true": "On"
+      },
+      "default": "false",
+      "per_game": false,
+      "verified_on_device": true
+    },
+    "console_parity": {
+      "file": "config",
+      "key": "console_parity",
+      "label": "F8 > Console parity",
+      "type": "bool",
+      "values": {
+        "false": "Off",
+        "true": "On"
+      },
+      "default": "false",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "Speedrun mode: 1-frame input granularity, save states inert, widescreen off, 59.7275 Hz pacing."
+    },
+    "autosave_enabled": {
+      "file": "config",
+      "key": "autosave_enabled",
+      "label": "F8 > AUTOSAVE",
+      "type": "bool",
+      "values": {
+        "false": "Off",
+        "true": "On"
+      },
+      "default": "true",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "Rotating state_auto_0..2.bin."
+    },
+    "autosave_interval_ms": {
+      "file": "config",
+      "key": "autosave_interval_ms",
+      "label": "F8 > Autosave interval",
+      "type": "int",
+      "default": "60000",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "Milliseconds."
+    },
+    "touch_controls": {
+      "file": "config",
+      "key": "touch_controls",
+      "label": "F8 > TOUCH CONTROLS",
+      "type": "bool",
+      "values": {
+        "false": "Off",
+        "true": "On"
+      },
+      "default": "true",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "Touch overlay; off also stops it claiming touches."
+    },
+    "touch_scheme": {
+      "file": "config",
+      "key": "touch_scheme",
+      "label": "F8 > Touch scheme",
+      "type": "enum",
+      "values": {
+        "\"joystick\"": "Virtual joystick",
+        "\"dpad\"": "D-pad"
+      },
+      "default": "\"joystick\"",
+      "per_game": false,
+      "verified_on_device": true
+    },
+    "hide_top_hud": {
+      "file": "config",
+      "key": "hide_top_hud",
+      "label": "Settings > HIDE TOP HUD",
+      "type": "bool",
+      "values": {
+        "false": "Off",
+        "true": "On"
+      },
+      "default": "false",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "Hide hearts/rupees on the top screen during gameplay; the panel shows them."
+    },
+    "second_screen_swap": {
+      "file": "config",
+      "key": "second_screen_swap",
+      "label": "Settings > SWAP SCREENS",
+      "type": "bool",
+      "values": {
+        "false": "Off",
+        "true": "On"
+      },
+      "default": "false",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "Game on the bottom panel. Read at launch by TMCLauncherActivity; the row shows RESTART until relaunched."
+    },
+    "second_screen_backdrop": {
+      "file": "config",
+      "key": "second_screen_backdrop",
+      "label": "Settings > PANEL BACKDROP",
+      "type": "int",
+      "values": {
+        "0": "Parchment",
+        "1": "Cream",
+        "2": "Dark",
+        "3": "Dim",
+        "4": "Stone",
+        "5": "Slate",
+        "6": "Navy"
+      },
+      "default": "0",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "SS_BACKDROP_* order from port_second_screen_theme.h."
+    },
+    "second_screen_follow_cam": {
+      "file": "config",
+      "key": "second_screen_follow_cam",
+      "label": "Settings > FOLLOW CAM",
+      "type": "bool",
+      "values": {
+        "false": "Off",
+        "true": "On"
+      },
+      "default": "true",
+      "per_game": false,
+      "verified_on_device": true
+    },
+    "second_screen_map_fog": {
+      "file": "config",
+      "key": "second_screen_map_fog",
+      "label": "Settings > MAP FOG",
+      "type": "bool",
+      "values": {
+        "false": "Off",
+        "true": "On"
+      },
+      "default": "false",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "Hide unexplored map regions (session-scoped tracking)."
+    },
+    "second_screen_windcrest_pins": {
+      "file": "config",
+      "key": "second_screen_windcrest_pins",
+      "label": "Settings > WINDCREST PINS",
+      "type": "bool",
+      "values": {
+        "false": "Off",
+        "true": "On"
+      },
+      "default": "true",
+      "per_game": false,
+      "verified_on_device": true
+    },
+    "second_screen_floor_auto_return": {
+      "file": "config",
+      "key": "second_screen_floor_auto_return",
+      "label": "Settings > FLOOR AUTO RETURN",
+      "type": "bool",
+      "values": {
+        "false": "Off",
+        "true": "On"
+      },
+      "default": "true",
+      "per_game": false,
+      "verified_on_device": true
+    },
+    "game_pause_menu": {
+      "file": "config",
+      "key": "game_pause_menu",
+      "label": "F8 > Start opens pause menu",
+      "type": "bool",
+      "values": {
+        "false": "Off",
+        "true": "On"
+      },
+      "default": "true",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "false = Start no longer opens the game's pause menu during play."
+    },
+    "hold_advance_text": {
+      "file": "config",
+      "key": "hold_advance_text",
+      "label": "F8 > HOLD TO ADVANCE TEXT",
+      "type": "bool",
+      "values": {
+        "false": "Off",
+        "true": "On"
+      },
+      "default": "false",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": ""
+    },
+    "roll_attack_macro": {
+      "file": "config",
+      "key": "roll_attack_macro",
+      "label": "F8 > Roll attack macro",
+      "type": "bool",
+      "values": {
+        "false": "Off",
+        "true": "On"
+      },
+      "default": "true",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "Triggered by the 'roll_attack' entry in bindings."
+    },
+    "master_volume": {
+      "file": "config",
+      "key": "master_volume",
+      "label": "F8 > MASTER VOLUME",
+      "type": "float",
+      "default": "1.0",
+      "per_game": false,
+      "verified_on_device": true
+    },
+    "analog_deadzone": {
+      "file": "config",
+      "key": "analog_deadzone",
+      "label": "F8 > Analog deadzone",
+      "type": "float",
+      "default": "0.3",
+      "per_game": false,
+      "verified_on_device": true
+    },
+    "tts_enabled": {
+      "file": "config",
+      "key": "tts_enabled",
+      "label": "F8 > TTS",
+      "type": "bool",
+      "values": {
+        "false": "Off",
+        "true": "On"
+      },
+      "default": "true",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "Text-to-speech for dialogue (accessibility)."
+    },
+    "rando_enabled": {
+      "file": "config",
+      "key": "rando_enabled",
+      "label": "File select > Randomizer",
+      "type": "bool",
+      "values": {
+        "false": "Off",
+        "true": "On"
+      },
+      "default": "false",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "Randomizer; rando_* keys hold its options."
+    },
+    "port_settings_menu": {
+      "file": "config",
+      "key": "port_settings_menu",
+      "label": "(F8 menu availability)",
+      "type": "bool",
+      "values": {
+        "false": "Off",
+        "true": "On"
+      },
+      "default": "true",
+      "per_game": false,
+      "verified_on_device": true
+    }
+  }
+}

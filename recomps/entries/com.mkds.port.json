@@ -1,0 +1,37 @@
+{
+ "package": "com.mkds.port",
+ "name": "Mario Kart DS",
+ "original": {
+  "title": "Mario Kart DS",
+  "platform": "Nintendo DS",
+  "year": 2005
+ },
+ "kind": "decompilation",
+ "project": {
+  "name": "mkds-android",
+  "repo": "https://github.com/RonyxDumb/mkds",
+  "android_repo": "https://github.com/RonyxDumb/mkds-android",
+  "license": "MIT (decompilation RonyxDumb/mkds); the Android repo has no license file"
+ },
+ "version_checked": "0.50",
+ "update": {
+  "channel": "GitHub releases (manual APK)",
+  "url": "https://github.com/RonyxDumb/mkds-android/releases"
+ },
+ "assets": {
+  "needs": "Your own Mario Kart DS ROM, Europe only (game code AMCP).",
+  "location": "Picked with the system file picker at first start and copied once to /data/data/com.mkds.port/files/rom.nds (root-only). The ROM header must carry game code AMCP.",
+  "notes": "Tested: after import the game boots to the title screen."
+ },
+ "settings": {
+  "adapter": null,
+  "files": [],
+  "in_app_menu": "None. The Java side has no settings screen; language follows the device locale (Native.setLanguage).",
+  "summary": "No settings file. The app picks the display's highest refresh-rate mode itself."
+ },
+ "controls": "Gamepads via Android InputDevice (hot-plug aware); an on-screen touch overlay (ControlsView) during races when no gamepad is connected.",
+ "display": "Both DS screens are laid out on one surface on the display the app opens on (Native.setLayout/setWideAspect). No second-display code. Not checked on the Thor.",
+ "saves": "/data/data/com.mkds.port/files/mkds.sav (root-only; back up with root). crash.txt and log.txt sit beside it.",
+ "notes": "Upstream's v0.23 build reports versionName 0.1 (signer f2be4574..., the v0.23 key in Recompa's index). v0.28 and v0.50 (2026-11-24) are signed with different keys, so updating from an older build means uninstalling first, which deletes mkds.sav (back it up with root). Supports local Wi-Fi multiplayer (multicast lock).",
+ "verified": "Device: dumpsys, data dirs, ROM header bytes. APK: jadx of MainActivity/Native; native strings. Web: GitHub API releases, Recompa index (package and signer history). Not checked: in-game display layout and controls."
+}

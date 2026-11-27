@@ -1,0 +1,678 @@
+{
+ "name": "dolphin",
+ "package": "org.dolphinemu.dolphinemu",
+ "aliases": [
+  "gc",
+  "wii",
+  "gamecube",
+  "ngc"
+ ],
+ "version_checked": "2609b",
+ "stop_before_write": true,
+ "files": {
+  "dolphin": {
+   "path": "/sdcard/Android/data/org.dolphinemu.dolphinemu/files/Config/Dolphin.ini",
+   "format": "ini",
+   "notes": "Main system (Config::System::Main): [Core], [DSP], [General], [Interface], [Display], [Android], [Analytics]... Only keys that were ever set are present; a missing key means the source default."
+  },
+  "gfx": {
+   "path": "/sdcard/Android/data/org.dolphinemu.dolphinemu/files/Config/GFX.ini",
+   "format": "ini",
+   "notes": "Graphics system (Config::System::GFX): [Hardware], [Settings], [Enhancements], [Hacks], [Stereoscopy], [ColorCorrection]."
+  },
+  "gcpad": {
+   "path": "/sdcard/Android/data/org.dolphinemu.dolphinemu/files/Config/GCPadNew.ini",
+   "format": "ini",
+   "notes": "GameCube controller mappings, [GCPad1]..[GCPad4]. Values are ControllerInterface expressions (backticks quote control names)."
+  },
+  "wiimote": {
+   "path": "/sdcard/Android/data/org.dolphinemu.dolphinemu/files/Config/WiimoteNew.ini",
+   "format": "ini",
+   "notes": "Emulated Wii Remote mappings, [Wiimote1]..[Wiimote4], [BalanceBoard]."
+  },
+  "hotkeys": {
+   "path": "/sdcard/Android/data/org.dolphinemu.dolphinemu/files/Config/Hotkeys.ini",
+   "format": "ini",
+   "notes": "Hotkey mappings."
+  },
+  "gckey": {
+   "path": "/sdcard/Android/data/org.dolphinemu.dolphinemu/files/Config/GCKeyNew.ini",
+   "format": "ini",
+   "notes": "GameCube keyboard mappings."
+  },
+  "gba": {
+   "path": "/sdcard/Android/data/org.dolphinemu.dolphinemu/files/Config/GBA.ini",
+   "format": "ini",
+   "notes": "GBA link controller mappings."
+  },
+  "retroachievements": {
+   "path": "/sdcard/Android/data/org.dolphinemu.dolphinemu/files/Config/RetroAchievements.ini",
+   "format": "ini",
+   "notes": "Achievements system. Holds the API token after sign-in: never print it."
+  },
+  "timeplayed": {
+   "path": "/sdcard/Android/data/org.dolphinemu.dolphinemu/files/Config/TimePlayed.ini",
+   "format": "ini",
+   "notes": "[TimePlayed] <GameID> = hex milliseconds. Written by Dolphin when emulation stops. Read-only for adapters."
+  },
+  "game_user": {
+   "path": "/sdcard/Android/data/org.dolphinemu.dolphinemu/files/GameSettings/{game}.ini",
+   "format": "ini",
+   "notes": "User per-game overrides (LocalGame layer). Uses legacy section names, see per_game.notes."
+  },
+  "game_sys": {
+   "path": "/data/data/org.dolphinemu.dolphinemu/files/Sys/GameSettings/{game}.ini",
+   "format": "ini",
+   "notes": "Built-in per-game defaults shipped in the APK (GlobalGame layer, 1883 files in 2609b). Re-extracted on app update: never edit; override in game_user instead."
+  },
+  "android_prefs": {
+   "path": "/data/data/org.dolphinemu.dolphinemu/shared_prefs/org.dolphinemu.dolphinemu_preferences.xml",
+   "format": "prefs",
+   "notes": "Android-only UI state (touch overlay button positions etc.). Not emulation settings."
+  }
+ },
+ "per_game": {
+  "path": "/sdcard/Android/data/org.dolphinemu.dolphinemu/files/GameSettings/{game}.ini",
+  "format": "ini",
+  "game_id": "6-character disc ID (e.g. GZ2E01). RVZ/WIA: bytes at file offset 0x58; CISO: offset 0x8000; ISO/GCM: offset 0. Also listed in Config/TimePlayed.ini and in the first comment line of the Sys GameSettings file.",
+  "create": true,
+  "notes": "Layering, lowest to highest: Base (Config/*.ini) < GlobalGame (Sys/GameSettings) < LocalGame (User GameSettings) < Movie < Netplay < CurrentRun. Within each game layer the files loaded are <first letter>.ini, <first 3 chars>.ini, <ID>.ini, <ID>r<revision>.ini (later wins). Section map: Dolphin.ini [Core]->[Core], [DSP]->[DSP], [Display]->[Display]; GFX.ini [Hardware]->[Video_Hardware], [Settings]->[Video_Settings], [Enhancements]->[Video_Enhancements], [Hacks]->[Video_Hacks], [Stereoscopy]->[Video_Stereoscopy]; any other setting as [<System>.<Section>] (e.g. [Main.General]). Controller mappings (GCPad/WiiPad/GCKeyboard) are not saveable per game except Wiimote sources. Read on each game boot.",
+  "section_map": {
+   "gfx": {
+    "Hardware": "Video_Hardware",
+    "Settings": "Video_Settings",
+    "Enhancements": "Video_Enhancements",
+    "Hacks": "Video_Hacks",
+    "Stereoscopy": "Video_Stereoscopy"
+   }
+  }
+ },
+ "keys": {
+  "video_backend": {
+   "file": "dolphin",
+   "key": "Core/GFXBackend",
+   "label": "Video Backend",
+   "type": "enum",
+   "values": {
+    "OGL": "OpenGL (OpenGL ES on Android)",
+    "Vulkan": "Vulkan",
+    "Software Renderer": "Software (very slow)",
+    "Null": "Null (no video output)"
+   },
+   "default": "OGL",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Default is the first available backend (VideoBackendBase::GetAvailableBackends): OGL on Android. Lives in Dolphin.ini, not GFX.ini. Per-game: [Core] GFXBackend in GameSettings/<ID>.ini."
+  },
+  "internal_resolution": {
+   "file": "gfx",
+   "key": "Settings/InternalResolution",
+   "label": "Internal Resolution",
+   "type": "enum",
+   "values": {
+    "1": "1x Native (640x528)",
+    "2": "2x Native (1280x1056) for 720p",
+    "3": "3x Native (1920x1584) for 1080p",
+    "4": "4x Native (2560x2112)",
+    "5": "5x Native (3200x2640)",
+    "6": "6x Native (3840x3168) for 4K"
+   },
+   "default": "1",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Android UI offers 1-6. Core accepts up to MaxInternalResolution (default 12); 0 = Auto (window size) on desktop builds. Per-game: [Video_Settings] InternalResolution in GameSettings/<ID>.ini."
+  },
+  "shader_compilation_mode": {
+   "file": "gfx",
+   "key": "Settings/ShaderCompilationMode",
+   "label": "Shader Compilation Mode",
+   "type": "enum",
+   "values": {
+    "0": "Specialized (Default): ubershaders never used; stutter while compiling, low GPU cost",
+    "1": "Exclusive Ubershaders: always ubershaders; near stutter-free, very high GPU cost",
+    "2": "Hybrid Ubershaders: ubershaders until specialized shaders compile",
+    "3": "Skip Drawing: skip objects whose shaders are compiling (asynchronous)"
+   },
+   "default": "0",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "enum ShaderCompilationMode {Synchronous, SynchronousUberShaders, AsynchronousUberShaders, AsynchronousSkipRendering}. Per-game: [Video_Settings] ShaderCompilationMode in GameSettings/<ID>.ini."
+  },
+  "wait_for_shaders": {
+   "file": "gfx",
+   "key": "Settings/WaitForShadersBeforeStarting",
+   "label": "Compile Shaders Before Starting",
+   "type": "bool",
+   "values": {
+    "True": "compile cached shaders before the game starts",
+    "False": "start immediately"
+   },
+   "default": "False",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Per-game: [Video_Settings] WaitForShadersBeforeStarting in GameSettings/<ID>.ini."
+  },
+  "vsync": {
+   "file": "gfx",
+   "key": "Hardware/VSync",
+   "label": "V-Sync",
+   "type": "bool",
+   "values": {
+    "True": "on",
+    "False": "off"
+   },
+   "default": "False",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Android UI: unnecessary on most Android devices because Android always enables V-Sync. Per-game: [Video_Hardware] VSync in GameSettings/<ID>.ini."
+  },
+  "aspect_ratio": {
+   "file": "gfx",
+   "key": "Settings/AspectRatio",
+   "label": "Aspect Ratio",
+   "type": "enum",
+   "values": {
+    "0": "Auto",
+    "1": "Force 16:9",
+    "2": "Force 4:3",
+    "3": "Stretch to Window",
+    "4": "Custom (relative, desktop UI only)",
+    "5": "Custom Stretch (absolute, desktop UI only)",
+    "6": "Raw (square pixels, desktop UI only)"
+   },
+   "default": "0",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "enum AspectMode {Auto, ForceWide, ForceStandard, Stretch, Custom, CustomStretch, Raw}. Android UI offers 0-3. Per-game: [Video_Settings] AspectRatio in GameSettings/<ID>.ini."
+  },
+  "widescreen_hack": {
+   "file": "gfx",
+   "key": "Settings/wideScreenHack",
+   "label": "Widescreen Hack",
+   "type": "bool",
+   "values": {
+    "True": "force game to render for any aspect ratio",
+    "False": "off"
+   },
+   "default": "False",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Key is lower-case \"wideScreenHack\". Use with aspect_ratio=1 to force 16:9. Often breaks HUDs. Per-game: [Video_Settings] wideScreenHack in GameSettings/<ID>.ini."
+  },
+  "msaa": {
+   "file": "gfx",
+   "key": "Settings/MSAA",
+   "label": "Full-scene Anti-aliasing",
+   "type": "enum",
+   "values": {
+    "1": "Off",
+    "2": "2x",
+    "4": "4x",
+    "8": "8x"
+   },
+   "default": "1",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Sample count. With ssaa=True the same count is used as SSAA. Per-game: [Video_Settings] MSAA in GameSettings/<ID>.ini."
+  },
+  "ssaa": {
+   "file": "gfx",
+   "key": "Settings/SSAA",
+   "label": "SSAA (desktop: \"Anti-Aliasing: SSAA\")",
+   "type": "bool",
+   "values": {
+    "True": "supersample instead of multisample",
+    "False": "MSAA"
+   },
+   "default": "False",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Not exposed in the Android UI; the core reads it. Per-game: [Video_Settings] SSAA in GameSettings/<ID>.ini."
+  },
+  "anisotropic_filtering": {
+   "file": "gfx",
+   "key": "Enhancements/MaxAnisotropy",
+   "label": "Anisotropic Filtering",
+   "type": "enum",
+   "values": {
+    "-1": "Default (game decides)",
+    "0": "1x",
+    "1": "2x",
+    "2": "4x",
+    "3": "8x",
+    "4": "16x"
+   },
+   "default": "-1",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Source enum AnisotropicFilteringMode {Default=-1, Force1x=0, Force2x=1, Force4x=2, Force8x=3, Force16x=4}. The Android UI array (2609b) still labels 0 as \"Default\", 1-4 as 2x-16x, so the UI shows 0 as Default although the core treats 0 as forced 1x. Per-game: [Video_Enhancements] MaxAnisotropy in GameSettings/<ID>.ini."
+  },
+  "texture_filtering": {
+   "file": "gfx",
+   "key": "Enhancements/ForceTextureFiltering",
+   "label": "Texture Filtering",
+   "type": "enum",
+   "values": {
+    "0": "Default",
+    "1": "Force Nearest",
+    "2": "Force Linear"
+   },
+   "default": "0",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Per-game: [Video_Enhancements] ForceTextureFiltering in GameSettings/<ID>.ini."
+  },
+  "post_processing_shader": {
+   "file": "gfx",
+   "key": "Enhancements/PostProcessingShader",
+   "label": "Post-Processing Effect",
+   "type": "string",
+   "values": {
+    "": "Off",
+    "FXAA": "FXAA",
+    "integer_scaling": "Integer scaling",
+    "AutoHDR": "Auto HDR",
+    "<name>": "any Sys/Shaders/<name>.glsl or User Shaders/<name>.glsl, name without .glsl"
+   },
+   "default": "",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Shader list on device: /data/data/org.dolphinemu.dolphinemu/files/Sys/Shaders/*.glsl (FXAA, 16bit, 32bit, sepia, grayscale, ...). Anaglyph/Passive subfolders are for stereo modes. Per-game: [Video_Enhancements] PostProcessingShader in GameSettings/<ID>.ini."
+  },
+  "texture_cache_accuracy": {
+   "file": "gfx",
+   "key": "Settings/SafeTextureCacheColorSamples",
+   "label": "Texture Cache Accuracy",
+   "type": "enum",
+   "values": {
+    "128": "Fast",
+    "512": "Medium",
+    "0": "Safe (hash full texture)"
+   },
+   "default": "128",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Per-game: [Video_Settings] SafeTextureCacheColorSamples in GameSettings/<ID>.ini."
+  },
+  "skip_efb_access": {
+   "file": "gfx",
+   "key": "Hacks/EFBAccessEnable",
+   "label": "Skip EFB Access from CPU (inverted)",
+   "type": "bool",
+   "values": {
+    "False": "skip CPU EFB reads/writes (UI toggle ON)",
+    "True": "allow CPU EFB access (UI toggle OFF, accurate)"
+   },
+   "default": "False",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "UI shows the inverse of the stored value. Per-game: [Video_Hacks] EFBAccessEnable in GameSettings/<ID>.ini."
+  },
+  "store_efb_copies_to_texture": {
+   "file": "gfx",
+   "key": "Hacks/EFBToTextureEnable",
+   "label": "Store EFB Copies to Texture Only",
+   "type": "bool",
+   "values": {
+    "True": "keep EFB copies on GPU only (fast)",
+    "False": "also write EFB copies to RAM (accurate)"
+   },
+   "default": "True",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Per-game: [Video_Hacks] EFBToTextureEnable in GameSettings/<ID>.ini."
+  },
+  "defer_efb_copies": {
+   "file": "gfx",
+   "key": "Hacks/DeferEFBCopies",
+   "label": "Defer EFB Copies to RAM",
+   "type": "bool",
+   "values": {
+    "True": "defer writing EFB copies until the game syncs",
+    "False": "write immediately"
+   },
+   "default": "True",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Source default True; Android description says \"If unsure, leave this unchecked\". Per-game: [Video_Hacks] DeferEFBCopies in GameSettings/<ID>.ini."
+  },
+  "immediate_xfb": {
+   "file": "gfx",
+   "key": "Hacks/ImmediateXFBEnable",
+   "label": "Immediately Present XFB",
+   "type": "bool",
+   "values": {
+    "True": "present XFB copies immediately (lower latency, some glitches)",
+    "False": "wait for scanout"
+   },
+   "default": "False",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Per-game: [Video_Hacks] ImmediateXFBEnable in GameSettings/<ID>.ini."
+  },
+  "scaled_efb_copy": {
+   "file": "gfx",
+   "key": "Hacks/EFBScaledCopy",
+   "label": "Scaled EFB Copy",
+   "type": "bool",
+   "values": {
+    "True": "EFB copies at internal resolution",
+    "False": "native resolution"
+   },
+   "default": "True",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Per-game: [Video_Hacks] EFBScaledCopy in GameSettings/<ID>.ini."
+  },
+  "vertex_rounding": {
+   "file": "gfx",
+   "key": "Hacks/VertexRounding",
+   "label": "Vertex Rounding",
+   "type": "bool",
+   "values": {
+    "True": "round vertices to pixel grid (fixes some upscaling seams)",
+    "False": "off"
+   },
+   "default": "False",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Per-game: [Video_Hacks] VertexRounding in GameSettings/<ID>.ini."
+  },
+  "disable_bbox": {
+   "file": "gfx",
+   "key": "Hacks/BBoxEnable",
+   "label": "Disable Bounding Box (inverted)",
+   "type": "bool",
+   "values": {
+    "False": "bounding box disabled (UI toggle ON)",
+    "True": "bounding box emulated (UI toggle OFF; needed by Paper Mario TTYD, Super Paper Mario)"
+   },
+   "default": "False",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "UI shows the inverse of the stored value. Per-game: [Video_Hacks] BBoxEnable in GameSettings/<ID>.ini."
+  },
+  "backend_multithreading": {
+   "file": "gfx",
+   "key": "Settings/BackendMultithreading",
+   "label": "Backend Multithreading",
+   "type": "bool",
+   "values": {
+    "True": "on (Vulkan only)",
+    "False": "off"
+   },
+   "default": "True",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Per-game: [Video_Settings] BackendMultithreading in GameSettings/<ID>.ini."
+  },
+  "show_fps": {
+   "file": "gfx",
+   "key": "Settings/ShowFPS",
+   "label": "Show FPS",
+   "type": "bool",
+   "values": {
+    "True": "show",
+    "False": "hide"
+   },
+   "default": "False",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Per-game: [Video_Settings] ShowFPS in GameSettings/<ID>.ini."
+  },
+  "show_speed": {
+   "file": "gfx",
+   "key": "Settings/ShowSpeed",
+   "label": "Show % Speed",
+   "type": "bool",
+   "values": {
+    "True": "show",
+    "False": "hide"
+   },
+   "default": "False",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Per-game: [Video_Settings] ShowSpeed in GameSettings/<ID>.ini."
+  },
+  "custom_textures": {
+   "file": "gfx",
+   "key": "Settings/HiresTextures",
+   "label": "Load Custom Textures",
+   "type": "bool",
+   "values": {
+    "True": "load Load/Textures/<GameID>/",
+    "False": "off"
+   },
+   "default": "False",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Texture packs go in /sdcard/Android/data/org.dolphinemu.dolphinemu/files/Load/Textures/<GameID>/. Per-game: [Video_Settings] HiresTextures in GameSettings/<ID>.ini."
+  },
+  "gpu_driver": {
+   "file": "gfx",
+   "key": "Settings/DriverLibName",
+   "label": "GPU Driver",
+   "type": "string",
+   "values": {
+    "": "System driver",
+    "<name>": "custom Vulkan driver installed under files/GPUDrivers (Turnip etc.)"
+   },
+   "default": "",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Android custom driver loader. Device has /data/data/org.dolphinemu.dolphinemu/files/GPUDrivers/. Install drivers through the app; the value must match an installed driver."
+  },
+  "cpu_core": {
+   "file": "dolphin",
+   "key": "Core/CPUCore",
+   "label": "CPU Core",
+   "type": "enum",
+   "values": {
+    "4": "JIT Arm64 Recompiler (recommended)",
+    "5": "Cached Interpreter (slower)",
+    "0": "Interpreter (slowest)"
+   },
+   "default": "4",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "enum PowerPC::CPUCore {Interpreter=0, JIT64=1, JITARM64=4, CachedInterpreter=5}; default DefaultCPUCore() = 4 on arm64. Per-game: [Core] CPUCore in GameSettings/<ID>.ini."
+  },
+  "dual_core": {
+   "file": "dolphin",
+   "key": "Core/CPUThread",
+   "label": "Dual Core (speedhack)",
+   "type": "bool",
+   "values": {
+    "True": "CPU and GPU on separate threads",
+    "False": "single core"
+   },
+   "default": "True",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Default True on Android (DEFAULT_CPU_THREAD), False on desktop. Per-game: [Core] CPUThread in GameSettings/<ID>.ini."
+  },
+  "sync_gpu": {
+   "file": "dolphin",
+   "key": "Core/SyncGPU",
+   "label": "Synchronize GPU Thread (part 1 of 2)",
+   "type": "bool",
+   "values": {
+    "True": "Always (with SyncOnSkipIdle=True)",
+    "False": "Never or On Idle Skipping"
+   },
+   "default": "False",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "UI \"Synchronize GPU Thread\" is a 3-way choice over two keys: Never = SyncGPU False + SyncOnSkipIdle False; On Idle Skipping = SyncGPU False + SyncOnSkipIdle True (default); Always = SyncGPU True + SyncOnSkipIdle True. Per-game: [Core] SyncGPU in GameSettings/<ID>.ini."
+  },
+  "sync_on_skip_idle": {
+   "file": "dolphin",
+   "key": "Core/SyncOnSkipIdle",
+   "label": "Synchronize GPU Thread (part 2 of 2)",
+   "type": "bool",
+   "values": {
+    "True": "sync on idle skip",
+    "False": "never sync (risky)"
+   },
+   "default": "True",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "See sync_gpu. Per-game: [Core] SyncOnSkipIdle in GameSettings/<ID>.ini."
+  },
+  "cpu_overclock_enable": {
+   "file": "dolphin",
+   "key": "Core/OverclockEnable",
+   "label": "Override Emulated CPU Clock Speed",
+   "type": "bool",
+   "values": {
+    "True": "use cpu_overclock",
+    "False": "stock clock"
+   },
+   "default": "False",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Per-game: [Core] OverclockEnable in GameSettings/<ID>.ini."
+  },
+  "cpu_overclock": {
+   "file": "dolphin",
+   "key": "Core/Overclock",
+   "label": "Emulated CPU Clock Speed",
+   "type": "float",
+   "values": {
+    "1.0": "100% (stock clock)",
+    "<float>": "clock multiplier; UI slider 0-500% (1.5 = 150%)"
+   },
+   "default": "1.0",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Only used when cpu_overclock_enable=True. Dolphin writes floats with fmt \"{:#}\"; any decimal string such as 1.5 parses. Per-game: [Core] Overclock in GameSettings/<ID>.ini."
+  },
+  "mmu": {
+   "file": "dolphin",
+   "key": "Core/MMU",
+   "label": "Enable MMU",
+   "type": "bool",
+   "values": {
+    "True": "emulate MMU (some games need it, slower)",
+    "False": "off"
+   },
+   "default": "False",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Per-game: [Core] MMU in GameSettings/<ID>.ini."
+  },
+  "speed_limit": {
+   "file": "dolphin",
+   "key": "Core/EmulationSpeed",
+   "label": "Speed Limit (0% = Unlimited)",
+   "type": "float",
+   "values": {
+    "0.0": "Unlimited",
+    "1.0": "100%",
+    "<float>": "fraction of full speed; UI slider 0-200% (0.5 = 50%)"
+   },
+   "default": "1.0",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Per-game: [Core] EmulationSpeed in GameSettings/<ID>.ini."
+  },
+  "dsp_hle": {
+   "file": "dolphin",
+   "key": "Core/DSPHLE",
+   "label": "DSP Emulation Engine (part 1 of 2)",
+   "type": "bool",
+   "values": {
+    "True": "DSP HLE (recommended)",
+    "False": "DSP LLE (recompiler or interpreter, chosen by DSP/EnableJIT)"
+   },
+   "default": "True",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "UI choice maps to two keys: HLE = DSPHLE True; LLE Recompiler = DSPHLE False + [DSP] EnableJIT True; LLE Interpreter = DSPHLE False + [DSP] EnableJIT False. Per-game: [Core] DSPHLE in GameSettings/<ID>.ini."
+  },
+  "audio_backend": {
+   "file": "dolphin",
+   "key": "DSP/Backend",
+   "label": "Audio Backend",
+   "type": "enum",
+   "values": {
+    "OpenSLES": "OpenSL ES (Android default)",
+    "Cubeb": "Cubeb (if built in)",
+    "No Audio Output": "mute"
+   },
+   "default": "OpenSLES",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Not shown in Android 2609b settings UI (MAIN_AUDIO_BACKEND not in SettingsFragmentPresenter). \"Audio stretching\" no longer exists: replaced by fill_audio_gaps / preserve_audio_pitch. Per-game: [DSP] Backend in GameSettings/<ID>.ini."
+  },
+  "audio_buffer_size": {
+   "file": "dolphin",
+   "key": "Core/AudioBufferSize",
+   "label": "Audio Buffer Size",
+   "type": "int",
+   "values": {
+    "<16-512>": "milliseconds, UI step 8"
+   },
+   "default": "80",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Per-game: [Core] AudioBufferSize in GameSettings/<ID>.ini."
+  },
+  "fill_audio_gaps": {
+   "file": "dolphin",
+   "key": "Core/AudioFillGaps",
+   "label": "Fill Audio Gaps",
+   "type": "bool",
+   "values": {
+    "True": "repeat audio during lag spikes",
+    "False": "silence during lag"
+   },
+   "default": "True",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Per-game: [Core] AudioFillGaps in GameSettings/<ID>.ini."
+  },
+  "preserve_audio_pitch": {
+   "file": "dolphin",
+   "key": "Core/AudioPreservePitch",
+   "label": "Preserve Audio Pitch",
+   "type": "bool",
+   "values": {
+    "True": "keep pitch when speed changes (time-stretch)",
+    "False": "pitch follows speed"
+   },
+   "default": "False",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Per-game: [Core] AudioPreservePitch in GameSettings/<ID>.ini."
+  },
+  "dsp_thread": {
+   "file": "dolphin",
+   "key": "DSP/DSPThread",
+   "label": "DSP LLE on Thread",
+   "type": "bool",
+   "values": {
+    "True": "run DSP LLE on its own thread",
+    "False": "off"
+   },
+   "default": "False",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Only matters with DSP LLE. Per-game: [DSP] DSPThread in GameSettings/<ID>.ini."
+  },
+  "show_input_overlay": {
+   "file": "dolphin",
+   "key": "Android/ShowInputOverlay",
+   "label": "Show Overlay (touch controls)",
+   "type": "bool",
+   "values": {
+    "True": "show touch controls",
+    "False": "hide"
+   },
+   "default": "True",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Android-only [Android] section; not per-game."
+  }
+ }
+}

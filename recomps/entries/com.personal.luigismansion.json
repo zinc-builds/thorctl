@@ -1,0 +1,40 @@
+{
+ "package": "com.personal.luigismansion",
+ "name": "Luigis Mansion Recomp",
+ "original": {
+  "title": "Luigi's Mansion",
+  "platform": "GameCube",
+  "year": 2001
+ },
+ "kind": "static recompilation",
+ "project": {
+  "name": "Luigi's Mansion Recompiled (Android port by MsBunnana & JayElDragon)",
+  "repo": "https://github.com/rob646464/luigis-mansion-recompiled",
+  "android_repo": "https://github.com/JayElDragon/luigis-mansion-android",
+  "license": null
+ },
+ "version_checked": "3.2.1",
+ "update": {
+  "channel": "GitHub releases",
+  "url": "https://github.com/JayElDragon/luigis-mansion-android/releases"
+ },
+ "assets": {
+  "needs": "Luigi's Mansion USA disc image (.iso or .rvz), picked in Game Files; play it in place (SAF link, recommended) or copy it into the app. Optional DLC 'Premium Deluxe 2.2.1' (.xdelta or GameBanana .zip) is built from an .iso (not .rvz).",
+  "location": "Linked SAF document (pref in lm.xml, DiscLink) or a copy inside /data/data/com.personal.luigismansion/files.",
+  "notes": "Options > Controls > Hide with Controller hides the touch controls while a controller is in use."
+ },
+ "settings": {
+  "adapter": "luigismansion",
+  "files": [
+   "/data/data/com.personal.luigismansion/shared_prefs/lm.xml",
+   "/data/data/com.personal.luigismansion/files/xdg/Luigi's Mansion Recompiled/settings.ini"
+  ],
+  "in_app_menu": "Launcher > Options (tabs: Graphics, Controls, Audio, Help). Presets Low-end/Balanced/Smooth/High quality/Maximum set FPS, resolution and MSAA together.",
+  "summary": "Frame rate 30/60 or any display rate up to 240 (default 120), resolution 1-4x, MSAA off/4x, screen format (4:3, Auto, 16:9, 16:10, 21:9, 32:9), HUD centred 4:3, VSync, sharp picture, Performance Mode, Auto Cool-down, Boost CPU, custom texture packs, cheats (no damage, vacuum x4, mirror world, skip cutscenes)."
+ },
+ "controls": "SDL gamepad; on-screen touch controls (on by default, opacity, haptics, hide with controller). Stick response curve (StickCurve). Controller mapping kept in settings.ini [controls] (port1_device).",
+ "display": "Single screen, sensorLandscape (no secondary-display code in the APK).",
+ "saves": "/data/data/com.personal.luigismansion/files/xdg/Luigi's Mansion Recompiled/USA/ (memory card). Automatic zip backups to /sdcard/Download/Luigi's Mansion Android/ after play; restore in Options > Help > Restore Saves.",
+ "notes": "GitHub release V3.2 is versionName 3.2.1, versionCode 8 (2026-11-18); an older build reports versionCode 3, versionName 1.2. On first launch the app picks a device-tier preset (writes g_fps/g_res/g_msaa) unless those prefs already exist. A Safe Mode (after a crash) temporarily forces 30 fps, 1x, no AA, no texture pack. Two engine libs: libmain.so (base game) and libmain_pd.so (DLC).",
+ "verified": "On device: dumpsys, data dir. APK (versionName 1.2 build): GameSettings.write (prefs -> settings.ini mapping), OptionsView (keys, labels, ranges), DisplayRates, SaveBackup. Web: JayElDragon/luigis-mansion-android build.gradle and releases; rob646464 upstream repo. Settings of newer releases may differ."
+}

@@ -1,0 +1,41 @@
+{
+ "package": "com.skiesofarcadia.recomp",
+ "name": "Skies of Arcadia Legends",
+ "original": {
+  "title": "Skies of Arcadia Legends",
+  "platform": "GameCube",
+  "year": 2002
+ },
+ "kind": "static recompilation",
+ "project": {
+  "name": "SkiesOfArcadiaLegends-Recomp",
+  "repo": "https://github.com/ogdanimal/SkiesOfArcadiaLegends-Recomp",
+  "android_repo": "https://github.com/ogdanimal/SkiesOfArcadiaLegends-Recomp",
+  "license": "GPL-3.0"
+ },
+ "version_checked": "0.94.0-beta",
+ "update": {
+  "channel": "GitHub releases, pre-releases included (the release has several assets; the Android one matches android\\.apk$)",
+  "url": "https://github.com/ogdanimal/SkiesOfArcadiaLegends-Recomp/releases"
+ },
+ "assets": {
+  "needs": "Your own Skies of Arcadia Legends disc: USA GEAE8P, Europe GEAP8P or Japan GEAJ8P (RVZ, ISO, GCM, GCZ, WIA or CISO). Optional: Dreamcast discs (CHD) for Dreamcast music and the uncensored models, an HD texture pack.",
+  "location": "Imported once in Settings > Disc, extracted and patched into <data>/Games/<discID>/, where <data> is /sdcard/Android/data/com.skiesofarcadia.recomp/files (the default; 'Data folder > Change' can move it).",
+  "notes": "An imported USA disc takes 1.3 GB in <data>/Games/GEAE8P. Widescreen patches are cached in /data/data/com.skiesofarcadia.recomp/cache/dolpatches/."
+ },
+ "settings": {
+  "adapter": "skies",
+  "files": [
+   "/sdcard/Android/data/com.skiesofarcadia.recomp/files/Config/Dolphin.ini",
+   "/sdcard/Android/data/com.skiesofarcadia.recomp/files/Config/GFX.ini",
+   "/sdcard/Android/data/com.skiesofarcadia.recomp/files/Config/GCPadNew.ini"
+  ],
+  "in_app_menu": "Launcher > Settings (tabs Graphics, Gameplay, Language, Sound, Dreamcast, Controls, Saves, Disc, About); in game hold Z and press Start, or Select (SkiesHotkeys Menu).",
+  "summary": "Graphics: Picture (Widescreen 16:9 / Match screen / 4:3), HUD position, Frame rate 30 or 60 (interpolated), Resolution 1-6x, MSAA, texture filtering, anisotropy, scaling, V-Sync, FPS, HD textures, renderer Vulkan/OpenGL ES, custom GPU driver. Gameplay: camera control, battle and field speed, encounter rate, Hold B, EXP/Gold/Magic EXP multipliers, Invincible. Saves: auto-save interval."
+ },
+ "controls": "Dolphin input layer. GCPad1 maps to the Thor's built-in pad as Android/1/Odin Controller, with rumble on the device motor. [SkiesHotkeys] in GCPadNew.ini: Menu = Select, Invincible = L3 | R3. The touch overlay is Android/ShowInputOverlay.",
+ "display": "Single screen. Ini values: Widescreen 1 = 16:9, FrameMode 1 = 60 fps, InternalResolution 3 = 1080p, OutputResampling 5 = Sharp; renderer Vulkan or OpenGL ES.",
+ "saves": "Memory card: <data>/GC/USA/Card A/ (GCI folder). Save states: <data>/StateSaves/state-skies-slot<N>.sav (about 30 MB each). Back up with Settings > Saves > Back up saves before updating. Play time is kept per disc ID in TimePlayed.ini (milliseconds, hex).",
+ "notes": "0.83.0-beta runs on a Dolphin-derived engine (org.dolphinemu.dolphinemu.skies.*). v0.94.0-beta (2026-11-25) brings a new engine on the Aurora renderer: settings, saves and the data folder carry over, but save states made by the new engine do not load in 0.83, and its Renderer setting replaces Dolphin's video backend settings. Upstream says to back up saves before updating. Releases are signed with upstream's key (e2c00b0b...), so updates install over. The app asks for MANAGE_EXTERNAL_STORAGE.",
+ "verified": "Device: dumpsys, the Obtainium app JSON, every Config ini, GameSettings, shared_prefs, folder sizes. APK: jadx of SkiesSettingsPanel (show() dumped as raw code), SkiesLauncherActivity; libmain strings. Web: GitHub API releases; v0.94 release notes from Obtainium's stored changelog."
+}

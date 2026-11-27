@@ -1,0 +1,655 @@
+{
+ "name": "vita3k",
+ "package": "org.vita3k.emulator",
+ "aliases": [
+  "vita",
+  "psvita",
+  "vita3k"
+ ],
+ "category": "emulator",
+ "version_checked": "0.2.0-12",
+ "stop_before_write": true,
+ "files": {
+  "global": {
+   "path": "/sdcard/Android/data/org.vita3k.emulator/files/config.yml",
+   "format": "yaml",
+   "notes": "Every setting, as a flat YAML map (yaml-cpp emitter, document markers --- and ...). Read once at process start (init_config), which then immediately rewrites the file from memory; also rewritten on every settings Save, controls/overlay change, user switch, and at app exit (app::destroy). Edits made while the process runs are lost. A YAML parse error or a value that fails type conversion makes Vita3K fall back to defaults for that key and every later key, and the start-up save then writes those defaults back. Bools lowercase true/false; empty strings as \"\". Owner u0_a<N>:ext_data_rw 660, label media_rw_data_file:s0.",
+   "string_values": false
+  },
+  "prefs": {
+   "path": "/data/data/org.vita3k.emulator/shared_prefs/org.vita3k.emulator_preferences.xml",
+   "format": "prefs",
+   "notes": "Touch-overlay button positions only: float <buttonId>-X / <buttonId>-Y (with -Portrait- variants when used) and boolean OverlayInit. No emulator settings. Root only."
+  },
+  "driver_meta": {
+   "path": "/data/data/org.vita3k.emulator/files/driver/{driver}/meta.json",
+   "format": "json",
+   "notes": "Metadata of an installed custom driver (one folder per driver, named after the imported zip without .zip). Next to it: driver_name.txt (the .so file name, e.g. vulkan.purple.so), the .so, and file_redirect/. Informational; Vita3K itself reads only driver_name.txt. Root only."
+  }
+ },
+ "per_game": {
+  "path": "/sdcard/Android/data/org.vita3k.emulator/files/config/config_{game}.xml",
+  "format": "xml",
+  "game_id": "The app folder name under <pref-path>/ux0/app/, which is the 9-character title ID (e.g. PCSE00240). pref-path comes from config.yml, so list <pref-path>/ux0/app/. Title names are in ux0/app/<id>/sce_sys/param.sfo (TITLE).",
+  "create": true,
+  "template": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<config>\n\t<core modules-mode=\"{modules-mode}\">\n\t\t<lle-modules />\n\t</core>\n\t<cpu cpu-backend=\"{cpu-backend}\" cpu-opt=\"{cpu-opt}\" />\n\t<gpu backend-renderer=\"{backend-renderer}\" custom-driver-name=\"{custom-driver-name}\" high-accuracy=\"{high-accuracy}\" resolution-multiplier=\"{resolution-multiplier}\" disable-surface-sync=\"{disable-surface-sync}\" screen-filter=\"{screen-filter}\" memory-mapping=\"{memory-mapping}\" v-sync=\"{v-sync}\" anisotropic-filtering=\"{anisotropic-filtering}\" async-pipeline-compilation=\"{async-pipeline-compilation}\" import-textures=\"{import-textures}\" export-textures=\"{export-textures}\" export-as-png=\"{export-as-png}\" fps-hack=\"{fps-hack}\" />\n\t<audio audio-volume=\"{audio-volume}\" enable-ngs=\"{ngs-enable}\" />\n\t<system pstv-mode=\"{pstv-mode}\" />\n\t<emulator show-touchpad-cursor=\"{show-touchpad-cursor}\" />\n\t<network psn-signed-in=\"{psn-signed-in:bool}\" />\n</config>\n",
+  "notes": "pugixml XML, not a key/value override file. Root <config> with child elements core, cpu, gpu, audio, system, emulator, network; every setting is an attribute (glossary per_game_key = element/attribute). ALL-OR-NOTHING: if the file exists and parses, every per-game setting comes from it and nothing from config.yml. Missing elements or attributes become false/0/\"\" (resolution-multiplier 0, cpu-backend \"\" = Unicorn, anisotropic 0), so a hand-made file must contain every attribute: seed it from the current config.yml values (template placeholders {yaml-key}; psn-signed-in is 0/1 in YAML but true/false here), then change the one you want. Bools are written true/false (pugixml as_bool accepts 1/t/T/y/Y as true). Floats as plain numbers (2, 1.25). If the folder files/config/ does not exist, create it as u0_a<N>:ext_data_rw mode 2770, file 660, label media_rw_data_file. Read from disk at every game boot (gui::set_config, also for -r shortcut launches) and when the per-game dialog opens, so an edit is picked up at the next boot of that game; written only by the per-game dialog's Save. A file that fails to parse or lacks <config> is DELETED by Vita3K and global settings are used. Deleting the file (or Custom Config > Remove) returns the game to global settings."
+ },
+ "keys": {
+  "backend": {
+   "file": "global",
+   "key": "backend-renderer",
+   "label": "Backend Renderer (GPU tab)",
+   "type": "enum",
+   "values": {
+    "Vulkan": "Vulkan",
+    "OpenGL": "OpenGL ES 3.2"
+   },
+   "default": "Vulkan",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Compared case-insensitively with OPENGL; anything else means Vulkan. Custom drivers, turbo mode, memory mapping, FSR and the async-pipeline toggle are Vulkan only. A change is applied by restarting the emulator process (run_execv) at the next game boot.",
+   "per_game_key": "config/gpu@backend-renderer"
+  },
+  "gpu_driver": {
+   "file": "global",
+   "key": "custom-driver-name",
+   "label": "GPU (Reboot to apply)",
+   "type": "string",
+   "values": {
+    "\"\"": "System (stock) driver; shown as Default",
+    "<folder>": "name of a folder in /data/data/org.vita3k.emulator/files/driver/ (e.g. turnip_mrpurple_T30-toasted.adpkg)"
+   },
+   "default": "\"\"",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Loaded with libadrenotools at process start (app::init) from files/driver/<name>/ using the .so named in driver_name.txt. A name whose folder or driver_name.txt is missing makes init fail (the emulator does not start). Empty must be written as \"\" in YAML. Keep gpu_index consistent: while the GPU tab is open the dialog overwrites this value with the folder at position gpu-idx, and Save writes that.",
+   "per_game_key": "config/gpu@custom-driver-name"
+  },
+  "gpu_index": {
+   "file": "global",
+   "key": "gpu-idx",
+   "label": "GPU (Reboot to apply) - list position",
+   "type": "int",
+   "values": {
+    "0": "Default (stock driver)",
+    "1..n": "n-th folder of files/driver/ in directory (readdir) order, not sorted"
+   },
+   "default": "0",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "UI state for the GPU combo; the renderer ignores it on a single-GPU phone, but the settings dialog derives custom-driver-name from it (gpu-idx 0 forces custom-driver-name empty on Save). Set it to the readdir position of the driver folder (`ls -f` order, skipping . and ..) whenever you set gpu_driver. A gpu-idx that points at a different folder than custom-driver-name is a mismatch the next Save in the GPU tab would resolve toward gpu-idx (see md)."
+  },
+  "turbo_mode": {
+   "file": "global",
+   "key": "turbo-mode",
+   "label": "Enable Turbo Mode",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "adrenotools_set_turbo: forces the Adreno GPU to max clocks (thermal limits still apply). Only shown and applied when custom-driver support exists (Vulkan on Adreno). Applied in set_config at game boot."
+  },
+  "renderer_accuracy": {
+   "file": "global",
+   "key": "high-accuracy",
+   "label": "Renderer Accuracy",
+   "type": "enum",
+   "values": {
+    "false": "Standard",
+    "true": "High"
+   },
+   "default": "false",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "High disables the texture-viewport shortcut and uses shader interlock when available (renderer late_init at game boot). Greyed out in game.",
+   "per_game_key": "config/gpu@high-accuracy"
+  },
+  "resolution": {
+   "file": "global",
+   "key": "resolution-multiplier",
+   "label": "Internal Resolution Upscaling",
+   "type": "float",
+   "values": {
+    "0.5": "0.5x (480x272)",
+    "0.75": "0.75x (720x408)",
+    "1": "1x native (960x544)",
+    "1.25": "1.25x (1200x680)",
+    "1.5": "1.5x (1440x816)",
+    "1.75": "1.75x (1680x952)",
+    "2": "2x (1920x1088)",
+    "2.5": "2.5x (2400x1360)",
+    "3": "3x (2880x1632)",
+    "4": "4x (3840x2176)",
+    "5": "5x",
+    "6": "6x",
+    "8": "8x (7680x4352)"
+   },
+   "default": "1",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Slider 0.5-8 in 0.25 steps (any multiple of 0.25 in range is valid). Written as a plain YAML float (2, 1.25). Upscaling above 1x is labelled experimental. On OpenGL a non-1x value forces disable-surface-sync on. A change while in game reboots the game.",
+   "per_game_key": "config/gpu@resolution-multiplier"
+  },
+  "disable_surface_sync": {
+   "file": "global",
+   "key": "disable-surface-sync",
+   "label": "Disable Surface Sync",
+   "type": "bool",
+   "values": {
+    "true": "Surface sync off (speed hack, faster, default)",
+    "false": "Surface sync on (needed by a few games)"
+   },
+   "default": "true",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Inverted meaning: true = sync DISABLED. On Android the checkbox only appears on Vulkan when memory mapping is supported; when hidden, saving forces true. Per-game XML default if the attribute is missing is false.",
+   "per_game_key": "config/gpu@disable-surface-sync"
+  },
+  "screen_filter": {
+   "file": "global",
+   "key": "screen-filter",
+   "label": "Screen Filter",
+   "type": "enum",
+   "values": {
+    "Nearest": "Nearest",
+    "Bilinear": "Bilinear",
+    "Bicubic": "Bicubic",
+    "FXAA": "FXAA",
+    "FSR": "AMD FSR (Vulkan, needs shaderInt16 + FP16; else no filter)"
+   },
+   "default": "Bilinear",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Exact-case string match in the Vulkan screen renderer; any unknown string means Bilinear. The dialog stores the translated label, so with a non-English user-lang it saves a localized string that the renderer treats as Bilinear: write the English names. Applies at game boot and on Save in game.",
+   "per_game_key": "config/gpu@screen-filter"
+  },
+  "vsync": {
+   "file": "global",
+   "key": "v-sync",
+   "label": "V-Sync",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "true",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "OpenGL only (checkbox hidden on Vulkan). Vulkan always picks present mode Mailbox > FIFO Relaxed > FIFO > Immediate regardless of this key.",
+   "per_game_key": "config/gpu@v-sync"
+  },
+  "anisotropic_filtering": {
+   "file": "global",
+   "key": "anisotropic-filtering",
+   "label": "Anisotropic Filtering",
+   "type": "enum",
+   "values": {
+    "1": "1x (off)",
+    "2": "2x",
+    "4": "4x",
+    "8": "8x",
+    "16": "16x"
+   },
+   "default": "1",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Powers of two only (the slider stores 1<<n); the max is the GPU limit (16 on Adreno, not checked). Applies on Save in game.",
+   "per_game_key": "config/gpu@anisotropic-filtering"
+  },
+  "async_pipeline_compilation": {
+   "file": "global",
+   "key": "async-pipeline-compilation",
+   "label": "Asynchronous Pipeline Compilation",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "true",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Vulkan only. Compiles pipelines on worker threads: less stutter, temporary graphical glitches.",
+   "per_game_key": "config/gpu@async-pipeline-compilation"
+  },
+  "memory_mapping": {
+   "file": "global",
+   "key": "memory-mapping",
+   "label": "Memory mapping method",
+   "type": "enum",
+   "values": {
+    "disabled": "Disabled",
+    "double-buffer": "Double buffer",
+    "external-host": "External host (needs VK_EXT_external_memory_host, alignment <= 4096)",
+    "page-table": "Page table",
+    "native-buffer": "Native buffer (Android: AHardwareBuffer / unix fd import)"
+   },
+   "default": "double-buffer",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Vulkan only, read in renderer late_init at game boot; an unsupported or unknown value falls back to double-buffer when mapping is supported, else disabled. Greyed out in game. The menu only lists methods the GPU supports.",
+   "per_game_key": "config/gpu@memory-mapping"
+  },
+  "fps_hack": {
+   "file": "global",
+   "key": "fps-hack",
+   "label": "FPS Hack",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Game hack that lets some 30 FPS games run at 60; on others it does nothing or doubles game speed.",
+   "per_game_key": "config/gpu@fps-hack"
+  },
+  "import_textures": {
+   "file": "global",
+   "key": "import-textures",
+   "label": "Import Textures",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Texture replacement: loads textures from the texture folder.",
+   "per_game_key": "config/gpu@import-textures"
+  },
+  "export_textures": {
+   "file": "global",
+   "key": "export-textures",
+   "label": "Export Textures",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Dumps textures.",
+   "per_game_key": "config/gpu@export-textures"
+  },
+  "texture_export_format": {
+   "file": "global",
+   "key": "export-as-png",
+   "label": "Texture Exporting Format",
+   "type": "enum",
+   "values": {
+    "true": "PNG",
+    "false": "DDS"
+   },
+   "default": "true",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Per-game XML default if missing is false (DDS).",
+   "per_game_key": "config/gpu@export-as-png"
+  },
+  "shader_cache": {
+   "file": "global",
+   "key": "shader-cache",
+   "label": "Use Shader Cache",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "true",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Checkbox shown only for OpenGL. Vulkan always keeps its pipeline cache under files/cache/shaders."
+  },
+  "texture_cache": {
+   "file": "global",
+   "key": "texture-cache",
+   "label": "Texture Cache (Emulator tab)",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "true",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Only read by the OpenGL renderer (renderer/src/gl/sync_state.cpp)."
+  },
+  "show_compile_shaders": {
+   "file": "global",
+   "key": "show-compile-shaders",
+   "label": "Show Compile Shaders",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "true",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Shows the shader-compiling indicator in game."
+  },
+  "cpu_backend": {
+   "file": "global",
+   "key": "cpu-backend",
+   "label": "CPU Backend",
+   "type": "enum",
+   "values": {
+    "Dynarmic": "Dynarmic",
+    "Unicorn": "Unicorn (deprecated)"
+   },
+   "default": "Dynarmic",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Exact string; anything other than \"Dynarmic\" selects Unicorn. Applied only when no game is running (game boot). A per-game XML without a <cpu> element gives an empty string, i.e. Unicorn.",
+   "per_game_key": "config/cpu@cpu-backend"
+  },
+  "cpu_opt": {
+   "file": "global",
+   "key": "cpu-opt",
+   "label": "Enable optimizations",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "true",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Dynarmic optimizations; shown only for Dynarmic. Applied at game boot.",
+   "per_game_key": "config/cpu@cpu-opt"
+  },
+  "modules_mode": {
+   "file": "global",
+   "key": "modules-mode",
+   "label": "Modules Mode (Core tab)",
+   "type": "enum",
+   "values": {
+    "0": "Automatic: preset list of LLE modules",
+    "1": "Auto & Manual: preset list plus lle-modules",
+    "2": "Manual: only lle-modules"
+   },
+   "default": "0",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Needs firmware modules in vs0/sys/external. The module list is the YAML sequence lle-modules (global) or <core><lle-modules><module>name</module>... (per game); the flat YAML writer cannot edit sequences.",
+   "per_game_key": "config/core@modules-mode"
+  },
+  "audio_backend": {
+   "file": "global",
+   "key": "audio-backend",
+   "label": "Audio Backend",
+   "type": "enum",
+   "values": {
+    "SDL": "SDL",
+    "Cubeb": "Cubeb"
+   },
+   "default": "SDL",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Applied at game boot only (greyed out in game)."
+  },
+  "audio_volume": {
+   "file": "global",
+   "key": "audio-volume",
+   "label": "Audio Volume",
+   "type": "int",
+   "values": {
+    "0-100": "percent"
+   },
+   "default": "100",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Clamped 0-100 by the slider; applied on Save in game.",
+   "per_game_key": "config/audio@audio-volume"
+  },
+  "ngs": {
+   "file": "global",
+   "key": "ngs-enable",
+   "label": "Enable NGS support",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "true",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "NGS advanced audio library. Per-game attribute name differs: enable-ngs.",
+   "per_game_key": "config/audio@enable-ngs"
+  },
+  "pstv_mode": {
+   "file": "global",
+   "key": "pstv-mode",
+   "label": "PS TV Mode",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Reports the console as PS TV (kernel model VITATV); the gamepad overlay then shows L2/R2/L3/R3.",
+   "per_game_key": "config/system@pstv-mode"
+  },
+  "stretch_display": {
+   "file": "global",
+   "key": "stretch_the_display_area",
+   "label": "Stretch The Display Area (GUI tab)",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Underscores, unlike the other keys. Stretches 16:9 output to the screen. In the per-game dialog it is still saved to config.yml (global), and the per-game XML does not hold it."
+  },
+  "show_touchpad_cursor": {
+   "file": "global",
+   "key": "show-touchpad-cursor",
+   "label": "Show Touchpad Cursor",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "true",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "",
+   "per_game_key": "config/emulator@show-touchpad-cursor"
+  },
+  "perf_overlay": {
+   "file": "global",
+   "key": "performance-overlay",
+   "label": "Performance overlay",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "FPS/frame-time overlay in game."
+  },
+  "perf_overlay_detail": {
+   "file": "global",
+   "key": "perfomance-overlay-detail",
+   "label": "Performance overlay > Detail",
+   "type": "enum",
+   "values": {
+    "0": "Minimum",
+    "1": "Low",
+    "2": "Medium",
+    "3": "Maximum"
+   },
+   "default": "0",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Key is misspelled (perfomance) in source and on device; write it exactly."
+  },
+  "perf_overlay_position": {
+   "file": "global",
+   "key": "perfomance-overlay-position",
+   "label": "Performance overlay > Position",
+   "type": "enum",
+   "values": {
+    "0": "Top Left",
+    "1": "Top Center",
+    "2": "Top Right",
+    "3": "Bottom Left",
+    "4": "Bottom Center",
+    "5": "Bottom Right"
+   },
+   "default": "0",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Key is misspelled (perfomance)."
+  },
+  "gamepad_overlay": {
+   "file": "global",
+   "key": "enable-gamepad-overlay",
+   "label": "Show gamepad overlay ingame (Controls)",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "true",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "On-screen touch controls. Button positions are in the shared prefs, not here."
+  },
+  "overlay_scale": {
+   "file": "global",
+   "key": "overlay-scale",
+   "label": "Overlay scale (Controls > Modify Gamepad Overlay)",
+   "type": "float",
+   "values": {
+    "0.25-4": "scale factor"
+   },
+   "default": "1",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": ""
+  },
+  "overlay_opacity": {
+   "file": "global",
+   "key": "overlay-opacity",
+   "label": "Overlay opacity",
+   "type": "int",
+   "values": {
+    "0-100": "percent"
+   },
+   "default": "100",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": ""
+  },
+  "overlay_touch_switch": {
+   "file": "global",
+   "key": "overlay-show-touch-switch",
+   "label": "Show front/back touchscreen switch button.",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": ""
+  },
+  "enter_button": {
+   "file": "global",
+   "key": "sys-button",
+   "label": "Enter button assignment (System tab)",
+   "type": "enum",
+   "values": {
+    "0": "Circle",
+    "1": "Cross"
+   },
+   "default": "1",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "SceSystemParamEnterButtonAssign."
+  },
+  "system_language": {
+   "file": "global",
+   "key": "sys-lang",
+   "label": "System language (Vita Settings app / GUI tab)",
+   "type": "enum",
+   "values": {
+    "0": "Japanese",
+    "1": "English (United States)",
+    "2": "French",
+    "3": "Spanish",
+    "4": "German",
+    "5": "Italian",
+    "6": "Dutch",
+    "7": "Portuguese (Portugal)",
+    "8": "Russian",
+    "9": "Korean",
+    "10": "Chinese (Traditional)",
+    "11": "Chinese (Simplified)",
+    "12": "Finnish",
+    "13": "Swedish",
+    "14": "Danish",
+    "15": "Norwegian",
+    "16": "Polish",
+    "17": "Portuguese (Brazil)",
+    "18": "English (United Kingdom)",
+    "19": "Turkish"
+   },
+   "default": "1",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Emulated console language games see (SceSystemParamLang)."
+  },
+  "psn_signed_in": {
+   "file": "global",
+   "key": "psn-signed-in",
+   "label": "Signed in PSN (Network tab)",
+   "type": "bool",
+   "values": {
+    "0": "Off",
+    "1": "On"
+   },
+   "default": "0",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Stored as an int (0/1) in config.yml but as true/false in the per-game XML. Makes games think the user is signed in to PSN.",
+   "per_game_key": "config/network@psn-signed-in"
+  },
+  "log_level": {
+   "file": "global",
+   "key": "log-level",
+   "label": "Log Level (Emulator tab)",
+   "type": "enum",
+   "values": {
+    "0": "Trace",
+    "1": "Debug",
+    "2": "Info",
+    "3": "Warning",
+    "4": "Error",
+    "5": "Critical",
+    "6": "Off"
+   },
+   "default": "6",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "spdlog level. Log file: files/vita3k.log."
+  }
+ }
+}

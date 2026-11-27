@@ -1,0 +1,211 @@
+{
+ "name": "godhand",
+ "package": "com.owaissseeee.godhand",
+ "aliases": [
+  "god-hand",
+  "godhand-recomp"
+ ],
+ "category": "recomp",
+ "version_checked": "2.2",
+ "stop_before_write": true,
+ "files": {
+  "prefs": {
+   "path": "/data/data/com.owaissseeee.godhand/shared_prefs/godhand_settings.xml",
+   "format": "prefs",
+   "notes": "SharedPreferences 'godhand_settings' (SettingsRepository). Index-valued ints, clamped on read. Renderer/resolution/aspect/fps/frameskip are passed to native code when the game surface is created; resolution, aspect, frameskip and audio also apply live via NativeBridge from the in-game dialog. Custom touch button layout is stored in the same file. Force-stop before editing."
+  }
+ },
+ "per_game": null,
+ "keys": {
+  "renderer": {
+   "file": "prefs",
+   "key": "renderer_idx",
+   "label": "Graphics > Renderer",
+   "type": "int",
+   "values": {
+    "0": "Vulkan (PCSX2-GS - Recommended)",
+    "1": "OpenGL ES 3.2 (Slow CPU Readback)",
+    "2": "Native GLES"
+   },
+   "default": "0",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Locked mid-game; passed to the native surface at start. From SettingsRepository in the APK; not checked against a written file."
+  },
+  "resolution": {
+   "file": "prefs",
+   "key": "res_idx",
+   "label": "Graphics > Resolution",
+   "type": "int",
+   "values": {
+    "0": "0.5x (256x224)",
+    "1": "0.75x",
+    "2": "1.0x Native PS2 512x448",
+    "3": "2.0x (1024x896)",
+    "4": "3.0x (1536x1344)",
+    "5": "4.0x (2048x1792)",
+    "6": "6.0x (3072x2688)",
+    "7": "8.0x (4096x3584)"
+   },
+   "default": "2",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Clamped 0-7. From SettingsRepository in the APK; not checked against a written file."
+  },
+  "aspect": {
+   "file": "prefs",
+   "key": "aspect_idx",
+   "label": "Graphics > Aspect Ratio",
+   "type": "int",
+   "values": {
+    "0": "16:9 Widescreen (Native FOV)",
+    "1": "4:3 Original (Pillarboxed)",
+    "2": "Full Screen (Device Aspect)"
+   },
+   "default": "0",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "From SettingsRepository in the APK; not checked against a written file."
+  },
+  "fps": {
+   "file": "prefs",
+   "key": "fps_idx",
+   "label": "Graphics > Frame Rate",
+   "type": "int",
+   "values": {
+    "0": "60 FPS (marked buggy, not recommended)",
+    "1": "30 FPS (console native, recommended)"
+   },
+   "default": "1",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "From SettingsRepository in the APK; not checked against a written file."
+  },
+  "frameskip": {
+   "file": "prefs",
+   "key": "frameskip_idx",
+   "label": "Graphics > Frameskip",
+   "type": "int",
+   "values": {
+    "0": "Off",
+    "1": "Auto (skip on lag)",
+    "2": "Skip 1",
+    "3": "Skip 2",
+    "4": "Skip 3"
+   },
+   "default": "1",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "From SettingsRepository in the APK; not checked against a written file."
+  },
+  "audio_scheduling": {
+   "file": "prefs",
+   "key": "audio_scheduling_idx",
+   "label": "Audio & System > Audio Thread",
+   "type": "int",
+   "values": {
+    "0": "Real-time (SCHED_FIFO)",
+    "1": "Balanced (SCHED_NORMAL)",
+    "2": "Safe Buffer"
+   },
+   "default": "1",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "From SettingsRepository in the APK; not checked against a written file."
+  },
+  "audio_buffer": {
+   "file": "prefs",
+   "key": "audio_buffer_size_idx",
+   "label": "Audio & System > Audio Buffer",
+   "type": "int",
+   "values": {
+    "0": "128 frames / 2.9 ms",
+    "1": "256 frames / 5.8 ms",
+    "2": "512 frames / 11.6 ms"
+   },
+   "default": "1",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "From SettingsRepository in the APK; not checked against a written file."
+  },
+  "volume": {
+   "file": "prefs",
+   "key": "audio_volume",
+   "label": "Audio & System > Volume",
+   "type": "float",
+   "default": "1.0",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "0.0-1.0. From SettingsRepository in the APK; not checked against a written file."
+  },
+  "controller_mode": {
+   "file": "prefs",
+   "key": "controller_mode",
+   "label": "Controls > Controller Mode",
+   "type": "int",
+   "values": {
+    "0": "Auto-Detect",
+    "1": "Touch Controls Only",
+    "2": "Physical Gamepad Only"
+   },
+   "default": "0",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "From SettingsRepository in the APK; not checked against a written file."
+  },
+  "auto_hide_touch": {
+   "file": "prefs",
+   "key": "auto_hide_touch_gamepad",
+   "label": "Controls > Hide touch with gamepad",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "true",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "From SettingsRepository in the APK; not checked against a written file."
+  },
+  "dodge_mode": {
+   "file": "prefs",
+   "key": "dodge_mode",
+   "label": "Controls > Dodge",
+   "type": "int",
+   "values": {
+    "0": "Right Thumbstick",
+    "1": "Swipe Gestures",
+    "2": "Dedicated 4-Way Dodge Buttons"
+   },
+   "default": "0",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "From SettingsRepository in the APK; not checked against a written file."
+  },
+  "touch_opacity": {
+   "file": "prefs",
+   "key": "touch_controls_opacity",
+   "label": "Controls > Touch Opacity",
+   "type": "float",
+   "default": "0.75",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "0.1-1.0. From SettingsRepository in the APK; not checked against a written file."
+  },
+  "fps_overlay": {
+   "file": "prefs",
+   "key": "fps_overlay_mode",
+   "label": "Audio & System > FPS Overlay",
+   "type": "int",
+   "values": {
+    "0": "Compact pill",
+    "1": "Detailed (FPS and frametime graph)",
+    "2": "Hidden"
+   },
+   "default": "0",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "From SettingsRepository in the APK; not checked against a written file."
+  }
+ }
+}

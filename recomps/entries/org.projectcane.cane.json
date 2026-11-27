@@ -1,0 +1,40 @@
+{
+ "package": "org.projectcane.cane",
+ "name": "Sly Cooper (ProjectCane)",
+ "original": {
+  "title": "Sly Cooper and the Thievius Raccoonus",
+  "platform": "PS2",
+  "year": 2002
+ },
+ "kind": "decompilation",
+ "project": {
+  "name": "ProjectCane",
+  "repo": "https://github.com/theclub654/ProjectCane",
+  "android_repo": null,
+  "license": null
+ },
+ "version_checked": "0.5.0-android.1",
+ "update": {
+  "channel": "manual APK",
+  "url": null
+ },
+ "assets": {
+  "needs": "Sly Cooper and the Thievius Raccoonus NTSC-U PS2 disc image (.iso, SCUS-97198). The app checks SYSTEM.CNF and SCUS_971.98 in the ISO root, then extracts levels, audio and cutscenes on the device (about 4 GB free needed).",
+  "location": "Picked once with Android's document picker (ImportActivity: 'Select PS2 ISO and extract'); extracted data goes to /sdcard/Android/data/org.projectcane.cane/files (Worlds/, Cutscenes/, SecondScreen/). The ISO itself is not read again after extraction.",
+  "notes": "Extracted data takes about 2.8 GB. After extraction the game boots to the title screen."
+ },
+ "settings": {
+  "adapter": null,
+  "files": [
+   "/sdcard/Android/data/org.projectcane.cane/files/Saves/system_settings.dat",
+   "/data/data/org.projectcane.cane/shared_prefs/cane.xml"
+  ],
+  "in_app_menu": "In-game Settings menu (Video..., keyboard/controller configuration, 'Reset Video Settings'). Save backup/restore and the debug-log export are a separate Android screen (SavesActivity) reached from the game.",
+  "summary": "Game and video settings live in system_settings.dat, a binary file with the magic PCANESYS (SavesActivity backs it up with the saves), so there is no text file to edit and no adapter. Android SharedPreferences 'cane' hold two dual-screen keys: secondScreen (bool, default true: show episode art / cutscene frames on the Thor's bottom screen) and secondScreenArt (int 0-9, art style, cycled in game). The app also picks the display refresh rate from the panel's supported modes (CaneActivity.supportedRefreshRates). Other native files named in libmain.so: touch_settings.cfg, gui_proportions.cfg, imgui.ini, content_settings.json."
+ },
+ "controls": "SDL2 game controller input plus a touch overlay (touch_settings.cfg). Keyboard and controller remapping screens exist in the game's menu (strings 'Configuration de la manette', 'Keyboard'). Not tested on the Thor.",
+ "display": "Game on the top screen. On a device with a second presentation display (the Thor's bottom screen) it starts SecondScreenActivity there, showing episode art and cutscene frames; toggled with the secondScreen pref. Native GPU renderer needs vertex SSBOs (it shows an error naming SSBO limits on weak GPUs); the Adreno 740 should pass but this is not checked.",
+ "saves": "/sdcard/Android/data/org.projectcane.cane/files/Saves/slot1.sav ... slot9.sav (magic PCANESAV) plus system_settings.dat. Uninstalling the app deletes them; the in-app 'Back up saves to a file' writes a zip.",
+ "notes": "The Android wrapper's source could not be identified. Upstream ProjectCane (theclub654) publishes Windows/Linux builds only (release 'decompilation', 2026-10-21). Tried: GitHub code search for 'org.projectcane.cane' and 'CaneActivity' (no hits), repo search 'ProjectCane' (theclub654/ProjectCane, FridiNaTor1/ProjectCane-old, sinzcyro/ProjectCane, Raihwy3/ThieviusCTR 3DS port, baconspaceman/ProjectCane-AP), FridiNaTor1/SafeHouse (its Android app is org.safehouse.android, a different package), web search, and strings in the APK (no URL, no update checker; version-control-info says NO_SUPPORTED_VCS_FOUND). APK SHA-256 5604f4d60d364b93a9f4acc79aea15fe0449db0050538b872dfe56ac571ec553. Package also ships FFmpeg (libavcodec/libavformat) for the m2v cutscenes and libbrxrebuild.so, which rebuilds the extracted levels.",
+ "verified": "Device: version, install time, data dirs, ISO size, free space. APK decompiled with jadx: ISO checks, extraction paths, Saves dir, PCANESYS/PCANESAV magics, 'cane' prefs keys, second-screen behaviour. Web/GitHub: upstream repo only. Not checked: any in-game setting, controls or performance."
+}

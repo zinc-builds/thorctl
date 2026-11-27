@@ -1,0 +1,308 @@
+{
+ "name": "luigismansion",
+ "package": "com.personal.luigismansion",
+ "aliases": [
+  "luigi",
+  "luigis-mansion",
+  "lm-recomp"
+ ],
+ "category": "recomp",
+ "version_checked": "3.2.1",
+ "stop_before_write": true,
+ "files": {
+  "lm": {
+   "path": "/data/data/com.personal.luigismansion/shared_prefs/lm.xml",
+   "format": "prefs",
+   "notes": "SharedPreferences 'lm': the launcher's source of truth. On every game start (MyGame.onCreate -> GameSettings.write) the launcher rewrites the [video], [rendering], [audio], [enhancements] and [gameplay] keys of settings.ini from these prefs, so edit the prefs, not the ini. Force-stop before editing (the app commits on change)."
+  },
+  "ini": {
+   "path": "/data/data/com.personal.luigismansion/files/xdg/Luigi's Mansion Recompiled/settings.ini",
+   "format": "ini",
+   "notes": "Engine config (Key=Value without spaces, [sections]). Keys the launcher does not manage (e.g. [controls]) survive; managed keys are overwritten at each start: target_fps, unlimited_fps=false, match_display_refresh=false, resolution_scale, msaa, vsync, display_copy_filter, texture_copy_filter, aspect, hud_keep_4x3, master/music/sfx_volume, reverb, show_fps, damage_scale, health_scale, ghost_health_scale, vacuum_strength, always_ride, mirror_world, skip_cutscenes. DLC engine uses files/xdg_dlc/Luigi's Mansion Recompiled/."
+  }
+ },
+ "per_game": null,
+ "keys": {
+  "fps": {
+   "file": "lm",
+   "key": "g_fps",
+   "label": "Options > Graphics > Frame Rate",
+   "type": "int",
+   "values": {
+    "30": "30",
+    "60": "60",
+    "90": "90 (if the display offers it)",
+    "120": "120",
+    "144": "144 (if offered)"
+   },
+   "default": "120",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Choices = 30, 60, plus each display refresh rate between 62 and 240 Hz (120 added if none). Written to settings.ini [video] target_fps, capped at 60 by Performance Mode and lowered by Auto Cool-down when hot. First launch picks a device-tier preset (60 on mid/high tiers) unless g_fps/g_res/g_msaa/g_perf already exist. From the APK (versionCode 3); not checked against a written file."
+  },
+  "resolution": {
+   "file": "lm",
+   "key": "g_res",
+   "label": "Options > Graphics > Resolution",
+   "type": "int",
+   "values": {
+    "1": "1x - Fast",
+    "2": "2x - Balanced",
+    "3": "3x - Sharp",
+    "4": "4x - Ultra"
+   },
+   "default": "1",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "-> [video] resolution_scale (forced 1 in Performance Mode). From the APK (versionCode 3); not checked against a written file."
+  },
+  "msaa": {
+   "file": "lm",
+   "key": "g_msaa",
+   "label": "Options > Graphics > Anti-aliasing",
+   "type": "int",
+   "values": {
+    "1": "Off",
+    "4": "4x MSAA"
+   },
+   "default": "1",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Toggle 1<->4. -> [video] msaa. From the APK (versionCode 3); not checked against a written file."
+  },
+  "aspect": {
+   "file": "lm",
+   "key": "g_aspect",
+   "label": "Options > Graphics > Screen Format",
+   "type": "int",
+   "values": {
+    "0": "4:3",
+    "1": "Auto (device aspect)",
+    "2": "16:9",
+    "3": "16:10",
+    "4": "21:9",
+    "5": "32:9"
+   },
+   "default": "1",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "-> [video] aspect. From the APK (versionCode 3); not checked against a written file."
+  },
+  "hud_4x3": {
+   "file": "lm",
+   "key": "g_hud43",
+   "label": "Options > Graphics > HUD position",
+   "type": "bool",
+   "values": {
+    "true": "Centered (Original)",
+    "false": "Screen edges"
+   },
+   "default": "true",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "-> [video] hud_keep_4x3. From the APK (versionCode 3); not checked against a written file."
+  },
+  "vsync": {
+   "file": "lm",
+   "key": "g_vsync",
+   "label": "Options > Graphics > VSync",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "true",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Next launch. -> [video] vsync. From the APK (versionCode 3); not checked against a written file."
+  },
+  "sharp": {
+   "file": "lm",
+   "key": "g_sharp",
+   "label": "Options > Graphics > Sharp Picture",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "true",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "true disables the console TV blur (display/texture copy filters). From the APK (versionCode 3); not checked against a written file."
+  },
+  "performance_mode": {
+   "file": "lm",
+   "key": "g_perf",
+   "label": "Options > Graphics > Performance Mode",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Forces 60 fps cap, 1x, no AA, no reverb. From the APK (versionCode 3); not checked against a written file."
+  },
+  "auto_cooldown": {
+   "file": "lm",
+   "key": "g_cool",
+   "label": "Options > Graphics > Auto Cool-down",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "true",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Lowers fps while the device is hot (thermal cap). From the APK (versionCode 3); not checked against a written file."
+  },
+  "boost_cpu": {
+   "file": "lm",
+   "key": "boost_cpu",
+   "label": "Options > Graphics > Boost CPU",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Experimental: pins the game to the fastest cores. Shown on some devices only. From the APK (versionCode 3); not checked against a written file."
+  },
+  "texture_packs": {
+   "file": "lm",
+   "key": "tp_on",
+   "label": "Options > Graphics > Custom Textures",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "HD texture packs (PNG/DDS zip installed from Options). From the APK (versionCode 3); not checked against a written file."
+  },
+  "show_fps": {
+   "file": "lm",
+   "key": "g_showfps",
+   "label": "Options > Show FPS Counter",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "-> [enhancements] show_fps. From the APK (versionCode 3); not checked against a written file."
+  },
+  "touch_enabled": {
+   "file": "lm",
+   "key": "touch_enabled",
+   "label": "Options > Controls > On-screen Controls",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "true",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "From the APK (versionCode 3); not checked against a written file."
+  },
+  "touch_hide_with_controller": {
+   "file": "lm",
+   "key": "touch_hide_with_controller",
+   "label": "Options > Controls > Hide with Controller",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "From the APK (versionCode 3); not checked against a written file."
+  },
+  "touch_alpha": {
+   "file": "lm",
+   "key": "touch_alpha",
+   "label": "Options > Controls > Opacity",
+   "type": "float",
+   "default": "1.0",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "0.0-1.0 in UI steps. From the APK (versionCode 3); not checked against a written file."
+  },
+  "master_volume": {
+   "file": "lm",
+   "key": "a_master",
+   "label": "Options > Audio > Master Volume",
+   "type": "float",
+   "default": "1.0",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "0.0-1.0. -> [audio] master_volume. From the APK (versionCode 3); not checked against a written file."
+  },
+  "reverb": {
+   "file": "lm",
+   "key": "a_reverb",
+   "label": "Options > Audio > Reverb",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "true",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "From the APK (versionCode 3); not checked against a written file."
+  },
+  "menu_music": {
+   "file": "lm",
+   "key": "menu_music",
+   "label": "Options > Audio > Menu Music",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "true",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Launcher title music. From the APK (versionCode 3); not checked against a written file."
+  },
+  "cheat_skip_cutscenes": {
+   "file": "lm",
+   "key": "cheat_skip",
+   "label": "Options > Cheats > Skip Cutscenes",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "-> [enhancements] skip_cutscenes. From the APK (versionCode 3); not checked against a written file."
+  },
+  "cheat_mirror": {
+   "file": "lm",
+   "key": "cheat_mirror",
+   "label": "Options > Cheats > Mirror World",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "-> [gameplay] mirror_world. From the APK (versionCode 3); not checked against a written file."
+  }
+ }
+}

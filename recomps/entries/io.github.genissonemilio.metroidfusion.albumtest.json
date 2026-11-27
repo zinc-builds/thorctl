@@ -1,0 +1,39 @@
+{
+ "package": "io.github.genissonemilio.metroidfusion.albumtest",
+ "name": "Metroid Fusion",
+ "original": {
+  "title": "Metroid Fusion",
+  "platform": "Game Boy Advance",
+  "year": 2002
+ },
+ "kind": "static recompilation",
+ "project": {
+  "name": "MetroidFusionAndroid (gbarecomp)",
+  "repo": "https://github.com/GenissonEmilio/MetroidFusionAndroid",
+  "android_repo": "https://github.com/GenissonEmilio/MetroidFusionAndroid",
+  "license": null
+ },
+ "version_checked": "0.1.0",
+ "update": {
+  "channel": "GitHub releases (manual APK)",
+  "url": "https://github.com/GenissonEmilio/MetroidFusionAndroid/releases"
+ },
+ "assets": {
+  "needs": "Your own Metroid Fusion USA ROM (.gba or .zip), SHA-1 ca33f4348c2c05dd330d37b97e2c5a69531dfe87. No BIOS needed: the open Cult-of-GBA BIOS is bundled.",
+  "location": "Imported with 'Importar ROM' and stored at /data/data/io.github.genissonemilio.metroidfusion.albumtest/files/roms/fusion_usa.gba (root-only).",
+  "notes": "The app has no option to hide the touch controls. The opacity pref in fusion.xml can be set below the menu's 30 % minimum (15 % was used in testing)."
+ },
+ "settings": {
+  "adapter": "metroidfusion",
+  "files": [
+   "/data/data/io.github.genissonemilio.metroidfusion.albumtest/shared_prefs/fusion.xml"
+  ],
+  "in_app_menu": "Launcher buttons 'Imagem' (pixel mode) and 'Controles' (touch size, opacity, sound). The UI is in Portuguese.",
+  "summary": "Image: Pixel perfeito (sharp integer scaling) or Suave (Scale2x, the default). Touch controls size 80-130 %, opacity 30-90 %, sound on/off. Nothing else."
+ },
+ "controls": "Touch controls by default; controller input through SDL2. D-pad move, A/B actions, L/R secondary, Start map; the BSL Album (screenshot gallery) opens from the map with R.",
+ "display": "Single screen, original aspect ratio with integer scaling (margins on some screens).",
+ "saves": "/data/data/io.github.genissonemilio.metroidfusion.albumtest/files/saves/fusion.sav (32 KB SRAM, root-only); 'Exportar save' copies it out. Quick states from the in-game menu.",
+ "notes": "Repo license shows NOASSERTION in the GitHub API (no recognised license file). Derived from the author's ZeldaMinishCapAndroid and MinishCapRecomp/gbarecomp. The package name ends in .albumtest; it is the 0.1.0 release (only release, 2026-10-29); Recompa lists it with one 'great' report on an AYN Thor.",
+ "verified": "Device: dumpsys, data dirs, sha1sum of a USA ROM. APK: jadx of FusionSetupActivity, RomImporter, GbaGameConfig; assets/payload/variants/fusion/game.toml. Web: GitHub search/API, Recompa index."
+}

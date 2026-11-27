@@ -1,0 +1,39 @@
+{
+ "package": "io.github.them3dium.mareshine",
+ "name": "Mareshine",
+ "original": {
+  "title": "Super Mario Sunshine",
+  "platform": "GameCube",
+  "year": 2002
+ },
+ "kind": "decompilation",
+ "project": {
+  "name": "Mareshine",
+  "repo": "https://github.com/TheM3dium/mareshine",
+  "android_repo": "https://github.com/TheM3dium/mareshine",
+  "license": "MIT"
+ },
+ "version_checked": "2.2.0",
+ "update": {
+  "channel": "GitHub releases (the app also checks for updates itself at start, setting SMS_UPDATE_CHECK)",
+  "url": "https://github.com/TheM3dium/mareshine/releases"
+ },
+ "assets": {
+  "needs": "Your own Super Mario Sunshine disc image, USA GMSE01 (a PAL disc goes in iso/pal).",
+  "location": "Imported into <data>/iso/, where <data> is /sdcard/Android/data/io.github.them3dium.mareshine/files by default or the folder in shared_prefs/sunshine.xml key data_dir.",
+  "notes": "An imported USA disc lands at <data>/iso/GMSE01.iso. The game boots in 16:9."
+ },
+ "settings": {
+  "adapter": "mareshine",
+  "files": [
+   "/sdcard/Android/data/io.github.them3dium.mareshine/files/settings.txt"
+  ],
+  "in_app_menu": "Launcher > Settings (Video presets Recommended/Low/Medium/High/Ultra, then Resolution, Picture, Effects, Graphics driver, Controls, Cheats, Mods, Achievements, Updates).",
+  "summary": "render_scale 0.5-4x (1.5 default), frame_rate 30/60/120, widescreen 16:9/16:10/20:9/21:9/off, HUD at edges or 4:3 area, draw distance 0.7-5x, MSAA, anisotropic, FXAA, shadows/reflections/water/shimmer toggles, copy write-back, ANGLE (Vulkan) alpha, cheats (god mode, infinite lives/FLUDD, speed, jump, moon jump, coins)."
+ },
+ "controls": "SDL2 controller input with remapping (ControllerSettingsActivity, stored in settings.txt), on-screen touch buttons (Classic or GameCube style), optional gyro aiming. Select opens the quick menu.",
+ "display": "Single screen, widescreen by camera (not stretched), up to 120 fps. No second-display code found in the APK.",
+ "saves": "<data>/saves/ (memory card card-a and the shader cache). Save states via SaveStatesActivity; optional Wi-Fi sync between devices.",
+ "notes": "v2.2.0 released 2026-11-26 ('Winter Update'). Release APKs share one signer (ad9c2bb0...), so updates install over. Mods (Eclipse, Sunburn, example) and achievements are built in. Fork of jbcgames/sms-android, built from the doldecomp/sms decompilation with the chasem PC port (assets/licenses).",
+ "verified": "Device: dumpsys, data dirs, GMSE01 header bytes. APK: jadx of DataDir, Settings (DEFAULTS), SettingsActivity (every Choice/Toggle). Web: GitHub API (repo, license, parent, releases), Recompa index. Not checked: rvz import, in-game behaviour."
+}

@@ -1,0 +1,268 @@
+{
+ "name": "ff7recomp",
+ "package": "com.ff7recomp",
+ "aliases": [
+  "ff7",
+  "final-fantasy-vii",
+  "ffvii"
+ ],
+ "category": "recomp",
+ "version_checked": "1.1.63",
+ "stop_before_write": true,
+ "files": {
+  "launcher": {
+   "path": "/data/data/com.ff7recomp/shared_prefs/launcher.xml",
+   "format": "prefs",
+   "notes": "SharedPreferences 'launcher': all launcher settings. Read when Play is pressed: the launcher regenerates FFNx.toml and passes display options as intent extras to GameActivity. Force-stop before editing. Before any setting is changed it holds only update_checked. Other prefs files: companion.xml (bottom-screen panel state) and steam.xml (Steam sign-in token: never print or copy)."
+  },
+  "ffnx": {
+   "path": "/sdcard/Android/data/com.ff7recomp/files/game/FFNx.toml",
+   "format": "toml",
+   "notes": "Regenerated from FFNx.template.toml before every start (renderer_backend, fullscreen, ff7_fps_limiter, speedhack_min, aspect, show_fps, mod options are set by the launcher). Hand edits are lost; use launcher prefs or the launcher's FFNx settings page. Created at the first start."
+  }
+ },
+ "per_game": null,
+ "keys": {
+  "frame_rate": {
+   "file": "launcher",
+   "key": "fps",
+   "label": "Settings > Frame rate",
+   "type": "int",
+   "values": {
+    "0": "Original",
+    "1": "Original, fixed",
+    "2": "30 FPS battles",
+    "3": "60 FPS",
+    "4": "120 FPS (experimental)",
+    "5": "60 FPS, battles at 30"
+   },
+   "default": "3",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Written into FFNx.toml ff7_fps_limiter before each start (5 is written as 3 plus a battle cap). Booster speed caps it at 3. From LauncherActivity in APK 1.1.40; not checked against a written value."
+  },
+  "performance": {
+   "file": "launcher",
+   "key": "perf",
+   "label": "Settings > Performance",
+   "type": "int",
+   "values": {
+    "0": "Cooler (lower resolution)",
+    "1": "Balanced (screen resolution, recommended)",
+    "2": "Best quality (resolution mods ask for)"
+   },
+   "default": "1",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Index order taken from the label order in the UI (not cross-checked against the array). From LauncherActivity in APK 1.1.40; not checked against a written value."
+  },
+  "resolution": {
+   "file": "launcher",
+   "key": "resolution",
+   "label": "Settings > Resolution",
+   "type": "int",
+   "values": {
+    "0": "Automatic (follows Performance)",
+    "1": "Original 640x480",
+    "2": "2x (1280x960, ~1080p)",
+    "3": "3x (1920x1440)",
+    "4": "4x (2560x1920)"
+   },
+   "default": "0",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "From LauncherActivity in APK 1.1.40; not checked against a written value."
+  },
+  "aspect": {
+   "file": "launcher",
+   "key": "aspect",
+   "label": "Settings > Display",
+   "type": "int",
+   "values": {
+    "0": "4:3, original",
+    "2": "16:9 widescreen",
+    "3": "16:9, stretched to fill"
+   },
+   "default": "2",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Value 1 is not used. From LauncherActivity in APK 1.1.40; not checked against a written value."
+  },
+  "renderer": {
+   "file": "launcher",
+   "key": "renderer",
+   "label": "Settings > Renderer",
+   "type": "int",
+   "values": {
+    "0": "Vulkan (recommended)",
+    "1": "OpenGL ES"
+   },
+   "default": "0",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "-> FFNx.toml renderer_backend (5 Vulkan / 1 OpenGL). From LauncherActivity in APK 1.1.40; not checked against a written value."
+  },
+  "show_fps": {
+   "file": "launcher",
+   "key": "show_fps",
+   "label": "Settings > Show the frame-rate counter",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "From LauncherActivity in APK 1.1.40; not checked against a written value."
+  },
+  "crt_filter": {
+   "file": "launcher",
+   "key": "crt_filter",
+   "label": "Settings > Display > CRT filter",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "From LauncherActivity in APK 1.1.40; not checked against a written value."
+  },
+  "bottom_screen": {
+   "file": "launcher",
+   "key": "bottom_screen",
+   "label": "Settings > Screen > Use the second screen",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "true",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Off frees the Thor bottom screen for other apps. From LauncherActivity in APK 1.1.40; not checked against a written value."
+  },
+  "swap_screens": {
+   "file": "launcher",
+   "key": "swap_screens",
+   "label": "Settings > Screen > Swap screens",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "From LauncherActivity in APK 1.1.40; not checked against a written value."
+  },
+  "touch_controls": {
+   "file": "launcher",
+   "key": "touch_controls",
+   "label": "Settings > On-screen controls",
+   "type": "int",
+   "values": {
+    "0": "Automatic",
+    "1": "Always",
+    "2": "Off"
+   },
+   "default": "0",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "From LauncherActivity in APK 1.1.40; not checked against a written value."
+  },
+  "rumble": {
+   "file": "launcher",
+   "key": "rumble",
+   "label": "Settings > Controller > Rumble",
+   "type": "int",
+   "values": {
+    "0": "No rumble",
+    "1": "Light rumble",
+    "2": "Strong rumble"
+   },
+   "default": "0",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "From LauncherActivity in APK 1.1.40; not checked against a written value."
+  },
+  "no_encounters": {
+   "file": "launcher",
+   "key": "no_encounters",
+   "label": "Boosters > No random battles",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "From LauncherActivity in APK 1.1.40; not checked against a written value."
+  },
+  "battle_plus": {
+   "file": "launcher",
+   "key": "battle_plus",
+   "label": "Boosters > Battle enhancement",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "From LauncherActivity in APK 1.1.40; not checked against a written value."
+  },
+  "save_anywhere": {
+   "file": "launcher",
+   "key": "save_anywhere",
+   "label": "Settings > Save anywhere",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "From LauncherActivity in APK 1.1.40; not checked against a written value."
+  },
+  "exp_multiplier": {
+   "file": "launcher",
+   "key": "exp",
+   "label": "Settings > EXP from battles",
+   "type": "int",
+   "default": "1",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Multiplier (choices not read). From LauncherActivity in APK 1.1.40; not checked against a written value."
+  },
+  "game_language": {
+   "file": "launcher",
+   "key": "game_language",
+   "label": "Settings > Language",
+   "type": "int",
+   "default": "1",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Index into the languages the Steam copy has (English/French/German/Spanish; mapping not read). From LauncherActivity in APK 1.1.40; not checked against a written value."
+  },
+  "quiet_build": {
+   "file": "launcher",
+   "key": "quiet_build",
+   "label": "Game files > Quiet build",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Half-speed on-device compile to keep the fan low. From LauncherActivity in APK 1.1.40; not checked against a written value."
+  }
+ }
+}

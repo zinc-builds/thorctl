@@ -1,0 +1,309 @@
+{
+  "name": "banjorecomp",
+  "package": "com.aure.banjorecomp",
+  "aliases": [
+    "banjo",
+    "banjo-recomp",
+    "bk-recomp"
+  ],
+  "category": "recomp",
+  "version_checked": "0.1.2",
+  "stop_before_write": true,
+  "files": {
+    "graphics": {
+      "path": "/data/data/com.aure.banjorecomp/files/data/graphics.json",
+      "format": "json",
+      "notes": "RecompFrontend/N64ModernRuntime Config 'graphics' saved as <id>.json in APP_FOLDER_PATH (= files/data, set by BanjoSDLActivity). Flat object; enums stored by their key string (\"Auto\"), numbers with precision 0 as integers, ds_option as an integer. Saved through a backup file (.bak alongside). Read at start-up and on settings load; the app rewrites it on change. Created on first launch.",
+      "template": "{}"
+    },
+    "general": {
+      "path": "/data/data/com.aure.banjorecomp/files/data/general.json",
+      "format": "json",
+      "notes": "Config 'general' (camera, note saving, rumble, deadzone). Same rules as graphics.json.",
+      "template": "{}"
+    },
+    "sound": {
+      "path": "/data/data/com.aure.banjorecomp/files/data/sound.json",
+      "format": "json",
+      "notes": "Config 'sound' (main_volume, bgm_volume).",
+      "template": "{}"
+    },
+    "controls": {
+      "path": "/data/data/com.aure.banjorecomp/files/data/controls.json",
+      "format": "json",
+      "notes": "Controller and keyboard bindings (recompinput). Edit in the app."
+    }
+  },
+  "per_game": null,
+  "keys": {
+    "resolution": {
+      "file": "graphics",
+      "key": "res_option",
+      "label": "Graphics > Resolution",
+      "type": "enum",
+      "values": {
+        "\"Original\"": "Original (240p)",
+        "\"Original2x\"": "Original 2x (480p)",
+        "\"Auto\"": "Auto (window resolution)"
+      },
+      "default": "\"Auto\"",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "From source only; not checked against a written file."
+    },
+    "downsampling": {
+      "file": "graphics",
+      "key": "ds_option",
+      "label": "Graphics > Downsampling Quality",
+      "type": "enum",
+      "values": {
+        "0": "Off",
+        "2": "2x",
+        "4": "4x"
+      },
+      "default": "0",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "Stored as a plain integer (custom serializer), not a string: DownsamplingOption Off=0, X2=2, X4=4. Disabled at Auto resolution. From source only; not checked against a written file."
+    },
+    "aspect_ratio": {
+      "file": "graphics",
+      "key": "ar_option",
+      "label": "Graphics > Aspect Ratio",
+      "type": "enum",
+      "values": {
+        "\"Original\"": "Original 4:3",
+        "\"Expand\"": "Expand to window"
+      },
+      "default": "\"Expand\"",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "From source only; not checked against a written file."
+    },
+    "framerate_mode": {
+      "file": "graphics",
+      "key": "rr_option",
+      "label": "Graphics > Framerate",
+      "type": "enum",
+      "values": {
+        "\"Original\"": "Original (game rate)",
+        "\"Display\"": "Display refresh rate",
+        "\"Manual\"": "Manual (rr_manual_value)"
+      },
+      "default": "\"Display\"",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "From source only; not checked against a written file."
+    },
+    "framerate_manual": {
+      "file": "graphics",
+      "key": "rr_manual_value",
+      "label": "Graphics > Framerate (manual value)",
+      "type": "int",
+      "default": "60",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "20-240 step 1, stored as integer. Only used when rr_option = Manual. From source only; not checked against a written file."
+    },
+    "msaa": {
+      "file": "graphics",
+      "key": "msaa_option",
+      "label": "Graphics > MS Anti-Aliasing",
+      "type": "enum",
+      "values": {
+        "\"None\"": "None",
+        "\"MSAA2X\"": "2X",
+        "\"MSAA4X\"": "4X"
+      },
+      "default": "\"MSAA2X\"",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "Hidden if the GPU lacks programmable sample positions. From source only; not checked against a written file."
+    },
+    "hud_placement": {
+      "file": "graphics",
+      "key": "hr_option",
+      "label": "Graphics > HUD Placement",
+      "type": "enum",
+      "values": {
+        "\"Original\"": "Original",
+        "\"Clamp16x9\"": "16:9",
+        "\"Expand\"": "Expand"
+      },
+      "default": "\"Clamp16x9\"",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "From source only; not checked against a written file."
+    },
+    "cutscene_aspect": {
+      "file": "graphics",
+      "key": "cutscene_aspect_ratio_mode",
+      "label": "Graphics > Cutscene Aspect Ratio",
+      "type": "enum",
+      "values": {
+        "\"Original\"": "Original",
+        "\"Clamp16x9\"": "16:9",
+        "\"Expand\"": "Expand"
+      },
+      "default": "\"Clamp16x9\"",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "From source only; not checked against a written file."
+    },
+    "graphics_api": {
+      "file": "graphics",
+      "key": "api_option",
+      "label": "Graphics > Graphics API",
+      "type": "enum",
+      "values": {
+        "\"Auto\"": "Auto",
+        "\"Vulkan\"": "Vulkan"
+      },
+      "default": "\"Auto\"",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "Only Auto/Vulkan are compiled for Android (D3D12/Metal are platform-gated). Restart required. From source only; not checked against a written file."
+    },
+    "high_precision_fb": {
+      "file": "graphics",
+      "key": "hpfb_option",
+      "label": "Graphics > High Precision Framebuffer",
+      "type": "enum",
+      "values": {
+        "\"Auto\"": "Auto",
+        "\"On\"": "On",
+        "\"Off\"": "Off"
+      },
+      "default": "\"Off\"",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "From source only; not checked against a written file."
+    },
+    "note_saving": {
+      "file": "general",
+      "key": "note_saving_mode",
+      "label": "General > Note Saving",
+      "type": "enum",
+      "values": {
+        "\"Off\"": "Off (original game)",
+        "\"On\"": "On"
+      },
+      "default": "\"On\"",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "From source only; not checked against a written file."
+    },
+    "analog_camera": {
+      "file": "general",
+      "key": "analog_cam_mode",
+      "label": "General > Analog Camera",
+      "type": "enum",
+      "values": {
+        "\"Off\"": "Off",
+        "\"On\"": "On (right stick)"
+      },
+      "default": "\"Off\"",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "From source only; not checked against a written file."
+    },
+    "analog_camera_sensitivity": {
+      "file": "general",
+      "key": "analog_camera_sensitivity",
+      "label": "General > Analog Camera Sensitivity",
+      "type": "int",
+      "default": "3",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "1-10, hidden while Analog Camera is Off. From source only; not checked against a written file."
+    },
+    "invert_third_person": {
+      "file": "general",
+      "key": "third_person_camera_invert_mode",
+      "label": "General > Invert Camera",
+      "type": "enum",
+      "values": {
+        "\"InvertNone\"": "None",
+        "\"InvertX\"": "Invert X",
+        "\"InvertY\"": "Invert Y",
+        "\"InvertBoth\"": "Invert Both"
+      },
+      "default": "\"InvertX\"",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "From source only; not checked against a written file."
+    },
+    "invert_first_person": {
+      "file": "general",
+      "key": "first_person_invert_mode",
+      "label": "General > Invert First Person View",
+      "type": "enum",
+      "values": {
+        "\"InvertNone\"": "None",
+        "\"InvertX\"": "Invert X",
+        "\"InvertY\"": "Invert Y",
+        "\"InvertBoth\"": "Invert Both"
+      },
+      "default": "\"InvertY\"",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "From source only; not checked against a written file."
+    },
+    "invert_fly_swim": {
+      "file": "general",
+      "key": "flying_and_swimming_invert_mode",
+      "label": "General > Invert Flying & Swimming",
+      "type": "enum",
+      "values": {
+        "\"InvertNone\"": "None",
+        "\"InvertX\"": "Invert X",
+        "\"InvertY\"": "Invert Y",
+        "\"InvertBoth\"": "Invert Both"
+      },
+      "default": "\"InvertY\"",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "From source only; not checked against a written file."
+    },
+    "rumble_strength": {
+      "file": "general",
+      "key": "rumble_strength",
+      "label": "General > Rumble Strength",
+      "type": "int",
+      "default": "25",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "Percent 0-100; 0 disables rumble. From source only; not checked against a written file."
+    },
+    "joystick_deadzone": {
+      "file": "general",
+      "key": "joystick_deadzone",
+      "label": "General > Joystick Deadzone",
+      "type": "int",
+      "default": "5",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "Percent. From source only; not checked against a written file."
+    },
+    "main_volume": {
+      "file": "sound",
+      "key": "main_volume",
+      "label": "Sound > Main Volume",
+      "type": "int",
+      "default": "100",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "Percent 0-100. From source only; not checked against a written file."
+    },
+    "bgm_volume": {
+      "file": "sound",
+      "key": "bgm_volume",
+      "label": "Sound > Background Music Volume",
+      "type": "int",
+      "default": "100",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "Percent 0-100. From source only; not checked against a written file."
+    }
+  }
+}

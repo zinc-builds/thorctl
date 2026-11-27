@@ -1,0 +1,564 @@
+{
+  "name": "zelda3",
+  "package": "com.dishii.zelda3",
+  "aliases": [
+    "alttp",
+    "link-to-the-past",
+    "zelda-3"
+  ],
+  "category": "recomp",
+  "version_checked": "2.0",
+  "stop_before_write": true,
+  "files": {
+    "ini": {
+      "path": "/sdcard/Android/data/com.dishii.zelda3/files/zelda3.ini",
+      "format": "ini",
+      "notes": "snesrev/zelda3 config (config.c). Sections [General] [Graphics] [Sound] [Features] [KeyMap] [GamepadMap]; `Key = Value`, '#' comment lines. Read once when the game starts. The bottom-screen settings rewrite single lines in place (MinimapView.updateIni) and insert a missing key right under its section header, so the app must be stopped before editing. Copied from the APK only when missing; updates never replace it. A zelda3.user.ini next to it would replace this file entirely (ParseConfigFile)."
+    },
+    "prefs": {
+      "path": "/data/data/com.dishii.zelda3/shared_prefs/secondscreen.xml",
+      "format": "prefs",
+      "notes": "SharedPreferences 'secondscreen'. Only hideTopHud is stored here."
+    }
+  },
+  "per_game": null,
+  "keys": {
+    "extended_aspect_ratio": {
+      "file": "ini",
+      "key": "General/ExtendedAspectRatio",
+      "label": "Settings > WIDESCREEN",
+      "type": "enum",
+      "values": {
+        "4:3": "Off (original 4:3)",
+        "16:9": "16:9 widescreen",
+        "16:10": "16:10",
+        "18:9": "18:9"
+      },
+      "default": "16:9",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "Comma list parsed in order: optional 'extend_y' first (240 lines), then the ratio, then optional 'unchanged_sprites' and/or 'no_visual_fixes'. The bottom-screen row toggles only 4:3 <-> 16:9 (and applies it live). Any other token makes the line invalid. 16:9 is the v2.0 shipped default; an ini first copied by an older version keeps its 4:3."
+    },
+    "autosave": {
+      "file": "ini",
+      "key": "General/Autosave",
+      "label": "Settings > AUTOSAVE",
+      "type": "enum",
+      "values": {
+        "0": "Off",
+        "1": "On"
+      },
+      "default": "0",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "Save a state on quit and load it on start (saves/save0.sav). Parsed with strtol, so use 0/1, not true/false."
+    },
+    "second_screen_x_item_ring": {
+      "file": "ini",
+      "key": "General/SecondScreenXItemRing",
+      "label": "Settings > X ITEM RING",
+      "type": "enum",
+      "values": {
+        "0": "Off",
+        "1": "On"
+      },
+      "default": "1",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "Bottom screen shows a second ring for the item on X. Needs [Features] ItemSwitchLR = 1; the app turns that on with it."
+    },
+    "second_screen_swap": {
+      "file": "ini",
+      "key": "General/SecondScreenSwap",
+      "label": "Settings > SWAP SCREENS",
+      "type": "enum",
+      "values": {
+        "0": "Off",
+        "1": "On"
+      },
+      "default": "0",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "1 = game on the bottom panel, map/inventory on the top. Read by SetupActivity at launch only. Absent from inis first copied by versions before v2.0 (missing = 0)."
+    },
+    "second_screen_crt": {
+      "file": "ini",
+      "key": "General/SecondScreenCrt",
+      "label": "Settings > CRT BOTTOM",
+      "type": "enum",
+      "values": {
+        "0": "Off",
+        "1": "On"
+      },
+      "default": "0",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "Scanlines on the bottom screen, independent of [Graphics] CrtFilter."
+    },
+    "disable_frame_delay": {
+      "file": "ini",
+      "key": "General/DisableFrameDelay",
+      "label": "(ini only)",
+      "type": "enum",
+      "values": {
+        "0": "Off",
+        "1": "On"
+      },
+      "default": "0",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "Skip the per-frame SDL_Delay; slightly better performance when the display runs at exactly 60 Hz."
+    },
+    "new_renderer": {
+      "file": "ini",
+      "key": "Graphics/NewRenderer",
+      "label": "(ini only)",
+      "type": "enum",
+      "values": {
+        "0": "Off",
+        "1": "On"
+      },
+      "default": "1",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "Optimised SNES PPU renderer (faster, possibly buggier). Accepts 0/1/true/false/yes/no/on/off."
+    },
+    "enhanced_mode7": {
+      "file": "ini",
+      "key": "Graphics/EnhancedMode7",
+      "label": "(ini only)",
+      "type": "enum",
+      "values": {
+        "0": "Off",
+        "1": "On"
+      },
+      "default": "1",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "Higher-resolution Mode 7 world map."
+    },
+    "no_sprite_limits": {
+      "file": "ini",
+      "key": "Graphics/NoSpriteLimits",
+      "label": "(ini only)",
+      "type": "enum",
+      "values": {
+        "0": "Off",
+        "1": "On"
+      },
+      "default": "1",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "Remove the per-scanline sprite limit (no sprite flicker)."
+    },
+    "ignore_aspect_ratio": {
+      "file": "ini",
+      "key": "Graphics/IgnoreAspectRatio",
+      "label": "(ini only)",
+      "type": "enum",
+      "values": {
+        "0": "Off",
+        "1": "On"
+      },
+      "default": "0",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "1 = stretch to the window instead of keeping the aspect ratio."
+    },
+    "linear_filtering": {
+      "file": "ini",
+      "key": "Graphics/LinearFiltering",
+      "label": "(ini only)",
+      "type": "enum",
+      "values": {
+        "0": "Off",
+        "1": "On"
+      },
+      "default": "0",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "Bilinear filtering instead of sharp pixels (SDL and OpenGL output)."
+    },
+    "crt_filter": {
+      "file": "ini",
+      "key": "Graphics/CrtFilter",
+      "label": "Settings > CRT TOP",
+      "type": "enum",
+      "values": {
+        "0": "Off",
+        "1": "On"
+      },
+      "default": "0",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "Scanlines and a subtle RGB mask on the game screen. Applied live from the bottom screen."
+    },
+    "dim_flashes": {
+      "file": "ini",
+      "key": "Graphics/DimFlashes",
+      "label": "Settings > DIM FLASHES",
+      "type": "enum",
+      "values": {
+        "0": "Off",
+        "1": "On"
+      },
+      "default": "0",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "Virtual Console style reduced flashing. Lives in [Graphics] although it is a feature bit."
+    },
+    "output_method": {
+      "file": "ini",
+      "key": "Graphics/OutputMethod",
+      "label": "(ini only)",
+      "type": "enum",
+      "values": {
+        "SDL": "SDL renderer (default)",
+        "SDL-Software": "SDL software renderer",
+        "OpenGL": "OpenGL",
+        "OpenGL ES": "OpenGL ES"
+      },
+      "default": "SDL",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "Unrecognised values fall back to SDL. Shader needs OpenGL or OpenGL ES. OpenGL output not tested on the Thor."
+    },
+    "shader": {
+      "file": "ini",
+      "key": "Graphics/Shader",
+      "label": "(ini only)",
+      "type": "string",
+      "default": "",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "Path to a .glsl or .glslp (snesrev/glsl-shaders), relative paths from the files dir. Only with OpenGL/OpenGL ES output. Empty = none."
+    },
+    "link_graphics": {
+      "file": "ini",
+      "key": "Graphics/LinkGraphics",
+      "label": "(ini only)",
+      "type": "string",
+      "default": "",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "Path to a .zspr sprite sheet that replaces Link (snesrev/sprites-gfx). Commented out in the shipped ini."
+    },
+    "enable_audio": {
+      "file": "ini",
+      "key": "Sound/EnableAudio",
+      "label": "(ini only)",
+      "type": "enum",
+      "values": {
+        "0": "Off",
+        "1": "On"
+      },
+      "default": "1",
+      "per_game": false,
+      "verified_on_device": true
+    },
+    "audio_freq": {
+      "file": "ini",
+      "key": "Sound/AudioFreq",
+      "label": "(ini only)",
+      "type": "enum",
+      "values": {
+        "48000": "48 kHz (needed for OPUZ MSU)",
+        "44100": "44.1 kHz (needed for PCM MSU)",
+        "32000": "32 kHz",
+        "22050": "22 kHz",
+        "11025": "11 kHz"
+      },
+      "default": "44100",
+      "per_game": false,
+      "verified_on_device": true
+    },
+    "audio_samples": {
+      "file": "ini",
+      "key": "Sound/AudioSamples",
+      "label": "(ini only)",
+      "type": "enum",
+      "values": {
+        "256": "256",
+        "512": "512",
+        "1024": "1024 (try if audio crackles)",
+        "2048": "2048",
+        "4096": "4096"
+      },
+      "default": "512",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "Audio buffer in samples, power of two; larger = more latency."
+    },
+    "enable_msu": {
+      "file": "ini",
+      "key": "Sound/EnableMSU",
+      "label": "Settings > MSU MUSIC",
+      "type": "enum",
+      "values": {
+        "false": "Off",
+        "true": "MSU-1 PCM",
+        "deluxe": "MSU Deluxe PCM",
+        "opuz": "MSU-1 OPUZ",
+        "deluxe-opuz": "MSU Deluxe OPUZ"
+      },
+      "default": "false",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "Needs a pack at MSUPath (default msu/alttp_msu-<n>.pcm under the files dir); the row reads NO PACK without one. Takes effect at next launch."
+    },
+    "msu_volume": {
+      "file": "ini",
+      "key": "Sound/MSUVolume",
+      "label": "(ini only)",
+      "type": "string",
+      "default": "100%",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "0-100; parsed with atoi so the trailing % is optional."
+    },
+    "resume_msu": {
+      "file": "ini",
+      "key": "Sound/ResumeMSU",
+      "label": "(ini only)",
+      "type": "enum",
+      "values": {
+        "0": "Off",
+        "1": "On"
+      },
+      "default": "1",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "Resume the MSU track position when re-entering an overworld area."
+    },
+    "item_switch_lr": {
+      "file": "ini",
+      "key": "Features/ItemSwitchLR",
+      "label": "Settings > ITEM SWITCH L R",
+      "type": "enum",
+      "values": {
+        "0": "Off",
+        "1": "On"
+      },
+      "default": "1",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "Cycle items with L/R, reorder with Y+direction, assign items to X/L/R. Required by the X item ring. Default is the v2.0 shipped zelda3.ini value; a missing line means 0."
+    },
+    "item_switch_lr_limit": {
+      "file": "ini",
+      "key": "Features/ItemSwitchLRLimit",
+      "label": "(ini only)",
+      "type": "enum",
+      "values": {
+        "0": "Off",
+        "1": "On"
+      },
+      "default": "0",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "Limit L/R cycling to the first 4 items. Default is the v2.0 shipped zelda3.ini value; a missing line means 0."
+    },
+    "turn_while_dashing": {
+      "file": "ini",
+      "key": "Features/TurnWhileDashing",
+      "label": "Settings > TURN WHILE DASH",
+      "type": "enum",
+      "values": {
+        "0": "Off",
+        "1": "On"
+      },
+      "default": "0",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "Default is the v2.0 shipped zelda3.ini value; a missing line means 0."
+    },
+    "mirror_to_darkworld": {
+      "file": "ini",
+      "key": "Features/MirrorToDarkworld",
+      "label": "Settings > MIRROR TO DARK",
+      "type": "enum",
+      "values": {
+        "0": "Off",
+        "1": "On"
+      },
+      "default": "0",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "Mirror warps to the Dark World too. Default is the v2.0 shipped zelda3.ini value; a missing line means 0."
+    },
+    "collect_items_with_sword": {
+      "file": "ini",
+      "key": "Features/CollectItemsWithSword",
+      "label": "Settings > COLLECT BY SWORD",
+      "type": "enum",
+      "values": {
+        "0": "Off",
+        "1": "On"
+      },
+      "default": "0",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "Default is the v2.0 shipped zelda3.ini value; a missing line means 0."
+    },
+    "break_pots_with_sword": {
+      "file": "ini",
+      "key": "Features/BreakPotsWithSword",
+      "label": "Settings > SWORD BREAKS POTS",
+      "type": "enum",
+      "values": {
+        "0": "Off",
+        "1": "On"
+      },
+      "default": "0",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "Level 2-4 sword breaks pots. Default is the v2.0 shipped zelda3.ini value; a missing line means 0."
+    },
+    "disable_low_health_beep": {
+      "file": "ini",
+      "key": "Features/DisableLowHealthBeep",
+      "label": "Settings > LOW HP BEEP (shown inverted)",
+      "type": "enum",
+      "values": {
+        "0": "Off",
+        "1": "On"
+      },
+      "default": "0",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "1 = no beep; the bottom-screen row shows the beep itself, so ON there means 0 here. Default is the v2.0 shipped zelda3.ini value; a missing line means 0."
+    },
+    "skip_intro_on_keypress": {
+      "file": "ini",
+      "key": "Features/SkipIntroOnKeypress",
+      "label": "Settings > SKIP INTRO",
+      "type": "enum",
+      "values": {
+        "0": "Off",
+        "1": "On"
+      },
+      "default": "0",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "Default is the v2.0 shipped zelda3.ini value; a missing line means 0."
+    },
+    "show_max_items_in_yellow": {
+      "file": "ini",
+      "key": "Features/ShowMaxItemsInYellow",
+      "label": "Settings > MAX ITEMS YELLOW",
+      "type": "enum",
+      "values": {
+        "0": "Off",
+        "1": "On"
+      },
+      "default": "0",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "Default is the v2.0 shipped zelda3.ini value; a missing line means 0."
+    },
+    "more_active_bombs": {
+      "file": "ini",
+      "key": "Features/MoreActiveBombs",
+      "label": "Settings > MORE BOMBS",
+      "type": "enum",
+      "values": {
+        "0": "Off",
+        "1": "On"
+      },
+      "default": "0",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "Four bombs at once instead of two. Default is the v2.0 shipped zelda3.ini value; a missing line means 0."
+    },
+    "carry_more_rupees": {
+      "file": "ini",
+      "key": "Features/CarryMoreRupees",
+      "label": "Settings > CARRY 9999 RUPEES",
+      "type": "enum",
+      "values": {
+        "0": "Off",
+        "1": "On"
+      },
+      "default": "0",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "Default is the v2.0 shipped zelda3.ini value; a missing line means 0."
+    },
+    "misc_bug_fixes": {
+      "file": "ini",
+      "key": "Features/MiscBugFixes",
+      "label": "(ini only)",
+      "type": "enum",
+      "values": {
+        "0": "Off",
+        "1": "On"
+      },
+      "default": "0",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "Various original-game bug fixes. Default is the v2.0 shipped zelda3.ini value; a missing line means 0."
+    },
+    "game_changing_bug_fixes": {
+      "file": "ini",
+      "key": "Features/GameChangingBugFixes",
+      "label": "(ini only)",
+      "type": "enum",
+      "values": {
+        "0": "Off",
+        "1": "On"
+      },
+      "default": "0",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "Bug fixes that change game behaviour. Default is the v2.0 shipped zelda3.ini value; a missing line means 0."
+    },
+    "cancel_bird_travel": {
+      "file": "ini",
+      "key": "Features/CancelBirdTravel",
+      "label": "Settings > CANCEL BIRD RIDE",
+      "type": "enum",
+      "values": {
+        "0": "Off",
+        "1": "On"
+      },
+      "default": "0",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "Cancel bird travel with X. Default is the v2.0 shipped zelda3.ini value; a missing line means 0."
+    },
+    "gamepad_controls": {
+      "file": "ini",
+      "key": "GamepadMap/Controls",
+      "label": "Settings > REMAP BUTTONS",
+      "type": "string",
+      "default": "DpadUp, DpadDown, DpadLeft, DpadRight, Back, Start, A, B, X, Y, Lb, Rb",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "12 comma-separated pad buttons in SNES order Up, Down, Left, Right, Select, Start, A, B, X, Y, L, R. Default is the Nintendo layout for the Thor; Xbox-style pads use '..., B, A, Y, X, Lb, Rb'. The bottom-screen remap rewrites this line."
+    },
+    "turbo_button": {
+      "file": "ini",
+      "key": "GamepadMap/Turbo",
+      "label": "(ini only)",
+      "type": "string",
+      "default": "L3",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "Pad button held for fast-forward. Names as in Controls (L1/Lb, L2, L3, R1/Rb, R2, R3, A, B, X, Y, Back, Start, Dpad*)."
+    },
+    "hide_top_hud": {
+      "file": "prefs",
+      "key": "hideTopHud",
+      "label": "Settings > HIDE TOP HUD",
+      "type": "bool",
+      "values": {
+        "false": "Off",
+        "true": "On"
+      },
+      "default": "true",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "Hide the game's own HUD strip on the top screen (the bottom screen shows hearts, magic and counters). getBoolean default is true. Applied live."
+    }
+  }
+}

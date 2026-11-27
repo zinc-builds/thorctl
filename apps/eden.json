@@ -1,0 +1,642 @@
+{
+  "name": "eden",
+  "package": "dev.eden.eden_emulator",
+  "aliases": [
+    "switch"
+  ],
+  "version_checked": "1f6734c",
+  "stop_before_write": true,
+  "files": {
+    "global": {
+      "path": "/sdcard/Android/data/dev.eden.eden_emulator/files/config/config.ini",
+      "format": "qtini",
+      "notes": "All emulator settings. Read once at app process start (and rewritten then); later saves write the in-memory copy over the file, so edit only while the app is stopped. A value takes effect only with key\\default=false next to it. Section names use %20 for spaces ([Data%20Storage]). Stale keys from older versions stay in the file and are ignored."
+    },
+    "prefs": {
+      "path": "/data/data/dev.eden.eden_emulator/shared_prefs/dev.eden.eden_emulator_preferences.xml",
+      "format": "prefs",
+      "notes": "Game library cache (Games set, LastPlayed/AddedToLibraryTime per ROM URI, sort/view type, FirstApplicationLaunch). No emulator settings. Needs root."
+    },
+    "installed_driver_meta": {
+      "path": "/data/data/dev.eden.eden_emulator/files/gpu_driver/meta.json",
+      "format": "json",
+      "notes": "Metadata of the driver currently extracted to files/gpu_driver/ (next to its .so). Managed by Eden; read it to see what is installed, do not edit. Select a driver with gpu_driver (driver_path) instead. Needs root."
+    }
+  },
+  "per_game": {
+    "path": "/sdcard/Android/data/dev.eden.eden_emulator/files/config/custom/{game}.ini",
+    "format": "qtini-game",
+    "game_id": "16-digit uppercase hex program (title) ID, e.g. 01001234ABCD0000; it is in most ROM filenames in [brackets] and in the Games set of the prefs file. Homebrew with program ID 0 uses the ROM file name with extension instead.",
+    "create": true,
+    "notes": "Only settings marked per_game are read from it. To override: key\\use_global=false AND key\\default=false AND key=value (use_global=false with a missing or true \\default resets the setting to the built-in default, not to the global value). To go back to global: key\\use_global=true. Game-list launches load (and create, if missing) this file; launches by intent from a frontend use it only if it already exists. Eden rewrites it whenever it loads it."
+  },
+  "keys": {
+    "resolution": {
+      "file": "global",
+      "key": "Renderer/resolution_setup",
+      "label": "Resolution (Handheld/Docked)",
+      "type": "enum",
+      "values": {
+        "0": "0.25X (180p/270p)",
+        "1": "0.5X (360p/540p)",
+        "2": "0.75X (540p/810p)",
+        "3": "1X (720p/1080p)",
+        "4": "1.25X (900p/1350p)",
+        "5": "1.5X (1080p/1620p)",
+        "6": "2X (1440p/2160p)",
+        "7": "3X (2160p/3240p)",
+        "8": "4X (2880p/4320p)"
+      },
+      "default": "3",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Enum ResolutionSetup also has 9=5X, 10=6X, 11=7X, 12=8X; the Android menu stops at 8 (4X). App warns at 5-7."
+    },
+    "backend": {
+      "file": "global",
+      "key": "Renderer/backend",
+      "label": "API",
+      "type": "enum",
+      "values": {
+        "1": "Vulkan",
+        "2": "Null (no rendering)"
+      },
+      "default": "1",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Enum RendererBackend: 0=OpenGL_GLSL, 1=Vulkan, 2=Null, 3=OpenGL_GLASM, 4=OpenGL_SPIRV. Android build only offers Vulkan/None; do not write OpenGL values."
+    },
+    "gpu_accuracy": {
+      "file": "global",
+      "key": "Renderer/gpu_accuracy",
+      "label": "GPU Mode",
+      "type": "enum",
+      "values": {
+        "0": "Fast (Low)",
+        "1": "Balanced (Medium)",
+        "2": "Accurate (High)"
+      },
+      "default": "0",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Enum GpuAccuracy {Low, Medium, High}. Android default Low; desktop default Medium."
+    },
+    "dma_accuracy": {
+      "file": "global",
+      "key": "Renderer/dma_accuracy",
+      "label": "DMA Accuracy",
+      "type": "enum",
+      "values": {
+        "0": "Default",
+        "1": "Unsafe",
+        "2": "Safe"
+      },
+      "default": "0",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": ""
+    },
+    "vsync": {
+      "file": "global",
+      "key": "Renderer/use_vsync",
+      "label": "VSync mode",
+      "type": "enum",
+      "values": {
+        "0": "Immediate (Off)",
+        "1": "Mailbox",
+        "2": "FIFO (On)",
+        "3": "FIFO Relaxed"
+      },
+      "default": "2",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Present mode. Enum VSyncMode {Immediate, Mailbox, Fifo, FifoRelaxed}. Driver may not support every mode."
+    },
+    "aspect_ratio": {
+      "file": "global",
+      "key": "Renderer/aspect_ratio",
+      "label": "Aspect ratio",
+      "type": "enum",
+      "values": {
+        "0": "16:9",
+        "1": "4:3",
+        "2": "21:9",
+        "3": "16:10",
+        "4": "Stretch to window"
+      },
+      "default": "0",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": ""
+    },
+    "scaling_filter": {
+      "file": "global",
+      "key": "Renderer/scaling_filter",
+      "label": "Window adapting filter",
+      "type": "enum",
+      "values": {
+        "0": "Nearest Neighbor",
+        "1": "Bilinear",
+        "2": "Bicubic",
+        "3": "Gaussian",
+        "4": "Lanczos",
+        "5": "ScaleForce",
+        "6": "AMD FidelityFX Super Resolution (FSR)",
+        "7": "Area",
+        "8": "Zero-Tangent",
+        "9": "B-Spline",
+        "10": "Mitchell",
+        "11": "Spline-1",
+        "12": "MMPX"
+      },
+      "default": "1",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Meanings follow the core enum ScalingFilter, which the renderer uses. The Android menu labels 8-12 in a different order (8=MMPX, 9=Zero-Tangent, 10=B-Spline, 11=Mitchell, 12=Spline-1), so the menu and the result disagree for 8-12."
+    },
+    "fsr_sharpness": {
+      "file": "global",
+      "key": "Renderer/fsr_sharpening_slider",
+      "label": "FSR sharpness",
+      "type": "int",
+      "values": {
+        "0-200": "percent; only used when scaling_filter=6 (FSR)"
+      },
+      "default": "0",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Ranged 0-200 (clamped). Android default 0, desktop 25."
+    },
+    "anti_aliasing": {
+      "file": "global",
+      "key": "Renderer/anti_aliasing",
+      "label": "Anti-aliasing method",
+      "type": "enum",
+      "values": {
+        "0": "None",
+        "1": "FXAA",
+        "2": "SMAA"
+      },
+      "default": "0",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": ""
+    },
+    "anisotropic_filtering": {
+      "file": "global",
+      "key": "Renderer/max_anisotropy",
+      "label": "Anisotropic filtering",
+      "type": "enum",
+      "values": {
+        "0": "Auto",
+        "1": "Default",
+        "2": "x2",
+        "3": "x4",
+        "4": "x8",
+        "5": "x16",
+        "6": "x32",
+        "7": "x64",
+        "8": "None"
+      },
+      "default": "1",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Enum AnisotropyMode {Automatic, Default, X2, X4, X8, X16, X32, X64, None}. Android default 1 (Default); desktop default 0 (Automatic)."
+    },
+    "astc_decode": {
+      "file": "global",
+      "key": "Renderer/accelerate_astc",
+      "label": "ASTC Decoding Method",
+      "type": "enum",
+      "values": {
+        "0": "CPU",
+        "1": "GPU",
+        "2": "CPU Async"
+      },
+      "default": "1",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": ""
+    },
+    "astc_recompression": {
+      "file": "global",
+      "key": "Renderer/astc_recompression",
+      "label": "ASTC Recompression Method (desktop label; not in Android menu)",
+      "type": "enum",
+      "values": {
+        "0": "Uncompressed (best quality)",
+        "1": "BC1 (low quality)",
+        "2": "BC3 (medium quality)"
+      },
+      "default": "0",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "The core reads it on Android, but the Android app has no menu entry for it. Label from the desktop UI."
+    },
+    "async_gpu": {
+      "file": "global",
+      "key": "Renderer/use_asynchronous_gpu_emulation",
+      "label": "GPU async emulation",
+      "type": "bool",
+      "values": {
+        "true": "On",
+        "false": "Off"
+      },
+      "default": "false",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Android default false; desktop default true."
+    },
+    "async_shaders": {
+      "file": "global",
+      "key": "Renderer/use_asynchronous_shaders",
+      "label": "Use asynchronous shaders",
+      "type": "bool",
+      "values": {
+        "true": "On",
+        "false": "Off"
+      },
+      "default": "false",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": ""
+    },
+    "disk_shader_cache": {
+      "file": "global",
+      "key": "Renderer/use_disk_shader_cache",
+      "label": "Disk shader cache",
+      "type": "bool",
+      "values": {
+        "true": "On",
+        "false": "Off"
+      },
+      "default": "true",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": ""
+    },
+    "vulkan_pipeline_cache": {
+      "file": "global",
+      "key": "Renderer/use_vulkan_driver_pipeline_cache",
+      "label": "Use Vulkan pipeline cache (desktop label; not in Android menu)",
+      "type": "bool",
+      "values": {
+        "true": "On",
+        "false": "Off"
+      },
+      "default": "true",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "No Android menu entry in v0.2.1."
+    },
+    "vram_usage": {
+      "file": "global",
+      "key": "Renderer/vram_usage_mode",
+      "label": "VRAM Usage Mode",
+      "type": "enum",
+      "values": {
+        "0": "Conservative",
+        "1": "Aggressive"
+      },
+      "default": "0",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": ""
+    },
+    "nvdec": {
+      "file": "global",
+      "key": "Renderer/nvdec_emulation",
+      "label": "NVDEC Emulation",
+      "type": "enum",
+      "values": {
+        "0": "Off (no video decoding)",
+        "1": "CPU",
+        "2": "GPU"
+      },
+      "default": "2",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "The Android menu writes 3 for its 'None' choice; the core only treats 0 as Off, so 3 behaves like CPU decoding. Write 0 for Off."
+    },
+    "frame_pacing": {
+      "file": "global",
+      "key": "Renderer/frame_pacing_mode",
+      "label": "Frame Pacing Mode (desktop label; not in Android menu)",
+      "type": "enum",
+      "values": {
+        "0": "Auto",
+        "1": "30 FPS",
+        "2": "60 FPS",
+        "3": "90 FPS",
+        "4": "120 FPS"
+      },
+      "default": "0",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Enum FramePacingMode {Target_Auto, Target_30, Target_60, Target_90, Target_120}; ranged 0-4."
+    },
+    "fast_gpu_time": {
+      "file": "global",
+      "key": "Renderer/fast_gpu_time",
+      "label": "Fast GPU Time",
+      "type": "enum",
+      "values": {
+        "0": "Off (Normal)",
+        "1": "Medium (256)",
+        "2": "High (512)"
+      },
+      "default": "1",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Enum GpuOverclock {Normal, Medium, High}. Older builds used a separate use_fast_gpu_time bool; that key can stay in a config.ini carried over from older builds and is ignored by v0.2.1."
+    },
+    "reactive_flushing": {
+      "file": "global",
+      "key": "Renderer/use_reactive_flushing",
+      "label": "Use reactive flushing",
+      "type": "bool",
+      "values": {
+        "true": "On",
+        "false": "Off"
+      },
+      "default": "false",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Android default false; desktop default true."
+    },
+    "force_max_clock": {
+      "file": "global",
+      "key": "Renderer/force_max_clock",
+      "label": "Force maximum clocks (Adreno only)",
+      "type": "bool",
+      "values": {
+        "true": "On",
+        "false": "Off"
+      },
+      "default": "false",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": ""
+    },
+    "extended_dynamic_state": {
+      "file": "global",
+      "key": "Renderer/dyna_state",
+      "label": "Extended Dynamic State",
+      "type": "enum",
+      "values": {
+        "0": "Disabled",
+        "1": "ExtendedDynamicState 1",
+        "2": "ExtendedDynamicState 2",
+        "3": "ExtendedDynamicState 3"
+      },
+      "default": "0",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Android default 0; desktop default 2."
+    },
+    "legacy_rescale_pass": {
+      "file": "global",
+      "key": "Renderer/rescale_hack",
+      "label": "Enable Legacy Rescale Pass",
+      "type": "bool",
+      "values": {
+        "true": "On",
+        "false": "Off"
+      },
+      "default": "true",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Android default true. Removed from master on 2026-10-08 (commit 67bada77f), so newer builds ignore it."
+    },
+    "docked_mode": {
+      "file": "global",
+      "key": "System/use_docked_mode",
+      "label": "Docked Mode",
+      "type": "enum",
+      "values": {
+        "0": "Handheld",
+        "1": "Docked"
+      },
+      "default": "0",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Core type is enum ConsoleMode {Handheld, Docked} and the core checks value == 1. The Android toggle treats it as a bool over JNI, and a config.ini can end up holding a garbage value such as 3019898881 (0xB4000001), which the core reads as not docked. Write 0 or 1 only. If player 1's controller type is Handheld (player_0_type=4 in [Controls]) the core forces handheld regardless."
+    },
+    "cpu_backend": {
+      "file": "global",
+      "key": "Cpu/cpu_backend",
+      "label": "CPU backend",
+      "type": "enum",
+      "values": {
+        "0": "Dynarmic (JIT)",
+        "1": "NCE (native code execution)"
+      },
+      "default": "1",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Default NCE on arm64 Android builds (HAS_NCE)."
+    },
+    "cpu_accuracy": {
+      "file": "global",
+      "key": "Cpu/cpu_accuracy",
+      "label": "CPU accuracy",
+      "type": "enum",
+      "values": {
+        "0": "Auto",
+        "1": "Accurate",
+        "2": "Unsafe",
+        "3": "Paranoid",
+        "4": "Debugging"
+      },
+      "default": "0",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": ""
+    },
+    "cpu_overclock": {
+      "file": "global",
+      "key": "Cpu/fast_cpu_time",
+      "label": "CPU Overclock",
+      "type": "enum",
+      "values": {
+        "0": "Off",
+        "1": "Boost (1700MHz)",
+        "2": "Fast (2000MHz)"
+      },
+      "default": "0",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Enum CpuClock {Off, Boost, Fast}. Older builds had a use_fast_cpu_time bool; it can stay in a config.ini carried over from older builds and is ignored."
+    },
+    "custom_cpu_ticks": {
+      "file": "global",
+      "key": "Cpu/use_custom_cpu_ticks",
+      "label": "Custom CPU Ticks",
+      "type": "bool",
+      "values": {
+        "true": "On",
+        "false": "Off"
+      },
+      "default": "false",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Enables cpu_ticks."
+    },
+    "cpu_ticks": {
+      "file": "global",
+      "key": "Cpu/cpu_ticks",
+      "label": "Ticks",
+      "type": "int",
+      "values": {
+        "77-65535": "ticks; used only when custom_cpu_ticks=true"
+      },
+      "default": "16000",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Ranged 77-65535 (clamped)."
+    },
+    "multicore": {
+      "file": "global",
+      "key": "Core/use_multi_core",
+      "label": "Multicore CPU Emulation (desktop label; not in Android menu)",
+      "type": "bool",
+      "values": {
+        "true": "On",
+        "false": "Off"
+      },
+      "default": "true",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "No Android menu entry in v0.2.1, but the core reads it."
+    },
+    "speed_limit_enabled": {
+      "file": "global",
+      "key": "Core/use_speed_limit",
+      "label": "Limit speed",
+      "type": "bool",
+      "values": {
+        "true": "On",
+        "false": "Off"
+      },
+      "default": "true",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Turns the speed_limit percentage on or off."
+    },
+    "speed_limit": {
+      "file": "global",
+      "key": "Core/speed_limit",
+      "label": "Limit speed percent",
+      "type": "int",
+      "values": {
+        "0-9999": "percent of normal speed (menu offers 1-400)"
+      },
+      "default": "100",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Ranged 0-9999 in core (clamped); Android slider 1-400."
+    },
+    "sync_core_speed": {
+      "file": "global",
+      "key": "Core/sync_core_speed",
+      "label": "Synchronize Core Speed",
+      "type": "bool",
+      "values": {
+        "true": "On",
+        "false": "Off"
+      },
+      "default": "false",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": ""
+    },
+    "memory_layout": {
+      "file": "global",
+      "key": "Core/memory_layout_mode",
+      "label": "Memory Layout",
+      "type": "enum",
+      "values": {
+        "0": "4GB (Recommended)",
+        "1": "6GB (Unsafe)",
+        "2": "8GB (Unsafe)",
+        "3": "10GB (not in Android menu)",
+        "4": "12GB (not in Android menu)"
+      },
+      "default": "0",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Enum MemoryLayout {Memory_4Gb, Memory_6Gb, Memory_8Gb, Memory_10Gb, Memory_12Gb}; Android menu offers 0-2."
+    },
+    "audio_engine": {
+      "file": "global",
+      "key": "Audio/output_engine",
+      "label": "Output engine",
+      "type": "enum",
+      "values": {
+        "0": "Auto",
+        "1": "cubeb",
+        "3": "Null (no audio)",
+        "4": "oboe"
+      },
+      "default": "0",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Enum AudioEngine {Auto=0, Cubeb=1, Sdl2=2, Null=3, Oboe=4}; 2 (SDL2) is not offered on Android."
+    },
+    "volume": {
+      "file": "global",
+      "key": "Audio/volume",
+      "label": "Volume",
+      "type": "int",
+      "values": {
+        "0-200": "percent"
+      },
+      "default": "100",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Ranged 0-200 (clamped)."
+    },
+    "perf_overlay": {
+      "file": "global",
+      "key": "Overlay/show_performance_overlay",
+      "label": "Enable Performance Stats Overlay",
+      "type": "bool",
+      "values": {
+        "true": "On",
+        "false": "Off"
+      },
+      "default": "true",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "Android-only setting in [Overlay]; global only."
+    },
+    "show_fps": {
+      "file": "global",
+      "key": "Overlay/show_fps",
+      "label": "Show FPS",
+      "type": "bool",
+      "values": {
+        "true": "On",
+        "false": "Off"
+      },
+      "default": "true",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "Shown only when perf_overlay=true. Global only."
+    },
+    "gpu_driver": {
+      "file": "global",
+      "key": "GpuDriver/driver_path",
+      "label": "GPU Driver (Driver Manager)",
+      "type": "string",
+      "values": {
+        "": "System driver",
+        "/storage/emulated/0/Android/data/dev.eden.eden_emulator/files/gpu_drivers/<name>.zip": "Custom driver zip already in Eden's gpu_drivers folder"
+      },
+      "default": "",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Absolute path to a driver zip (with meta.json inside) in files/gpu_drivers/. At each game launch Eden compares the zip's meta.json with files/gpu_driver/meta.json (internal storage) and re-extracts the zip there if they differ; empty or missing zip means system driver. Per-game override allowed. If the zip has no meta.json with a name, Eden deletes the zip."
+    }
+  }
+}

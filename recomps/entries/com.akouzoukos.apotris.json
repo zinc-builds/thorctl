@@ -1,0 +1,40 @@
+{
+ "package": "com.akouzoukos.apotris",
+ "name": "Apotris",
+ "original": {
+  "title": "Apotris",
+  "platform": "GBA (homebrew)",
+  "year": null
+ },
+ "kind": "source port",
+ "project": {
+  "name": "Apotris (official native Android build)",
+  "repo": "https://github.com/akouzoukos/apotris",
+  "android_repo": null,
+  "license": null
+ },
+ "version_checked": "4.2.0",
+ "update": {
+  "channel": "manual APK",
+  "url": "https://github.com/akouzoukos/apotris"
+ },
+ "assets": {
+  "needs": "Nothing. Apotris is free original homebrew; the APK carries all music, sound and shaders.",
+  "location": "/sdcard/Documents/Apotris/assets (extracted from the APK on first run; extracted.txt marks it)",
+  "notes": "Not a recomp of a commercial game: an original block-stacking game written for the GBA that ships native PC/Android builds. The GBA ROM build can also sit in Cocoon's library as a separate game."
+ },
+ "settings": {
+  "adapter": null,
+  "files": [
+   "/sdcard/Documents/Apotris/Apotris.sav",
+   "/sdcard/Documents/Apotris/preferences.txt"
+  ],
+  "in_app_menu": "Main menu > Settings (in-game, controller-driven).",
+  "summary": "All options (handling DAS/ARR, skins, ghost piece, shaders such as crt-lottes/zfast_lcd, audio) are stored inside the 32 KB binary save Apotris.sav, the same savefile struct as the GBA build. No text config, so no adapter. preferences.txt holds only '1' plus a newline (meaning not checked)."
+ },
+ "controls": "SDL2 game controller (gamecontrollerdb). Remapping in the in-game Controls menu, stored in Apotris.sav. No touch overlay in the Java layer (plain SDLActivity).",
+ "display": "Single screen (top). Plain SDLActivity with no secondary-display code.",
+ "saves": "/sdcard/Documents/Apotris/Apotris.sav (32 KB; settings and high scores together). storage_path.txt in /data/data/com.akouzoukos.apotris/files points the game at /storage/emulated/0/Documents/Apotris/.",
+ "notes": "The official release zip Apotris-v4.2.0Android.zip holds Apotris.apk (15,116,136 bytes); the checked APK matched it in size. A separate unofficial port exists (github.com/SanGraphic/Apotris-Android, package not checked); this entry covers the official build.",
+ "verified": "On device: dumpsys version/install date, storage_path.txt, /sdcard/Documents/Apotris listing, preferences.txt contents, APK contents. From web: GitHub repo akouzoukos/apotris exists (no releases or licence listed there). Original release year not confirmed. Save format not decoded."
+}

@@ -1,0 +1,12 @@
+{
+ "name": "eden-nightly",
+ "extends": "eden",
+ "package": "dev.eden.eden_emulator.nightly",
+ "aliases": [
+  "switch-nightly",
+  "eden nightly"
+ ],
+ "category": "emulator",
+ "notes": "Same app and file layout as the eden adapter, under the nightly package's own data folders (see eden.md).",
+ "version_checked": "163ebc0"
+}

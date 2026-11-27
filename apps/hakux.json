@@ -1,0 +1,291 @@
+{
+ "name": "hakux",
+ "package": "com.rfandango.haku_x",
+ "aliases": [
+  "xbox",
+  "ogxbox",
+  "xbox1",
+  "haku",
+  "haku_x",
+  "xemu"
+ ],
+ "category": "emulator",
+ "version_checked": "1.3.0",
+ "stop_before_write": true,
+ "files": {
+  "prefs": {
+   "path": "/data/data/com.rfandango.haku_x/shared_prefs/x1box_prefs.xml",
+   "format": "prefs",
+   "notes": "All global settings (name kept from X1 BOX, which hakuX forks). Does not exist before the app is first opened (until then the data dir holds only cache/ and code_cache/). Read at each game launch: NativeCoreActivity turns them into core arguments (scale=, aspect=, fxaa=, upscale=, video=<bitmask>, avpack=, lang=, asyncpipe=, prebuild=, net=). SharedPreferences are cached in the app process; force-stop before editing. Create only after the app has made the file once (first-run setup also stores setup_complete, gamesFolderUri, hddUri)."
+  },
+  "per_game_prefs": {
+   "path": "/data/data/com.rfandango.haku_x/shared_prefs/per_game_settings.xml",
+   "format": "prefs",
+   "notes": "Per-game overrides, all stored as <string> values. Absent on a fresh install."
+  },
+  "gpu_driver": {
+   "path": "/data/data/com.rfandango.haku_x/files/gpu_driver/meta.json",
+   "format": "json",
+   "notes": "One installed custom Vulkan driver (folder with meta.json + the .so named by libraryName); installed from zips in /sdcard/Android/data/com.rfandango.haku_x/files/gpu_drivers/ through the UI. Not a setting key."
+  }
+ },
+ "per_game": {
+  "path": "/data/data/com.rfandango.haku_x/shared_prefs/per_game_settings.xml",
+  "format": "prefs",
+  "game_id": "'<TITLEID>.<version>' with the title ID as 8 uppercase hex digits and the XBE version in decimal, e.g. 4D530004.9 (format %08X.%d from the disc's default.xbe certificate). The bundled mods folders use the same ids (assets/mods/4D530004.9 = Halo 2). Discs without a readable id use 'path:<relative path>'; the dashboard uses its own fixed id.",
+  "create": true,
+  "notes": "Key = '{game}/<setting>' where <setting> is: uncapped, render_scale, async_shaders, prebuild_shaders, console_timing, aspect, fxaa, upscale, language, screen_format, 480p, 720p, 1080i, pal60, av_pack. All values are strings: \"true\"/\"false\" for switches, \"2\" for render_scale, the same option words as the global keys otherwise. Missing key = global value. Older builds keyed by title ID only ('<TITLEID>/<setting>'); the app migrates those to the versioned key on read. Not tested: needs a game added first."
+ },
+ "keys": {
+  "resolution_scale": {
+   "file": "prefs",
+   "key": "render_scale",
+   "label": "Settings > Resolution scale",
+   "type": "enum",
+   "values": {
+    "1": "1x (native)",
+    "2": "2x",
+    "3": "3x",
+    "4": "4x"
+   },
+   "default": "1",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Stored as <int>. Passed to the core as scale=N at launch. Per game: string \"N\" under <TITLEID>.<ver>/render_scale."
+  },
+  "uncapped_fps": {
+   "file": "prefs",
+   "key": "uncap_fps",
+   "label": "Settings > Uncapped frame rate",
+   "type": "bool",
+   "values": {
+    "true": "Present every frame at once (no vsync wait)",
+    "false": "Wait for the display"
+   },
+   "default": "false",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Core arg 'uncap'. Per-game setting name: uncapped."
+  },
+  "aspect_ratio": {
+   "file": "prefs",
+   "key": "aspect_ratio",
+   "label": "Settings > Aspect ratio",
+   "type": "enum",
+   "values": {
+    "\"auto\"": "Auto (game's own; 16:9 when the console is widescreen)",
+    "\"4:3\"": "4:3",
+    "\"16:9\"": "16:9 (widescreen games)",
+    "\"stretch\"": "Stretch to the screen"
+   },
+   "default": "\"auto\"",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Per-game name: aspect."
+  },
+  "upscale_filter": {
+   "file": "prefs",
+   "key": "upscale_filter",
+   "label": "Settings > Upscaling filter",
+   "type": "enum",
+   "values": {
+    "\"bilinear\"": "Bilinear",
+    "\"sgsr\"": "Snapdragon GSR (sharper edges)"
+   },
+   "default": "\"bilinear\"",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Per-game name: upscale."
+  },
+  "fxaa": {
+   "file": "prefs",
+   "key": "fxaa",
+   "label": "Settings > FXAA anti-aliasing",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": true,
+   "verified_on_device": false
+  },
+  "async_shaders": {
+   "file": "prefs",
+   "key": "async_shaders",
+   "label": "Settings > Asynchronous shader compilation",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "true",
+   "per_game": true,
+   "verified_on_device": false
+  },
+  "prebuild_shaders": {
+   "file": "prefs",
+   "key": "prebuild_shaders",
+   "label": "Settings > Build cached shaders before starting",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "true",
+   "per_game": true,
+   "verified_on_device": false
+  },
+  "show_fps": {
+   "file": "prefs",
+   "key": "show_fps",
+   "label": "Settings > Show FPS counter",
+   "type": "bool",
+   "values": {
+    "true": "FPS and frame-time overlay",
+    "false": "Off"
+   },
+   "default": "true",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Read when the game activity resumes."
+  },
+  "console_timing": {
+   "file": "prefs",
+   "key": "console_timing",
+   "label": "Settings > Console drive timing",
+   "type": "bool",
+   "values": {
+    "true": "Emulate disc/HDD read time (as games expect)",
+    "false": "Instant reads"
+   },
+   "default": "true",
+   "per_game": true,
+   "verified_on_device": false
+  },
+  "screen_format": {
+   "file": "prefs",
+   "key": "video_screen_format",
+   "label": "Console video > Screen format",
+   "type": "enum",
+   "values": {
+    "\"normal\"": "Normal (4:3)",
+    "\"letterbox\"": "Letterbox",
+    "\"widescreen\"": "Widescreen (16:9)"
+   },
+   "default": "\"normal\"",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "The Xbox dashboard's own video setting (games that support widescreen use it). Per-game name: screen_format."
+  },
+  "video_480p": {
+   "file": "prefs",
+   "key": "video_480p",
+   "label": "Console video > 480p",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "true",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Per-game name: 480p."
+  },
+  "video_720p": {
+   "file": "prefs",
+   "key": "video_720p",
+   "label": "Console video > 720p",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Heavier; per-game name: 720p."
+  },
+  "video_1080i": {
+   "file": "prefs",
+   "key": "video_1080i",
+   "label": "Console video > 1080i",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Much heavier; per-game name: 1080i."
+  },
+  "video_pal60": {
+   "file": "prefs",
+   "key": "video_pal60",
+   "label": "Console video > PAL 60 Hz",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Per-game name: pal60."
+  },
+  "av_pack": {
+   "file": "prefs",
+   "key": "video_av_pack",
+   "label": "Console video > AV pack",
+   "type": "enum",
+   "values": {
+    "\"hdtv\"": "HDTV (component): all modes",
+    "\"standard\"": "Standard AV (composite): 480i only",
+    "\"svideo\"": "S-Video: 480i only"
+   },
+   "default": "\"hdtv\"",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Per-game name: av_pack."
+  },
+  "language": {
+   "file": "prefs",
+   "key": "console_language",
+   "label": "Settings > Language",
+   "type": "enum",
+   "values": {
+    "\"auto\"": "Auto (phone language if supported, else English)",
+    "\"en\"": "English",
+    "\"ja\"": "Japanese",
+    "\"de\"": "German",
+    "\"fr\"": "French",
+    "\"es\"": "Spanish",
+    "\"it\"": "Italian",
+    "\"ko\"": "Korean",
+    "\"zh\"": "Chinese",
+    "\"pt\"": "Portuguese"
+   },
+   "default": "\"auto\"",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Passed as lang=<index+1>. Per-game name: language."
+  },
+  "network": {
+   "file": "prefs",
+   "key": "console_network",
+   "label": "Network > Connection",
+   "type": "enum",
+   "values": {
+    "\"off\"": "Off (no cable)",
+    "\"lan\"": "LAN: consoles on this network",
+    "\"insignia\"": "Xbox Live: Insignia",
+    "\"kai\"": "XLink Kai over the Internet"
+   },
+   "default": "\"off\"",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Values from the launch switch (string hash codes for 'kai' and 'lan' match). insignia adds net=nat and dns=network_insignia_dns (default 46.101.64.175); kai uses network_kai_engine; lan uses network_lan_peers."
+  }
+ }
+}

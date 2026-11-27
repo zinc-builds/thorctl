@@ -1,0 +1,39 @@
+{
+ "package": "com.example.supermarioworldremasteredplus",
+ "name": "Super Mario World Remastered+",
+ "original": {
+  "title": "Super Mario World",
+  "platform": "SNES",
+  "year": 1990
+ },
+ "kind": "fan remake",
+ "project": {
+  "name": "Super Mario World Remastered Plus (Godot 4.4)",
+  "repo": "https://github.com/BTFighter/Super-Mario-World-Remastered-Plus",
+  "android_repo": "https://github.com/BTFighter/Super-Mario-World-Remastered-Plus",
+  "license": "ISC"
+ },
+ "version_checked": "1.0.0",
+ "update": {
+  "channel": "GitHub releases",
+  "url": "https://github.com/BTFighter/Super-Mario-World-Remastered-Plus/releases"
+ },
+ "assets": {
+  "needs": "An unheadered or headered Super Mario World ROM named baserom.sfc. The game checks its SHA-256 against 7 known dumps (USA 1.0 with/without header, JPN 1.0 with/without header, EU 1.0, EU 1.1, one more USA). Graphics are the remake's own; the ROM is only verified, not loaded for content (rom_checker.gd).",
+  "location": "/storage/emulated/0/Documents/baserom.sfc (OS.get_system_dir(DOCUMENTS); needs the storage permission), else /data/data/com.example.supermarioworldremasteredplus/files/baserom.sfc (user://), else inside the APK.",
+  "notes": "Put the ROM at /storage/emulated/0/Documents/baserom.sfc and grant the storage permission."
+ },
+ "settings": {
+  "adapter": "smwr",
+  "files": [
+   "/data/data/com.example.supermarioworldremasteredplus/files/settings.cfg"
+  ],
+  "in_app_menu": "Main menu > Options (Display, Audio, Gameplay, Moveset, Sprites sections).",
+  "summary": "settings.cfg is JSON written by SettingsManager.gd (despite the .cfg name). Display: resolution, window_type (Windowed/Borderless/Fullscreen; the release notes say switch to Fullscreen on Android to hide the status and navigation bars), vsync, drop shadows. Gameplay: level layouts SNES/GBA, lives system, speedrun timer, autumn style, damage style, character physics. Moveset add-ons: wall jump, ground pound, air twirl, dive, Yoshi flutter, coyote time, jump buffer. Per-sprite style choices in sprite_settings. Created on first launch."
+ },
+ "controls": "Godot input with controller support and a touch UI (this is the 'SuperMarioWorldRemasteredPlus.apk' build with touch controls; the release also has a No Touch UI APK). Touch controls can be disabled in the game. Up to 4-player co-op (CoopManager). Not tested on the Thor.",
+ "display": "Single screen; Godot viewport stretch mode 'viewport', aspect 'ignore'. Windowed by default on Android, so system bars cover part of the game until Window Type is set to Fullscreen (BTFighter v1.1 release notes).",
+ "saves": "/data/data/com.example.supermarioworldremasteredplus/files/Saves/*.sav (JSON, SaveManager.gd, three slots). Root needed to back up.",
+ "notes": "Godot 4.4.stable.official engine (libgodot_android.so). Fan remake originally by JHDev2006 (Super-Mario-World-Remastered-Public), continued as Remastered Plus by Boswer811; BTFighter's fork published the 'experimental Android build' on the v1.1 release on 2026-03-22. That release's SuperMarioWorldRemasteredPlus.apk has SHA-256 28bff031.... The package name com.example.* is the Godot export default. Godot's Android user:// is getFilesDir() regardless of the project's custom_user_dir_name (checked in Godot 4.4 source).",
+ "verified": "Device: version, install time, data dir, ROM lookup. APK: SHA-256 against the GitHub release asset, project.binary (app name, custom user dir, autoloads), decompressed GDScript bytecode of SettingsManager, SaveManager and rom_checker (paths, keys, Android Documents lookup). Source of BTFighter's repo for defaults and option labels. Not checked: running the game."
+}

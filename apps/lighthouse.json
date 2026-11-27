@@ -1,0 +1,204 @@
+{
+  "name": "lighthouse",
+  "package": "com.lighthouse.android",
+  "aliases": [
+    "lighthouse-bk",
+    "banjo-lus"
+  ],
+  "category": "recomp",
+  "version_checked": "1.0.2",
+  "stop_before_write": true,
+  "files": {
+    "cfg": {
+      "path": "/sdcard/Android/data/com.lighthouse.android/files/lighthouse.cfg.json",
+      "format": "json",
+      "notes": "libultraship Ship::Config. CVars live under the top-level \"CVars\" object, nested by the dots of the CVar name (gSettings.MSAAValue -> CVars/gSettings/MSAAValue). Bools are stored as integers 0/1. Window/backend under \"Window\". Read at start-up, written when settings change and on exit, so force-stop before editing. Created on first launch.",
+      "template": "{\"CVars\": {}}"
+    },
+    "imgui": {
+      "path": "/sdcard/Android/data/com.lighthouse.android/files/imgui.ini",
+      "format": "ini",
+      "notes": "ImGui window layout only."
+    }
+  },
+  "per_game": null,
+  "keys": {
+    "internal_resolution": {
+      "file": "cfg",
+      "key": "CVars/gSettings/InternalResolution",
+      "label": "Settings > Graphics > Internal Resolution",
+      "type": "float",
+      "default": "1.0",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "Slider 0.5-2.0 (scale of the window size). From izzy2lost/Lighthouse source and libmain.so strings; not checked against a written file."
+    },
+    "msaa": {
+      "file": "cfg",
+      "key": "CVars/gSettings/MSAAValue",
+      "label": "Settings > Graphics > Anti-aliasing (MSAA)",
+      "type": "int",
+      "values": {
+        "1": "Off",
+        "2": "2x",
+        "4": "4x",
+        "8": "8x"
+      },
+      "default": "1",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "Slider 1-8. From izzy2lost/Lighthouse source and libmain.so strings; not checked against a written file."
+    },
+    "interpolation_fps": {
+      "file": "cfg",
+      "key": "CVars/gSettings/InterpolationFPS",
+      "label": "Settings > Graphics > Current FPS",
+      "type": "int",
+      "default": "30",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "30 = Original; up to the display's max refresh (frame interpolation). From izzy2lost/Lighthouse source and libmain.so strings; not checked against a written file."
+    },
+    "match_refresh_rate": {
+      "file": "cfg",
+      "key": "CVars/gSettings/MatchRefreshRate",
+      "label": "Settings > Graphics > Match Refresh Rate",
+      "type": "int",
+      "values": {
+        "0": "Off",
+        "1": "On"
+      },
+      "default": "0",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "Checkbox CVar (stored as integer 0/1). Sets interpolation to the display refresh rate. From izzy2lost/Lighthouse source and libmain.so strings; not checked against a written file."
+    },
+    "vsync": {
+      "file": "cfg",
+      "key": "CVars/gSettings/VsyncEnabled",
+      "label": "Settings > Graphics > Enable Vsync",
+      "type": "int",
+      "values": {
+        "0": "Off",
+        "1": "On"
+      },
+      "default": "1",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "From izzy2lost/Lighthouse source and libmain.so strings; not checked against a written file."
+    },
+    "texture_filter": {
+      "file": "cfg",
+      "key": "CVars/gSettings/TextureFilter",
+      "label": "Settings > Graphics > Texture Filter (Needs reload)",
+      "type": "enum",
+      "values": {
+        "0": "Three-Point (N64-accurate)",
+        "1": "Linear",
+        "2": "None (nearest)"
+      },
+      "default": "0",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "Fast::FilteringMode values. Default from libultraship convention (submodule not read). From izzy2lost/Lighthouse source and libmain.so strings; not checked against a written file."
+    },
+    "draw_distance": {
+      "file": "cfg",
+      "key": "CVars/gEnhancements/Graphics/DrawDistance",
+      "label": "Enhancements > Extended Draw Distance",
+      "type": "int",
+      "values": {
+        "1": "1x",
+        "2": "2x",
+        "3": "3x",
+        "4": "4x",
+        "5": "5x",
+        "6": "6x"
+      },
+      "default": "1",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "From izzy2lost/Lighthouse source and libmain.so strings; not checked against a written file."
+    },
+    "disable_lod": {
+      "file": "cfg",
+      "key": "CVars/gEnhancements/Graphics/DisableLOD",
+      "label": "Enhancements > Disable LOD",
+      "type": "int",
+      "values": {
+        "0": "Off",
+        "1": "On"
+      },
+      "default": "0",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "From izzy2lost/Lighthouse source and libmain.so strings; not checked against a written file."
+    },
+    "cutscene_aspect": {
+      "file": "cfg",
+      "key": "CVars/gEnhancements/Graphics/CutsceneAspect",
+      "label": "Enhancements > Original Aspect Ratio In Cutscenes",
+      "type": "int",
+      "values": {
+        "0": "Off",
+        "1": "On"
+      },
+      "default": "0",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "From izzy2lost/Lighthouse source and libmain.so strings; not checked against a written file."
+    },
+    "note_retention": {
+      "file": "cfg",
+      "key": "CVars/gEnhancements/Gameplay/NoteRetention",
+      "label": "Enhancements > Note Collection Retention",
+      "type": "int",
+      "values": {
+        "0": "Off",
+        "1": "On"
+      },
+      "default": "0",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "From izzy2lost/Lighthouse source and libmain.so strings; not checked against a written file."
+    },
+    "free_look": {
+      "file": "cfg",
+      "key": "CVars/gEnhancements/Camera/FreeLook/Enabled",
+      "label": "Enhancements > Camera > Free Look",
+      "type": "int",
+      "values": {
+        "0": "Off",
+        "1": "On"
+      },
+      "default": "0",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "From izzy2lost/Lighthouse source and libmain.so strings; not checked against a written file."
+    },
+    "skip_boot_logos": {
+      "file": "cfg",
+      "key": "CVars/gEnhancements/Cutscenes/SkipBootLogos",
+      "label": "Enhancements > Cutscenes > Skip Boot Logos",
+      "type": "int",
+      "values": {
+        "0": "Off",
+        "1": "On"
+      },
+      "default": "0",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "From izzy2lost/Lighthouse source and libmain.so strings; not checked against a written file."
+    },
+    "master_volume": {
+      "file": "cfg",
+      "key": "CVars/gSettings/Volume/Master",
+      "label": "Settings > Audio > Master Volume",
+      "type": "int",
+      "default": "40",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "Slider 0-100 (%). From izzy2lost/Lighthouse source and libmain.so strings; not checked against a written file."
+    }
+  }
+}
