@@ -1,0 +1,40 @@
+{
+ "package": "com.lighthouse.android",
+ "name": "Lighthouse",
+ "original": {
+  "title": "Banjo-Kazooie",
+  "platform": "N64",
+  "year": 1998
+ },
+ "kind": "decompilation",
+ "project": {
+  "name": "Lighthouse (HarbourMasters Banjo-Kazooie PC port on libultraship)",
+  "repo": "https://github.com/HarbourMasters/Lighthouse",
+  "android_repo": "https://github.com/izzy2lost/Lighthouse",
+  "license": "CC0-1.0 (as reported by GitHub)"
+ },
+ "version_checked": "1.0.2",
+ "update": {
+  "channel": "GitHub releases",
+  "url": "https://github.com/izzy2lost/Lighthouse/releases"
+ },
+ "assets": {
+  "needs": "Banjo-Kazooie .z64 ROM (USA rev0/rev1, PAL or JP are recognised by the bundled Torch config). The app verifies it, copies it as baserom.us.z64 and converts it into bk.o2r on the device.",
+  "location": "/sdcard/Android/data/com.lighthouse.android/files/ (GameAssets: getExternalFilesDir, falling back to internal files). Mods go in the mods folder there.",
+  "notes": "The picker text asks for a .z64, so a byte-swapped .n64 dump may need converting first (not checked)."
+ },
+ "settings": {
+  "adapter": "lighthouse",
+  "files": [
+   "/sdcard/Android/data/com.lighthouse.android/files/lighthouse.cfg.json",
+   "/sdcard/Android/data/com.lighthouse.android/files/imgui.ini"
+  ],
+  "in_app_menu": "In game: the libultraship ImGui menu bar (Settings, Enhancements, Network, Developer Tools); controller combo or touch to open (not checked on device).",
+  "summary": "Settings > Graphics: Internal Resolution 0.5-2.0, MSAA 1-8, Current FPS 30 up to display rate (frame interpolation), Match Refresh Rate, VSync, Texture Filter (Three-Point/Linear/None), renderer API. Enhancements: Extended Draw Distance 1-6x, Disable LOD, cutscene aspect, camera free-look/invert, note/Jinjo retention, cutscene skips, many bug fixes and cheats."
+ },
+ "controls": "SDL2 gamecontroller (bundled gamecontrollerdb.txt); remapping in the libultraship input editor, stored under CVars.gSettings.Controllers in lighthouse.cfg.json. Controls scheme options (Talon Trot toggle, etc.).",
+ "display": "Single screen (no secondary-display code in the APK).",
+ "saves": "In the app folder /sdcard/Android/data/com.lighthouse.android/files/ (SaveStore/SavesActivity manage them; file names not checked).",
+ "notes": "Same game as Banjo: Recompiled but a different technique (decomp + libultraship, so it has HarbourMasters enhancements, randomizer and Anchor multiplayer upstream). The official HarbourMasters releases (latest 1.2.2, 2026-10-30) ship no Android build; izzy2lost's fork has one release (1.0.2, 2026-08-07, based on an older upstream). Listed in the RetroHandhelds Obtainium recomp list as id com.lighthouse.android.",
+ "verified": "On device: dumpsys, data dir. APK: GameAssets/LauncherActivity (paths, ROM name), assets/gamedata.zip config.yml (Banjo-Kazooie hashes), libmain.so strings (lighthouse.cfg.json, CVar names). Source: izzy2lost/Lighthouse at HEAD (src/port/UI/LighthouseMenuSettings.cpp, LighthouseMenuEnhancements.cpp). libultraship submodule not cloned, so texture-filter default is from libultraship convention."
+}

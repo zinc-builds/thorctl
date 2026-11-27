@@ -1,0 +1,709 @@
+{
+ "name": "watermelonds",
+ "package": "me.magnum.melondualds",
+ "aliases": [
+  "nds",
+  "ds",
+  "melonds",
+  "melondualds",
+  "watermelon"
+ ],
+ "category": "emulator",
+ "version_checked": "0.8.0",
+ "stop_before_write": true,
+ "files": {
+  "prefs": {
+   "path": "/data/data/me.magnum.melondualds/shared_prefs/me.magnum.melondualds_preferences.xml",
+   "format": "prefs",
+   "notes": "Every global setting. Default AndroidX preferences file; only keys that were ever set are present (missing = default listed per key). Root only. Owner u0_a<N>, mode 660, SELinux u:object_r:app_data_file:s0:c<N>,c256,c512,c768: after a root write, restore owner and run chcon to that label or the app cannot read it (the tool already does this). The emulator builds its EmulatorConfiguration from these prefs at each game launch; the app process caches SharedPreferences in memory and writes the whole file back on any settings change, so force-stop before editing."
+  },
+  "rom_data": {
+   "path": "/data/data/me.magnum.melondualds/files/rom_data.json",
+   "format": "json",
+   "notes": "Per-ROM data and per-game overrides. One-line JSON ARRAY (Gson, no indentation) of ROM objects: {name, developerName, fileName, uri, parentTreeUri, config:{...}, isDsiWareTitle, retroAchievementsHash, totalPlayTime, isFavorite}. Overrides live in each element's config object; see per_game. Loaded into memory by FSRomsRepository on start and rewritten whole after every ROM change (scan, play time, favourite, config edit). Mode 600, same owner/label as prefs."
+  },
+  "rom_metadata_mirror": {
+   "path": "/data/data/me.magnum.melondualds/files/rom_metadata_mirror.json",
+   "format": "json",
+   "notes": "Backup of rom_data written together with it: JSON array with short keys a=name, b=developer, c=fileName, d=config (same object as rom_data config), f=isDsiWare, g=RA hash, h=playtime, i=favourite. Read only when a ROM is re-added by a rescan (restores its config). Keep its d object in step with rom_data when editing per-game settings, or a rescan restores the old config."
+  },
+  "layouts": {
+   "path": "/data/data/me.magnum.melondualds/files/layouts.json",
+   "format": "json",
+   "notes": "Custom input/screen layouts (JSON array). '[]' when only the built-in default layout (UUID 00000000-0000-0000-0000-000000000000) exists. Create layouts in the UI (Input > Layouts); the global choice is pref input_layout_id, per game config.layoutId."
+  },
+  "github_prefs": {
+   "path": "/data/data/me.magnum.melondualds/shared_prefs/preferences-github.xml",
+   "format": "prefs",
+   "notes": "Update-check timestamp only."
+  }
+ },
+ "per_game": {
+  "path": "/data/data/me.magnum.melondualds/files/rom_data.json",
+  "format": "json",
+  "game_id": "The ROM file name exactly as stored in fileName (e.g. 'Some Game (USA).nds'). List them with: su -c 'cat /data/data/me.magnum.melondualds/files/rom_data.json' | python3 -c 'import json,sys;[print(r[\"fileName\"]) for r in json.load(sys.stdin)]'. ROMs come from the SAF tree in pref rom_search_dirs.",
+  "create": false,
+  "notes": "Select the array element whose fileName == {game} and edit its config object. Fields (Gson, enum names in caps): videoRenderer SOFTWARE|OPENGL|VULKAN|COMPUTE; internalResolutionScaling integer (1-8,12,16); threadedRendering bool; videoFiltering NONE|LINEAR|XBR2|HQ2X|HQ4X|QUILEZ|LCD|SCANLINES|RETROARCH; retroArchShaderPresetPath / retroArchShaderParameters strings; layoutId UUID string of a layout in layouts.json (absent = global); runtimeConsoleType DEFAULT|DS|DSi; runtimeMicSource DEFAULT|NONE|BLOW|DEVICE; inputMode GLOBAL|CUSTOM (+customControllerConfiguration); gbaSlotConfig {type: None|...}; useHgEngineFix bool; retroAchievementsEnabled bool; customName string; iconSource DEFAULT|NATIVE|RETRO_ACHIEVEMENTS; dsiProfileId string. A field that is absent (or DEFAULT/GLOBAL) uses the global pref; delete the field to return to global. The element must already exist (the app creates it when it scans the ROM); do not add elements by hand. Keep rom_metadata_mirror.json element (c == fileName) field d identical. Force-stop first: the list is cached in memory and rewritten whole.",
+  "mirror": {
+   "path": "/data/data/me.magnum.melondualds/files/rom_metadata_mirror.json",
+   "from": "[fileName={game}]/config/",
+   "to": "[c={game}]/d/"
+  }
+ },
+ "keys": {
+  "renderer": {
+   "file": "prefs",
+   "key": "video_renderer",
+   "label": "Video > Renderer",
+   "type": "enum",
+   "values": {
+    "\"software\"": "Software",
+    "\"opengl\"": "OpenGL",
+    "\"vulkan\"": "Vulkan",
+    "\"compute\"": "Compute (compute-shader renderer)"
+   },
+   "default": "\"software\"",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Per game: rom_data.json config.videoRenderer = SOFTWARE|OPENGL|VULKAN|COMPUTE. Locked while a game runs (InGameLockedListPreference); read at game launch.",
+   "per_game_key": "[fileName={game}]/config/videoRenderer",
+   "per_game_values": {
+    "\"software\"": "\"SOFTWARE\"",
+    "\"opengl\"": "\"OPENGL\"",
+    "\"vulkan\"": "\"VULKAN\"",
+    "\"compute\"": "\"COMPUTE\""
+   }
+  },
+  "internal_resolution": {
+   "file": "prefs",
+   "key": "video_internal_resolution",
+   "label": "Video > Internal resolution",
+   "type": "enum",
+   "values": {
+    "\"1\"": "1x native (256x192)",
+    "\"2\"": "2x (512x384)",
+    "\"3\"": "3x (768x576)",
+    "\"4\"": "4x (1024x768)",
+    "\"5\"": "5x (1280x960)",
+    "\"6\"": "6x (1536x1152)",
+    "\"7\"": "7x (1792x1344)",
+    "\"8\"": "8x (2048x1536)",
+    "\"12\"": "12x (3072x2304)",
+    "\"16\"": "16x (4096x3072)"
+   },
+   "default": "\"1\"",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Stored as a STRING pref (<string name=\"video_internal_resolution\">6</string>). Ignored by the Software renderer. Per game: config.internalResolutionScaling (JSON integer, e.g. 4).",
+   "per_game_key": "[fileName={game}]/config/internalResolutionScaling",
+   "per_game_values": {
+    "\"1\"": "1",
+    "\"2\"": "2",
+    "\"3\"": "3",
+    "\"4\"": "4",
+    "\"5\"": "5",
+    "\"6\"": "6",
+    "\"7\"": "7",
+    "\"8\"": "8",
+    "\"12\"": "12",
+    "\"16\"": "16"
+   }
+  },
+  "threaded_rendering": {
+   "file": "prefs",
+   "key": "enable_threaded_rendering",
+   "label": "Video > Threaded rendering",
+   "type": "bool",
+   "values": {
+    "true": "On (faster 3D, may glitch)",
+    "false": "Off"
+   },
+   "default": "true",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Per game: config.threadedRendering (true/false).",
+   "per_game_key": "[fileName={game}]/config/threadedRendering",
+   "per_game_values": {
+    "true": "true",
+    "false": "false"
+   }
+  },
+  "filter": {
+   "file": "prefs",
+   "key": "video_filtering",
+   "label": "Video > Filter",
+   "type": "enum",
+   "values": {
+    "\"none\"": "None",
+    "\"linear\"": "Linear",
+    "\"xbr2\"": "2xBR",
+    "\"hq2x\"": "HQ2X",
+    "\"hq4x\"": "HQ4X",
+    "\"quilez\"": "Quilez",
+    "\"lcd\"": "LCD",
+    "\"scanlines\"": "Scanlines",
+    "\"retroarch\"": "RetroArch (.slangp) - uses video_retroarch_shader_preset"
+   },
+   "default": "\"none\"",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Per game: config.videoFiltering = NONE|LINEAR|XBR2|HQ2X|HQ4X|QUILEZ|LCD|SCANLINES|RETROARCH.",
+   "per_game_key": "[fileName={game}]/config/videoFiltering",
+   "per_game_values": {
+    "\"none\"": "\"NONE\"",
+    "\"linear\"": "\"LINEAR\"",
+    "\"xbr2\"": "\"XBR2\"",
+    "\"hq2x\"": "\"HQ2X\"",
+    "\"hq4x\"": "\"HQ4X\"",
+    "\"quilez\"": "\"QUILEZ\"",
+    "\"lcd\"": "\"LCD\"",
+    "\"scanlines\"": "\"SCANLINES\"",
+    "\"retroarch\"": "\"RETROARCH\""
+   }
+  },
+  "external_display_mode": {
+   "file": "prefs",
+   "key": "external_display_mode",
+   "label": "Video > External display mode",
+   "type": "enum",
+   "values": {
+    "\"melon_dual_ds\"": "WatermelonDS: second screen shows the other DS screen (dual-screen)",
+    "\"mirror\"": "Mirror the main display"
+   },
+   "default": "\"melon_dual_ds\"",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Parsed case-insensitively against enum names MIRROR / MELON_DUAL_DS; an unknown value falls back to melon_dual_ds. On the Thor the 'external' display is the bottom panel."
+  },
+  "dual_screen_preset": {
+   "file": "prefs",
+   "key": "dual_screen_preset",
+   "label": "Video > Dual screen presets > Presets",
+   "type": "enum",
+   "values": {
+    "\"off\"": "Disabled (manual layout: use the input layout's screen placement)",
+    "\"internal_top_external_bottom\"": "Internal: Top, External: Bottom (DS top screen on the main display, bottom screen on the second)",
+    "\"internal_bottom_external_top\"": "Internal: Bottom, External: Top"
+   },
+   "default": "\"off\"",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Absent = off. Case-insensitive enum name. The keep-ratio / integer-scale / fill / alignment keys below only apply when a preset is selected."
+  },
+  "dual_screen_keep_ratio": {
+   "file": "prefs",
+   "key": "external_display_keep_ratio",
+   "label": "Dual screen presets > Keep DS ratio",
+   "type": "bool",
+   "values": {
+    "true": "Keep 4:3 per screen",
+    "false": "Stretch"
+   },
+   "default": "true",
+   "per_game": false,
+   "verified_on_device": false
+  },
+  "dual_screen_integer_scale": {
+   "file": "prefs",
+   "key": "dual_screen_integer_scale",
+   "label": "Dual screen presets > Integer scale",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": false
+  },
+  "dual_screen_internal_fill_height": {
+   "file": "prefs",
+   "key": "dual_screen_internal_fill_height",
+   "label": "Fill area options > Internal H",
+   "type": "bool",
+   "values": {
+    "true": "Stretch to fill height",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Only when Integer scale or Keep DS ratio is on."
+  },
+  "dual_screen_internal_fill_width": {
+   "file": "prefs",
+   "key": "dual_screen_internal_fill_width",
+   "label": "Fill area options > Internal W",
+   "type": "bool",
+   "values": {
+    "true": "Stretch to fill width",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": false
+  },
+  "dual_screen_external_fill_height": {
+   "file": "prefs",
+   "key": "dual_screen_external_fill_height",
+   "label": "Fill area options > External H",
+   "type": "bool",
+   "values": {
+    "true": "Stretch to fill height",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": false
+  },
+  "dual_screen_external_fill_width": {
+   "file": "prefs",
+   "key": "dual_screen_external_fill_width",
+   "label": "Fill area options > External W",
+   "type": "bool",
+   "values": {
+    "true": "Stretch to fill width",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": false
+  },
+  "dual_screen_internal_vertical_alignment": {
+   "file": "prefs",
+   "key": "dual_screen_internal_vertical_alignment",
+   "label": "Vertical alignment > Internal",
+   "type": "enum",
+   "values": {
+    "\"top\"": "Top",
+    "\"center\"": "Center",
+    "\"bottom\"": "Bottom"
+   },
+   "default": "",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "No default: key absent = the preset's own alignment. Delete the key to return to the preset default. Case-insensitive enum name (TOP/CENTER/BOTTOM)."
+  },
+  "dual_screen_external_vertical_alignment": {
+   "file": "prefs",
+   "key": "dual_screen_external_vertical_alignment",
+   "label": "Vertical alignment > External",
+   "type": "enum",
+   "values": {
+    "\"top\"": "Top",
+    "\"center\"": "Center",
+    "\"bottom\"": "Bottom"
+   },
+   "default": "",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Key absent = preset default."
+  },
+  "fps_counter": {
+   "file": "prefs",
+   "key": "fps_counter_position",
+   "label": "Video > FPS counter position",
+   "type": "enum",
+   "values": {
+    "\"hidden\"": "Hidden",
+    "\"top_left\"": "Top left",
+    "\"top_center\"": "Top center",
+    "\"top_right\"": "Top right",
+    "\"bottom_left\"": "Bottom left",
+    "\"bottom_center\"": "Bottom center",
+    "\"bottom_right\"": "Bottom right"
+   },
+   "default": "\"hidden\"",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "\"hidden\" turns the FPS overlay off."
+  },
+  "rendered_ir_overlay": {
+   "file": "prefs",
+   "key": "rendered_ir_position",
+   "label": "Video > Vulkan > Show rendered IR",
+   "type": "enum",
+   "values": {
+    "\"hidden\"": "Hidden",
+    "\"top_left\"": "Top left",
+    "\"top_center\"": "Top center",
+    "\"top_right\"": "Top right",
+    "\"bottom_left\"": "Bottom left",
+    "\"bottom_center\"": "Bottom center",
+    "\"bottom_right\"": "Bottom right"
+   },
+   "default": "\"hidden\"",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Overlay of the internal resolution actually rendered (useful with Dynamic internal resolution)."
+  },
+  "soft_input_behaviour": {
+   "file": "prefs",
+   "key": "soft_input_behaviour",
+   "label": "Input > Soft input behaviour",
+   "type": "enum",
+   "values": {
+    "\"always_visible\"": "Always visible",
+    "\"hide_system_buttons_when_controller_connected\"": "Hide console buttons when a controller is connected",
+    "\"hide_mapped_buttons_when_controller_connected\"": "Hide assigned input when a controller is connected",
+    "\"always_invisible\"": "Always invisible (no on-screen button bar)"
+   },
+   "default": "\"hide_system_buttons_when_controller_connected\"",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "\"always_invisible\" hides the bottom-screen button bar."
+  },
+  "soft_input_opacity": {
+   "file": "prefs",
+   "key": "input_opacity",
+   "label": "Input > Soft input opacity",
+   "type": "int",
+   "values": {
+    "0": "Transparent",
+    "50": "Default",
+    "100": "Opaque"
+   },
+   "default": "50",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "SeekBar 0-100, stored as <int>."
+  },
+  "touch_haptics": {
+   "file": "prefs",
+   "key": "input_touch_haptic_feedback_enabled",
+   "label": "Input > Vibrate on touch",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "true",
+   "per_game": false,
+   "verified_on_device": false
+  },
+  "vulkan_driver_mode": {
+   "file": "prefs",
+   "key": "video_vulkan_driver_mode",
+   "label": "Video > Adreno Vulkan driver",
+   "type": "enum",
+   "values": {
+    "\"system\"": "System driver",
+    "\"custom\"": "Custom (imported Turnip driver, see video_vulkan_selected_driver_id)"
+   },
+   "default": "\"system\"",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Custom drivers are imported through the UI (video_vulkan_driver_import); the selected one is the string pref video_vulkan_selected_driver_id."
+  },
+  "low_latency": {
+   "file": "prefs",
+   "key": "video_low_latency",
+   "label": "Video > Vulkan > Low latency",
+   "type": "bool",
+   "values": {
+    "true": "Prioritise input response",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Applies when starting a game."
+  },
+  "dynamic_resolution": {
+   "file": "prefs",
+   "key": "video_vulkan_drs",
+   "label": "Video > Vulkan > Dynamic internal resolution",
+   "type": "bool",
+   "values": {
+    "true": "Drop below the chosen resolution under load to hold 60 fps",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": true
+  },
+  "conservative_coverage": {
+   "file": "prefs",
+   "key": "video_conservative_coverage_enabled",
+   "label": "Video > Hacks > Conservative coverage fix (experimental)",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Companion keys: video_conservative_coverage_px (int 0-200, default 150), video_conservative_coverage_apply_repeat (default true), video_conservative_coverage_apply_clamp (default false), video_conservative_coverage_depth_bias (int 0-2000, default 0)."
+  },
+  "emulation_speed": {
+   "file": "prefs",
+   "key": "frame_limit_speed_multiplier",
+   "label": "General > Emulation speed",
+   "type": "enum",
+   "values": {
+    "\"1\"": "1.0x (full speed)",
+    "\"0.75\"": "0.75x",
+    "\"0.5\"": "0.5x",
+    "\"0.25\"": "0.25x"
+   },
+   "default": "\"1\"",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "String pref."
+  },
+  "fast_forward_speed": {
+   "file": "prefs",
+   "key": "fast_forward_speed_multiplier",
+   "label": "General > Fast-forward max speed",
+   "type": "enum",
+   "values": {
+    "\"-1\"": "Unlimited",
+    "\"1.5\"": "1.5x",
+    "\"2\"": "2x",
+    "\"3\"": "3x",
+    "\"4\"": "4x",
+    "\"8\"": "8x"
+   },
+   "default": "\"-1\"",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "String pref."
+  },
+  "jit": {
+   "file": "prefs",
+   "key": "enable_jit",
+   "label": "System > Enable JIT",
+   "type": "bool",
+   "values": {
+    "true": "On (fast)",
+    "false": "Interpreter (slow, accurate)"
+   },
+   "default": "true",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Default is true on arm64 (the code default depends on supported ABIs)."
+  },
+  "frameskip_mode": {
+   "file": "prefs",
+   "key": "frameskip_mode",
+   "label": "System > Frameskip",
+   "type": "enum",
+   "values": {
+    "\"off\"": "Off",
+    "\"manual\"": "Manual (frameskip_manual_value)",
+    "\"auto\"": "Auto"
+   },
+   "default": "\"auto\"",
+   "per_game": false,
+   "verified_on_device": false
+  },
+  "frameskip_manual_value": {
+   "file": "prefs",
+   "key": "frameskip_manual_value",
+   "label": "System > Frames to skip",
+   "type": "enum",
+   "values": {
+    "\"0\"": "0 (never skip)",
+    "\"1\"": "1 (draw 1, skip 1)",
+    "\"2\"": "2",
+    "\"3\"": "3",
+    "\"4\"": "4"
+   },
+   "default": "\"1\"",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Used only when frameskip_mode = manual."
+  },
+  "console_type": {
+   "file": "prefs",
+   "key": "console_type",
+   "label": "System > Custom BIOS/firmware > Default system",
+   "type": "enum",
+   "values": {
+    "\"ds\"": "DS",
+    "\"dsi\"": "DSi"
+   },
+   "default": "\"ds\"",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Case-insensitive enum (DS/DSi). Per game: config.runtimeConsoleType = DEFAULT (use global) | DS | DSi.",
+   "per_game_key": "[fileName={game}]/config/runtimeConsoleType",
+   "per_game_values": {
+    "\"ds\"": "\"DS\"",
+    "\"dsi\"": "\"DSI\""
+   }
+  },
+  "mic_source": {
+   "file": "prefs",
+   "key": "mic_source",
+   "label": "Audio > Microphone source",
+   "type": "enum",
+   "values": {
+    "\"none\"": "None",
+    "\"blow\"": "Blow (simulated)",
+    "\"device\"": "Device microphone"
+   },
+   "default": "\"blow\"",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Per game: config.runtimeMicSource = DEFAULT | NONE | BLOW | DEVICE.",
+   "per_game_key": "[fileName={game}]/config/runtimeMicSource",
+   "per_game_values": {
+    "\"none\"": "\"NONE\"",
+    "\"blow\"": "\"BLOW\"",
+    "\"device\"": "\"DEVICE\""
+   }
+  },
+  "sound": {
+   "file": "prefs",
+   "key": "sound_enabled",
+   "label": "Audio > Enable sound",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Muted"
+   },
+   "default": "true",
+   "per_game": false,
+   "verified_on_device": false
+  },
+  "volume": {
+   "file": "prefs",
+   "key": "volume",
+   "label": "Audio > Volume",
+   "type": "int",
+   "values": {
+    "0": "Silent",
+    "256": "Full"
+   },
+   "default": "256",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Clamped 0-256."
+  },
+  "audio_interpolation": {
+   "file": "prefs",
+   "key": "audio_interpolation",
+   "label": "Audio > Interpolation",
+   "type": "enum",
+   "values": {
+    "\"none\"": "None",
+    "\"linear\"": "Linear",
+    "\"cosine\"": "Cosine",
+    "\"cubic\"": "Cubic"
+   },
+   "default": "\"none\"",
+   "per_game": false,
+   "verified_on_device": false
+  },
+  "audio_bitrate": {
+   "file": "prefs",
+   "key": "audio_bitrate",
+   "label": "Audio > Bitrate",
+   "type": "enum",
+   "values": {
+    "\"auto\"": "Auto",
+    "\"bit10\"": "10-bit (DS hardware)",
+    "\"bit16\"": "16-bit"
+   },
+   "default": "\"auto\"",
+   "per_game": false,
+   "verified_on_device": false
+  },
+  "audio_latency": {
+   "file": "prefs",
+   "key": "audio_latency",
+   "label": "Audio > Audio latency",
+   "type": "enum",
+   "values": {
+    "\"low\"": "Low",
+    "\"medium\"": "Medium",
+    "\"high\"": "High"
+   },
+   "default": "\"low\"",
+   "per_game": false,
+   "verified_on_device": false
+  },
+  "sustained_performance": {
+   "file": "prefs",
+   "key": "enable_sustained_performance",
+   "label": "General > Sustained performance mode",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": false
+  },
+  "rewind": {
+   "file": "prefs",
+   "key": "enable_rewind",
+   "label": "General > Rewind",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Companion ints: rewind_period (seconds between snapshots, default 10), rewind_window (length, default 6)."
+  },
+  "cheats": {
+   "file": "prefs",
+   "key": "cheats_enabled",
+   "label": "Cheats > Enable cheats",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": false
+  },
+  "auto_save_state_on_exit": {
+   "file": "prefs",
+   "key": "auto_save_state_on_exit",
+   "label": "Save files > Auto save state on exit",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": false
+  },
+  "auto_load_state_on_launch": {
+   "file": "prefs",
+   "key": "auto_load_state_on_launch",
+   "label": "Save files > Auto load state on launch",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": false
+  },
+  "theme": {
+   "file": "prefs",
+   "key": "theme",
+   "label": "General > Theme",
+   "type": "enum",
+   "values": {
+    "\"light\"": "Light",
+    "\"dark\"": "Dark",
+    "\"system\"": "Follow system (accepted, but not in the 0.8.0.rc3 picker list)"
+   },
+   "default": "\"light\"",
+   "per_game": false,
+   "verified_on_device": true
+  }
+ }
+}

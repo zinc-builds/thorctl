@@ -1,0 +1,624 @@
+{
+ "name": "xendroid",
+ "package": "xendroid.compose",
+ "aliases": [
+  "xbox360",
+  "x360",
+  "xenia",
+  "360"
+ ],
+ "category": "emulator",
+ "version_checked": "0b11201",
+ "stop_before_write": true,
+ "files": {
+  "config": {
+   "path": "/sdcard/Android/data/xendroid.compose/files/compose/xenia-canary.config.toml",
+   "format": "toml",
+   "notes": "Global Xenia config: TOML, [Section] tables, 'key = value'. The core writes it with single-quoted strings (apu = 'aaudio') and no comments; raw values in this adapter are written the way the core stores them: TOML literal strings in single quotes ('vulkan'), bare numbers and true/false. Read by the native core at boot (Emulator.Config.open_config_file); the settings screen loads it, edits it through the native config handle and saves it whole. Created from default_config.toml if missing. Keys missing from the file use the core default (a file written by an older build lacks newer keys, e.g. guest_scheduler, apu_aaudio_buffer_bursts). The native core logs 'SaveConfig skipped: a per-game config overlay is active', i.e. it also saves this file itself; stop the app before editing."
+  },
+  "default_config": {
+   "path": "/sdcard/Android/data/xendroid.compose/files/compose/default_config.toml",
+   "format": "toml",
+   "notes": "Commented template of every core option with defaults. Re-copied from the APK assets on every app start when it differs (Application.onCreate). Never edit; read it for key names, defaults and help text."
+  },
+  "datastore": {
+   "path": "/data/data/xendroid.compose/files/datastore/xendroid_prefs.preferences_pb",
+   "format": "other",
+   "notes": "AndroidX DataStore (protobuf). App state only: game_dir_path = the chosen ROM folder. Not emulation settings."
+  }
+ },
+ "per_game": {
+  "path": "/sdcard/Android/data/xendroid.compose/files/compose/config/{game}.config.toml",
+  "format": "toml",
+  "game_id": "Xbox 360 title ID, 8 uppercase hex digits (e.g. 415607D2), shown on the game's Per-game settings screen (route per_game_settings/{titleId}) and logged as 'Saved game config for title {:08X}'. Also the folder names in assets/game-patches.",
+  "create": true,
+  "notes": "Sparse TOML with the same [Section] key = value layout as the global file, holding only overridden keys. The app writes it from its per-game screen (D3.c.f: the file is deleted when no overrides remain) and the native core loads it at boot of that title ('Loading game config', 'Applied N game config override(s)'), layered over the global file; while it is active the core does not save the global file. Only keys in the app's settings list are offered per game (vulkan_lib_path and HID/vibration are not). Creating the config/ folder and the file by hand matches what the app does."
+ },
+ "keys": {
+  "gpu_backend": {
+   "file": "config",
+   "key": "GPU/gpu",
+   "label": "GPU > GPU backend",
+   "type": "enum",
+   "values": {
+    "'vulkan'": "Vulkan",
+    "'null'": "Null (no rendering)"
+   },
+   "default": "'vulkan'",
+   "per_game": true,
+   "verified_on_device": true
+  },
+  "resolution_scale_x": {
+   "file": "config",
+   "key": "GPU/draw_resolution_scale_x",
+   "label": "GPU > Resolution scale, width",
+   "type": "enum",
+   "values": {
+    "1": "1x (720p-class native)",
+    "2": "2x",
+    "3": "3x"
+   },
+   "default": "1",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Set draw_resolution_scale_y to the same value. Integer render scale, heavy on mobile GPUs."
+  },
+  "resolution_scale_y": {
+   "file": "config",
+   "key": "GPU/draw_resolution_scale_y",
+   "label": "GPU > Resolution scale, height",
+   "type": "enum",
+   "values": {
+    "1": "1x",
+    "2": "2x",
+    "3": "3x"
+   },
+   "default": "1",
+   "per_game": true,
+   "verified_on_device": true
+  },
+  "frame_rate_limit": {
+   "file": "config",
+   "key": "GPU/framerate_limit",
+   "label": "GPU > Frame rate limit",
+   "type": "enum",
+   "values": {
+    "0": "Unlimited",
+    "30": "30 FPS",
+    "45": "45 FPS",
+    "60": "60 FPS",
+    "90": "90 FPS",
+    "120": "120 FPS"
+   },
+   "default": "0",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Core default 0 (default_config.toml). The settings screen shows 60 as its default when the key is missing."
+  },
+  "vsync_cap": {
+   "file": "config",
+   "key": "GPU/guest_display_refresh_cap",
+   "label": "GPU > Cap guest display refresh (VSync)",
+   "type": "bool",
+   "values": {
+    "true": "Fixed 60 Hz NTSC / 50 Hz PAL vblanks",
+    "false": "Uncapped"
+   },
+   "default": "true",
+   "per_game": true,
+   "verified_on_device": true
+  },
+  "render_target_path": {
+   "file": "config",
+   "key": "GPU/render_target_path",
+   "label": "GPU > Render target path",
+   "type": "enum",
+   "values": {
+    "'performance'": "Performance",
+    "'accuracy'": "Accuracy (slower)"
+   },
+   "default": "'performance'",
+   "per_game": true,
+   "verified_on_device": true
+  },
+  "readback_resolve": {
+   "file": "config",
+   "key": "GPU/readback_resolve",
+   "label": "GPU > Readback resolve",
+   "type": "enum",
+   "values": {
+    "'uma'": "UMA (direct map, no copy)",
+    "'fast'": "Fast (copy CPU-read resolves)",
+    "'all'": "All (copy every resolve)",
+    "'none'": "None"
+   },
+   "default": "'uma'",
+   "per_game": true,
+   "verified_on_device": true
+  },
+  "occlusion_query": {
+   "file": "config",
+   "key": "GPU/occlusion_query",
+   "label": "GPU > Occlusion query mode",
+   "type": "enum",
+   "values": {
+    "'fake'": "Fake (no GPU query, fastest)",
+    "'fast'": "Fast (async, no stall)",
+    "'fast-alt'": "Fast-alt (async, precise zeros)",
+    "'strict'": "Strict (real query, stalls)"
+   },
+   "default": "'fast'",
+   "per_game": true,
+   "verified_on_device": true
+  },
+  "clear_memory_page_state": {
+   "file": "config",
+   "key": "GPU/clear_memory_page_state",
+   "label": "GPU > Clear memory page state",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Fix for missing models in Team Ninja games."
+  },
+  "store_shaders": {
+   "file": "config",
+   "key": "GPU/store_shaders",
+   "label": "GPU > Store shaders",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "true",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Persistent shader cache."
+  },
+  "native_2x_msaa": {
+   "file": "config",
+   "key": "GPU/native_2x_msaa",
+   "label": "GPU > Native 2x MSAA",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "true",
+   "per_game": true,
+   "verified_on_device": true
+  },
+  "mid_frame_submission": {
+   "file": "config",
+   "key": "GPU/vulkan_mid_frame_submission_draws",
+   "label": "GPU > Mid-frame submission (draws, 0=off)",
+   "type": "int",
+   "values": {
+    "0": "Off",
+    "1300": "Default"
+   },
+   "default": "1300",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Range 0-4096."
+  },
+  "texture_cache_soft_mb": {
+   "file": "config",
+   "key": "GPU/texture_cache_memory_limit_soft",
+   "label": "GPU > Texture cache soft limit (MB)",
+   "type": "int",
+   "values": {
+    "384": "Default"
+   },
+   "default": "384",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Range 384-4096."
+  },
+  "texture_cache_hard_mb": {
+   "file": "config",
+   "key": "GPU/texture_cache_memory_limit_hard",
+   "label": "GPU > Texture cache hard limit (MB)",
+   "type": "int",
+   "values": {
+    "768": "Default"
+   },
+   "default": "768",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Range 512-4096."
+  },
+  "async_skip_draws": {
+   "file": "config",
+   "key": "Vulkan/vulkan_async_skip_draws",
+   "label": "Vulkan > Async skip draws",
+   "type": "bool",
+   "values": {
+    "true": "Drop draws whose pipeline is still compiling (no stutter, pop-in)",
+    "false": "Wait for pipelines (stutter)"
+   },
+   "default": "true",
+   "per_game": true,
+   "verified_on_device": true
+  },
+  "pipeline_threads": {
+   "file": "config",
+   "key": "Vulkan/vulkan_pipeline_creation_threads",
+   "label": "Vulkan > Pipeline creation threads",
+   "type": "int",
+   "values": {
+    "0": "Synchronous",
+    "-1": "Auto (75% of cores)",
+    "4": "Default"
+   },
+   "default": "4",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "UI range 0-5."
+  },
+  "turnip_debug": {
+   "file": "config",
+   "key": "Vulkan/turnip_debug",
+   "label": "Vulkan > Turnip debug mode",
+   "type": "enum",
+   "values": {
+    "''": "None (GMEM tiling, fastest, can hang)",
+    "'sysmem'": "sysmem (untiled, avoids device-loss hangs)",
+    "'sysmem,nolrz'": "sysmem + nolrz",
+    "'sysmem,noubwc'": "sysmem + noubwc"
+   },
+   "default": "'sysmem'",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "TU_DEBUG flags; only matter with a Turnip driver (vulkan_lib_path)."
+  },
+  "gpu_driver_path": {
+   "file": "config",
+   "key": "Vulkan/vulkan_lib_path",
+   "label": "Vulkan > Custom Driver Library Path",
+   "type": "string",
+   "values": {
+    "''": "System driver"
+   },
+   "default": "''",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Absolute path to a custom Vulkan .so (adrenotools). Not in the per-game settings list."
+  },
+  "force_max_gpu_clocks": {
+   "file": "config",
+   "key": "Vulkan/adrenotools_force_max_clocks",
+   "label": "Vulkan > Force max GPU clocks (adrenotools)",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": true,
+   "verified_on_device": true
+  },
+  "debug_overlay": {
+   "file": "config",
+   "key": "Display/show_debug_overlay",
+   "label": "Display > Show debug overlay",
+   "type": "bool",
+   "values": {
+    "true": "Show FPS / frame time / in-flight compiles",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "The FPS overlay."
+  },
+  "scaling_sharpening": {
+   "file": "config",
+   "key": "Display/postprocess_scaling_and_sharpening",
+   "label": "Display > Scaling & sharpening",
+   "type": "enum",
+   "values": {
+    "''": "Default (bilinear)",
+    "'bilinear'": "Bilinear",
+    "'cas'": "AMD FidelityFX CAS",
+    "'fsr'": "AMD FidelityFX FSR 1.0"
+   },
+   "default": "''",
+   "per_game": true,
+   "verified_on_device": true
+  },
+  "antialiasing": {
+   "file": "config",
+   "key": "Display/postprocess_antialiasing",
+   "label": "Display > Antialiasing",
+   "type": "enum",
+   "values": {
+    "''": "None",
+    "'none'": "None",
+    "'fxaa'": "FXAA",
+    "'fxaa_extreme'": "FXAA extreme"
+   },
+   "default": "''",
+   "per_game": true,
+   "verified_on_device": true
+  },
+  "letterbox": {
+   "file": "config",
+   "key": "Display/present_letterbox",
+   "label": "Display > Present letterbox",
+   "type": "bool",
+   "values": {
+    "true": "Keep aspect ratio (bars)",
+    "false": "Stretch"
+   },
+   "default": "true",
+   "per_game": true,
+   "verified_on_device": true
+  },
+  "widescreen": {
+   "file": "config",
+   "key": "Console/widescreen",
+   "label": "Video > Widescreen",
+   "type": "bool",
+   "values": {
+    "true": "16:9",
+    "false": "4:3"
+   },
+   "default": "true",
+   "per_game": true,
+   "verified_on_device": true
+  },
+  "display_mode_reported": {
+   "file": "config",
+   "key": "Console/internal_display_resolution",
+   "label": "Video > Display mode reported to game",
+   "type": "enum",
+   "values": {
+    "0": "640x480",
+    "1": "640x576",
+    "2": "720x480",
+    "3": "720x576",
+    "4": "800x600",
+    "5": "848x480",
+    "6": "1024x768",
+    "7": "1152x864",
+    "8": "1280x720",
+    "9": "1280x768",
+    "10": "1280x960",
+    "11": "1280x1024",
+    "12": "1360x768",
+    "13": "1440x900",
+    "14": "1680x1050",
+    "15": "1920x540",
+    "16": "1920x1080"
+   },
+   "default": "8",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Output resolution the dashboard reports; games still render at their own internal size (use resolution_scale for that)."
+  },
+  "video_standard": {
+   "file": "config",
+   "key": "Console/video_standard",
+   "label": "Video > Video standard",
+   "type": "enum",
+   "values": {
+    "1": "NTSC",
+    "2": "NTSC-J",
+    "3": "PAL-60"
+   },
+   "default": "1",
+   "per_game": true,
+   "verified_on_device": true
+  },
+  "user_language": {
+   "file": "config",
+   "key": "Console/user_language",
+   "label": "XConfig > User language",
+   "type": "enum",
+   "values": {
+    "1": "English",
+    "2": "Japanese",
+    "3": "German",
+    "4": "French",
+    "5": "Spanish",
+    "6": "Italian",
+    "7": "Korean",
+    "8": "Chinese",
+    "9": "Portuguese",
+    "11": "Polish",
+    "12": "Russian",
+    "13": "Swedish",
+    "14": "Turkish",
+    "15": "Norwegian",
+    "16": "Dutch",
+    "17": "Chinese (Simplified)"
+   },
+   "default": "1",
+   "per_game": true,
+   "verified_on_device": true
+  },
+  "apu_backend": {
+   "file": "config",
+   "key": "APU/apu",
+   "label": "APU > APU backend",
+   "type": "enum",
+   "values": {
+    "'aaudio'": "AAudio",
+    "'opensles'": "OpenSL ES",
+    "'nop'": "No audio",
+    "'any'": "Any"
+   },
+   "default": "'aaudio'",
+   "per_game": true,
+   "verified_on_device": true
+  },
+  "audio_buffer_bursts": {
+   "file": "config",
+   "key": "APU/apu_aaudio_buffer_bursts",
+   "label": "APU > Audio buffer depth",
+   "type": "int",
+   "values": {
+    "4": "Default"
+   },
+   "default": "4",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Range 2-8. Newer key: absent from config files written by older builds (= default)."
+  },
+  "max_queued_frames": {
+   "file": "config",
+   "key": "APU/apu_max_queued_frames",
+   "label": "APU > Max queued frames",
+   "type": "int",
+   "values": {
+    "8": "Default"
+   },
+   "default": "8",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Range 4-64."
+  },
+  "mute": {
+   "file": "config",
+   "key": "APU/mute",
+   "label": "APU > Mute",
+   "type": "bool",
+   "values": {
+    "true": "Muted",
+    "false": "Sound on"
+   },
+   "default": "false",
+   "per_game": true,
+   "verified_on_device": true
+  },
+  "xma_decoder": {
+   "file": "config",
+   "key": "APU/xma_decoder",
+   "label": "APU > XMA decoder",
+   "type": "enum",
+   "values": {
+    "'new'": "new",
+    "'old'": "old",
+    "'master'": "master",
+    "'fake'": "fake (silence)"
+   },
+   "default": "'new'",
+   "per_game": true,
+   "verified_on_device": true
+  },
+  "vibration": {
+   "file": "config",
+   "key": "HID/vibration",
+   "label": "HID > Vibration",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "true",
+   "per_game": false,
+   "verified_on_device": true
+  },
+  "touch_overlay": {
+   "file": "config",
+   "key": "HID/show_touch_overlay",
+   "label": "Controller > Show on-screen controller",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "true",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Not in the core TOML defaults; written by the app when changed."
+  },
+  "guest_scheduler": {
+   "file": "config",
+   "key": "Kernel/guest_scheduler",
+   "label": "Kernel > Guest scheduler (cooperative fibers)",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "true",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Newer key: absent from config files written by older builds. Needs a restart."
+  },
+  "apply_patches": {
+   "file": "config",
+   "key": "General/apply_patches",
+   "label": "General > Apply patches",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "true",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Bundled game patches (assets/game-patches/<TITLEID>)."
+  },
+  "time_scalar": {
+   "file": "config",
+   "key": "General/time_scalar",
+   "label": "General > Time scalar",
+   "type": "int",
+   "values": {
+    "1": "1x"
+   },
+   "default": "1",
+   "per_game": true,
+   "verified_on_device": true
+  },
+  "apply_title_update": {
+   "file": "config",
+   "key": "Kernel/apply_title_update",
+   "label": "Kernel > Apply title update",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "true",
+   "per_game": true,
+   "verified_on_device": true
+  },
+  "network": {
+   "file": "config",
+   "key": "Kernel/network_enabled",
+   "label": "Kernel > Networking",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "true",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "Newer key: absent from config files written by older builds."
+  },
+  "log_level": {
+   "file": "config",
+   "key": "Logging/log_level",
+   "label": "Logging > Log level",
+   "type": "enum",
+   "values": {
+    "0": "error",
+    "1": "warning",
+    "2": "info",
+    "3": "debug"
+   },
+   "default": "2",
+   "per_game": true,
+   "verified_on_device": true
+  }
+ }
+}

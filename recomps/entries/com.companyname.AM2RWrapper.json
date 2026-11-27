@@ -1,0 +1,39 @@
+{
+ "package": "com.companyname.AM2RWrapper",
+ "name": "AM2R",
+ "original": {
+  "title": "Metroid II: Return of Samus (AM2R fan remake)",
+  "platform": "Game Boy",
+  "year": 1991
+ },
+ "kind": "fan remake",
+ "project": {
+  "name": "AM2R Community Updates",
+  "repo": "https://github.com/AM2R-Community-Developers/AM2R-Community-Updates",
+  "android_repo": "https://github.com/AM2R-Community-Developers/AM2RLauncher",
+  "license": null
+ },
+ "version_checked": "1.5.3",
+ "update": {
+  "channel": "manual APK",
+  "url": "https://github.com/AM2R-Community-Developers/AM2RLauncher"
+ },
+ "assets": {
+  "needs": "Original AM2R 1.1 (AM2R_11.zip), patched into an Android APK on a PC with AM2RLauncher or with AM2R-Autopatcher-Android. The resulting APK contains the whole game (assets/game.droid), so nothing is read from storage at run time.",
+  "location": "Inside the installed APK (assets/game.droid, music .ogg, lang/*.ini).",
+  "notes": "The game data string in game.droid reads 'V1.5.5' (Community Updates 1.5.5); the APK versionName 1.5.3 comes from the wrapper template. The patched APK installs with the system package installer."
+ },
+ "settings": {
+  "adapter": "am2r",
+  "files": [
+   "/data/data/com.companyname.AM2RWrapper/files/config.ini"
+  ],
+  "in_app_menu": "Title screen or pause > Options: Display, Sound, Controls, Joypad, Extras, Gameplay.",
+  "summary": "config.ini is a GameMaker ini (values written as quoted reals, e.g. Widescreen=\"1.000000\"). Display: Widescreen, Scale, VSync, HUD/map/hints, Metroid counter. Controls: aiming style, missile toggle/hold, classic morph ball, spiderball style, auto-climb, auto-morph, analog walking, touch control scale, joystick/XInput button ids. Extras: Fusion suit style, early baby Metroid, extreme lab Metroids, IGT display, low health alarm, controller button prompts. Gameplay: Insanity mode."
+ },
+ "controls": "GameMaker joystick and XInput-style pad mappings in [Control] (EnableXBJoypad, EnableJoystick). Android touch controls scale TouchScale (1-8, shown in the menu as 9-value). Controller button tips: Controller=0 is XBox. Not tested on the Thor.",
+ "display": "Single screen. Widescreen=1 gives a 16:9 view (needs a room transition to apply). Old GameMaker runner (target SDK 23, armeabi-v7a only), so it runs as a 32-bit app.",
+ "saves": "/data/data/com.companyname.AM2RWrapper/files/save1 (also save2, save3 when used). Root needed; files are mode 600 owned by the app uid.",
+ "notes": "Package com.companyname.AM2RWrapper is the AM2RLauncher/Autopatcher Android wrapper template. AM2R-Community-Updates publishes source only (no GitHub releases); updates come by re-patching with AM2RLauncher's 'Community Updates (Latest)' profile and reinstalling.",
+ "verified": "Device: version, install time and installer, config.ini and save file. APK: contents, options.ini, game.droid strings (V1.5.5, config.ini, save names). Source: scripts/load_gameoptions.gml and objects/oOptions*.object.gmx from AM2R-Community-Updates (HEAD, not tag-matched to 1.5.5), labels from the APK's lang/english.ini."
+}

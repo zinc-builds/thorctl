@@ -1,0 +1,346 @@
+{
+ "name": "pokedaisy",
+ "package": "com.pokedaisy.app",
+ "aliases": [
+  "daisy"
+ ],
+ "category": "recomp",
+ "version_checked": "1.6.1",
+ "stop_before_write": true,
+ "files": {
+  "prefs": {
+   "path": "/data/data/com.pokedaisy.app/shared_prefs/pokedaisy.xml",
+   "format": "prefs",
+   "notes": "Android SharedPreferences 'pokedaisy' (Prefs.java). Kept in memory and rewritten by the app on any change. Can hold secrets (ra_token, ra_web_api_key, ss_password, steamgriddb_api_key): never print them."
+  }
+ },
+ "per_game": null,
+ "keys": {
+  "game_aspect": {
+   "file": "prefs",
+   "key": "game_aspect",
+   "label": "Picture aspect",
+   "type": "enum",
+   "values": {
+    "\"ORIGINAL\"": "Original",
+    "\"STRETCH\"": "Stretch",
+    "\"WIDE\"": "Expand"
+   },
+   "default": "\"ORIGINAL\"",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "String enum name. Missing = Original (or Stretch if legacy stretch_game=true)."
+  },
+  "smoothing": {
+   "file": "prefs",
+   "key": "smoothing",
+   "label": "Smoothing",
+   "type": "enum",
+   "values": {
+    "\"OFF\"": "Off",
+    "\"XBRZ\"": "xBRZ",
+    "\"XBR\"": "xBR",
+    "\"SCALEFX\"": "ScaleFX"
+   },
+   "default": "\"OFF\"",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": ""
+  },
+  "screen_filter": {
+   "file": "prefs",
+   "key": "screen_filter",
+   "label": "Screen filter",
+   "type": "enum",
+   "values": {
+    "\"NONE\"": "None",
+    "\"LCD\"": "LCD",
+    "\"LCD_PAPER\"": "LCD paper",
+    "\"SCANLINES\"": "Scanlines",
+    "\"CRT\"": "CRT"
+   },
+   "default": "\"NONE\"",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": ""
+  },
+  "grid_strength": {
+   "file": "prefs",
+   "key": "grid_strength",
+   "label": "LCD grid strength",
+   "type": "enum",
+   "values": {
+    "\"SOFT\"": "Soft",
+    "\"MEDIUM\"": "Medium",
+    "\"STRONG\"": "Strong"
+   },
+   "default": "\"MEDIUM\"",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": ""
+  },
+  "ds_layout": {
+   "file": "prefs",
+   "key": "ds_layout",
+   "label": "DS layout",
+   "type": "enum",
+   "values": {
+    "0": "One screen (touch screen floats in)",
+    "1": "Side by side",
+    "2": "Large + small",
+    "3": "Picture in picture",
+    "4": "Stacked"
+   },
+   "default": "0",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Single-screen layouts; on the Thor the second screen is normally used instead."
+  },
+  "ds_resolution": {
+   "file": "prefs",
+   "key": "ds_resolution",
+   "label": "DS resolution",
+   "type": "int",
+   "default": "1",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "1-8 (clamped): internal scale for DS games."
+  },
+  "ds_core": {
+   "file": "prefs",
+   "key": "ds_core",
+   "label": "DS core",
+   "type": "enum",
+   "values": {
+    "0": "Auto",
+    "1": "melonDS",
+    "2": "DSperate"
+   },
+   "default": "0",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": ""
+  },
+  "ds_cpu_boost": {
+   "file": "prefs",
+   "key": "ds_cpu_boost",
+   "label": "DS CPU boost",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "true",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": ""
+  },
+  "single_screen": {
+   "file": "prefs",
+   "key": "single_screen",
+   "label": "Single-screen mode",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": ""
+  },
+  "swap_screens": {
+   "file": "prefs",
+   "key": "swap_screens",
+   "label": "Swap screens",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": ""
+  },
+  "dual_screen_launcher": {
+   "file": "prefs",
+   "key": "dual_screen_launcher",
+   "label": "Dual-screen launcher",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "true",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": ""
+  },
+  "ff_mode": {
+   "file": "prefs",
+   "key": "ff_mode",
+   "label": "Fast-forward mode",
+   "type": "enum",
+   "values": {
+    "\"SMART\"": "Smart",
+    "\"NORMAL\"": "Normal"
+   },
+   "default": "\"SMART\"",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": ""
+  },
+  "ff_max_speed": {
+   "file": "prefs",
+   "key": "ff_max_speed",
+   "label": "Fast-forward max speed",
+   "type": "float",
+   "default": "2.0",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": ""
+  },
+  "rewind": {
+   "file": "prefs",
+   "key": "rewind",
+   "label": "Rewind",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": ""
+  },
+  "show_performance": {
+   "file": "prefs",
+   "key": "show_performance",
+   "label": "Show performance",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": ""
+  },
+  "game_volume": {
+   "file": "prefs",
+   "key": "game_volume",
+   "label": "Game volume",
+   "type": "int",
+   "default": "100",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "0-100."
+  },
+  "instant_text": {
+   "file": "prefs",
+   "key": "instant_text",
+   "label": "Instant text",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": ""
+  },
+  "wild_encounters": {
+   "file": "prefs",
+   "key": "wild_encounters",
+   "label": "Wild encounters",
+   "type": "enum",
+   "values": {
+    "100": "On",
+    "0": "Off"
+   },
+   "default": "100",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Read back as 0 or 100 only."
+  },
+  "level_cap": {
+   "file": "prefs",
+   "key": "level_cap",
+   "label": "Level cap",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": ""
+  },
+  "hm_free": {
+   "file": "prefs",
+   "key": "hm_free",
+   "label": "HM-free field moves",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": ""
+  },
+  "reusable_tms": {
+   "file": "prefs",
+   "key": "reusable_tms",
+   "label": "Reusable TMs",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": ""
+  },
+  "shiny_odds": {
+   "file": "prefs",
+   "key": "shiny_odds",
+   "label": "Shiny odds (1 in N)",
+   "type": "int",
+   "default": "8192",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": ""
+  },
+  "cheats_enabled": {
+   "file": "prefs",
+   "key": "cheats_enabled",
+   "label": "Cheats",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": ""
+  },
+  "roms_folders": {
+   "file": "prefs",
+   "key": "roms_folders",
+   "label": "ROM folders",
+   "type": "string",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Newline-separated absolute paths. e.g. /storage/<sdcard>/Roms/GBA."
+  }
+ }
+}

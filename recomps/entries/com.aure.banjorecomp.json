@@ -1,0 +1,42 @@
+{
+ "package": "com.aure.banjorecomp",
+ "name": "Banjo: Recompiled",
+ "original": {
+  "title": "Banjo-Kazooie",
+  "platform": "N64",
+  "year": 1998
+ },
+ "kind": "static recompilation",
+ "project": {
+  "name": "Banjo: Recompiled (N64Recomp + RT64)",
+  "repo": "https://github.com/BanjoRecomp/BanjoRecomp",
+  "android_repo": "https://github.com/AurelioB/BanjoRecomp-Android",
+  "license": "GPL-3.0"
+ },
+ "version_checked": "0.1.2",
+ "update": {
+  "channel": "GitHub releases",
+  "url": "https://github.com/AurelioB/BanjoRecomp-Android/releases"
+ },
+ "assets": {
+  "needs": "Banjo-Kazooie USA ROM (rev 0 / v1.0; the app's dev path is baserom.us.v10.z64). Picked once with the in-app Android document picker; the runtime verifies it and stores its own copy.",
+  "location": "Picked via SAF, then stored inside /data/data/com.aure.banjorecomp/files/data/ (APP_FOLDER_PATH) under the game's stored file name.",
+  "notes": "The picker's MIME list does not accept .zip files. Whether it accepts byte-swapped .n64 dumps was not checked."
+ },
+ "settings": {
+  "adapter": "banjorecomp",
+  "files": [
+   "/data/data/com.aure.banjorecomp/files/data/general.json",
+   "/data/data/com.aure.banjorecomp/files/data/graphics.json",
+   "/data/data/com.aure.banjorecomp/files/data/sound.json",
+   "/data/data/com.aure.banjorecomp/files/data/controls.json"
+  ],
+  "in_app_menu": "Main menu > Settings (RecompFrontend tabs: General, Controls, Graphics, Sound, Save Management, Mods). Also opens in-game from the pause/escape menu.",
+  "summary": "Graphics: Resolution (Original/Original2x/Auto), Downsampling, Aspect Ratio (Original/Expand), Framerate (Original/Display/Manual 20-240), MSAA (None/2x/4x), HUD Placement, Cutscene Aspect Ratio, custom Turnip/Vulkan driver import. General: Note Saving, Analog Camera, invert modes, rumble, deadzone. Sound: master and BGM volume."
+ },
+ "controls": "SDL2 gamecontroller with recompcontrollerdb; full remapping in Settings > Controls (controls.json). Tested by the porter on the AYN Thor. No touch overlay.",
+ "display": "Game on the top screen. On a second display (Thor bottom screen) a Java Presentation companion shows live stats (health, lives, notes, eggs, feathers, Jiggies, Mumbo tokens, Jinjos) and area backgrounds; double-tap it to toggle off.",
+ "saves": "Runtime save /data/data/com.aure.banjorecomp/files/data/saves/bk.n64.us.1.0.bin (EEPROM, path not checked on device). Settings > Save Management imports/exports banjo-kazooie.bin and can bind a SAF folder (pref save-folder/tree-uri) whose copy becomes authoritative and is written back on pause.",
+ "notes": "Custom Vulkan driver loader (adrenotools): Graphics > Graphics Driver imports a Turnip zip into files/gpu-drivers; intent extra banjo_force_system_driver forces the system driver. Mods (.nrm, texture packs such as BK Reloaded) install from Settings > Mods into files/data/mods. Same developer (AurelioB) as ClusterTune.",
+ "verified": "On device: dumpsys, data dir. APK: BanjoSDLActivity (paths, MIME types, save names, GPU driver code), libmain.so strings. Source: AurelioB/BanjoRecomp-Android (latest release android-v0.1.2 = version checked), its README and RecompFrontend/N64ModernRuntime config code. Save sub-path inside files/data not confirmed on device."
+}

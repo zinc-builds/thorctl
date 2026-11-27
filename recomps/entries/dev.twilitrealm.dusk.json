@@ -1,0 +1,42 @@
+{
+ "package": "dev.twilitrealm.dusk",
+ "name": "Dusklight",
+ "original": {
+  "title": "The Legend of Zelda: Twilight Princess",
+  "platform": "GameCube",
+  "year": 2006
+ },
+ "kind": "decompilation",
+ "project": {
+  "name": "Dusklight (TwilitRealm, Aurora/Dawn renderer)",
+  "repo": "https://github.com/TwilitRealm/dusklight",
+  "android_repo": "https://github.com/TwilitRealm/dusklight",
+  "license": "CC0-1.0"
+ },
+ "version_checked": "2.0.3",
+ "update": {
+  "channel": "GitHub releases",
+  "url": "https://github.com/TwilitRealm/dusklight/releases"
+ },
+ "assets": {
+  "needs": "Twilight Princess GameCube USA disc image (GZ2E01), ISO/CISO/RVZ-style image, picked in the pre-launch UI.",
+  "location": "Read in place through a SAF document URI (content://...) stored in config.json backend.isoPath.",
+  "notes": "backend.isoVerification = 1 (Success) means the picked image passed the hash check."
+ },
+ "settings": {
+  "adapter": "dusklight",
+  "files": [
+   "/data/data/dev.twilitrealm.dusk/files/config.json",
+   "/data/data/dev.twilitrealm.dusk/files/controller_ports.dat",
+   "/data/data/dev.twilitrealm.dusk/files/keyboard_bindings.dat",
+   "/data/data/dev.twilitrealm.dusk/files/Odin Controller_2020_0111.controller"
+  ],
+  "in_app_menu": "Pre-launch screen > Settings, or in game via the Dusklight menu (bindable action openDusklightMenu). A Graphics Tuner carousel covers resolution, shadows, bloom, depth of field and texture packs.",
+  "summary": "Internal resolution (Auto or 1-12x), shadow resolution 1-8x, frame interpolation (Off/Capped/Unlimited) with framerate cap 30-540, bloom and depth of field (Off/Classic/Dusklight), letterboxing, menu scaling, many QoL toggles (fast climbing, instant saves, bigger wallets...), gyro aim, touch controls. Presets include 'Dusklight'."
+ },
+ "controls": "SDL gamepad; the Thor pad is saved as 'Odin Controller_2020_0111.controller' mapping. Per-port action bindings (call Midna, first-person, map, turbo) in config.json actionBindings.*_port0..3. Gyro aim option. Optional on-screen touch controls (game.enableTouchControls).",
+ "display": "Official build is single-screen (no secondary-display code in the APK). A dual-screen fork exists (github.com/igawa6/dusklight; also Darkaxt/Dusklight-Android-Dual-Screen-Bleeding-Edge).",
+ "saves": "Memory card GCI folder: /data/data/dev.twilitrealm.dusk/files/USA/Card A/01-GZ2E-gczelda2.gci (backend.cardFileType 1 = GCI Folder). Root-only path; back up with su.",
+ "notes": "v2.0.3 released 2026-09-30. Ships bundled mods (cosmetics, luau_runtime, randomizer .dusk files) and a Dawn pipeline cache. Launch args can be passed with am start --es borealis_args \"--backend vulkan\". Logs in files/logs; a run that stops with 'Surface present failed' there is a renderer failure (seen with v2.0.2).",
+ "verified": "On device: dumpsys, config.json (read in full), files listing, save folder, log. Source: TwilitRealm/dusklight at tag v2.0.2 (settings.h/.cpp, ui/settings.cpp, ui/graphics_tuner.cpp, ui/preset.cpp, config.cpp, platforms/android/README.md). LICENSE.md is CC0 1.0."
+}

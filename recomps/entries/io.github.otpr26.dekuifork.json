@@ -1,0 +1,40 @@
+{
+ "package": "io.github.otpr26.dekuifork",
+ "name": "Majora ReMasked",
+ "original": {
+  "title": "The Legend of Zelda: Majora's Mask 3D",
+  "platform": "3DS",
+  "year": 2015
+ },
+ "kind": "wrapper",
+ "project": {
+  "name": "Majora ReMasked (a DekUI fork)",
+  "repo": "https://github.com/OTPR26/ReMasked",
+  "android_repo": "https://github.com/OTPR26/ReMasked",
+  "license": "GPL-2.0"
+ },
+ "version_checked": "0.4.6",
+ "update": {
+  "channel": "GitHub releases",
+  "url": "https://github.com/OTPR26/ReMasked/releases"
+ },
+ "assets": {
+  "needs": "Your own decrypted Majora's Mask 3D USA Rev 1 (v1.1) ROM as .3ds/.cci, chosen in the app's setup. Optional for model mods: a decrypted Ocarina of Time 3D ROM (Adult/Dark Link) and a Twilight Princess GameCube ISO/RVZ (TP Link).",
+  "location": "Picked with the system file picker and copied to <root>/game/game.cci, where <root> is /sdcard/mm3dport once the app has All files access (shared-v1 in shared_prefs/dekui-storage.xml) or /data/data/io.github.otpr26.dekuifork/files/dekui before that.",
+  "notes": "With All files access granted and the ROM imported, it boots into the game."
+ },
+ "settings": {
+  "adapter": "majoraremasked",
+  "files": [
+   "/sdcard/mm3dport/config/config.ini",
+   "/sdcard/mm3dport/config/mm3d-local/presentation.json"
+  ],
+  "in_app_menu": "Launcher > Settings (pages General, Controls, Touch, Graphics, Audio, HUD, Difficulty, Restoration, Quality of life, Mods, Cheats, About); the same settings are in the in-game menu.",
+  "summary": "Graphics page: frame rate (Original 30 FPS / 60 FPS CPU interpolation, the default / 60 FPS GPU interpolation), Field of View 45-70 (65), camera distance, enemy and prop draw distance, internal resolution 1-9x, Fix bloom, VSync, shader cache, async shaders, custom textures. Gameplay: Difficulty (damage taken, potion healing, prices), Restoration (Project Restoration options), Quality of life (walk/climb/swim speed, no low-heart beep, no Tatl reminders), player-model mods."
+ },
+ "controls": "Azahar input layer: controllers map on the Controls page; an on-screen touch HUD (ReMaskedTouchHud) with its own Touch page. Bindings are stored in the data folder. Not tested on the Thor.",
+ "display": "Single-screen Majora's Mask 3D (DekUI moves the bottom-screen HUD onto the main picture, Wii U style). Built on Azahar, which can drive a second display (SecondaryDisplayPresentation; Layout/secondary_display_layout default 4 'Opposite Screen'); what it shows on the Thor's bottom screen was not checked.",
+ "saves": "Under the data root (/sdcard/mm3dport once shared storage is on): Azahar's sdmc/nand tree plus mods and HUD settings.",
+ "notes": "The app asks for MANAGE_EXTERNAL_STORAGE to use /sdcard/mm3dport. 0.4.6 released 2026-11-22. Release APKs share one signer (73e73470...), so updates install over. Uses Azahar (3DS emulator), Python via Chaquopy (mod generation) and Project Restoration. The repo was renamed from OTPR26/DekUI-Fork (the old URL redirects); it is a fork of tgacquin/mm3d-dekui.",
+ "verified": "Device: dumpsys (version, install time, permissions), data dirs, the ROM's header bytes. APK: jadx of DekuiSettingsActivity, DekuiStorage, DekuiPresentationStore, SettingsFile, Int/BooleanSetting; arrays.xml. Web: GitHub API for the repo (name, license, parent, releases) and the Recompa index (package -> OTPR26/ReMasked, same signer). Not checked: controls, second-screen behaviour, save paths after first run."
+}

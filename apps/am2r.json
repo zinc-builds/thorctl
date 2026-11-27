@@ -1,0 +1,456 @@
+{
+  "name": "am2r",
+  "package": "com.companyname.AM2RWrapper",
+  "aliases": [
+    "metroid2",
+    "am2r-community"
+  ],
+  "category": "recomp",
+  "version_checked": "1.5.3",
+  "stop_before_write": true,
+  "files": {
+    "config": {
+      "path": "/data/data/com.companyname.AM2RWrapper/files/config.ini",
+      "format": "ini",
+      "notes": "GameMaker ini (load_gameoptions.gml / save_gameoptions.gml). `Key=\"<real>\"`: no spaces, every value a double-quoted real with six decimals, e.g. Widescreen=\"1.000000\". Raw values below include the quotes. Read when the game starts (oControl) and rewritten in full by the Options menus. Private app storage (root); owned by the app uid, mode 600: keep owner and mode when writing. Game data string says V1.5.5; source used is AM2R-Community-Updates HEAD."
+    }
+  },
+  "per_game": null,
+  "keys": {
+    "widescreen": {
+      "file": "config",
+      "key": "Screen/Widescreen",
+      "label": "Display > Widescreen",
+      "type": "enum",
+      "values": {
+        "\"0.000000\"": "Off",
+        "\"1.000000\"": "On"
+      },
+      "default": "\"1.000000\"",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "Needs a room transition to take effect in game."
+    },
+    "scale": {
+      "file": "config",
+      "key": "Screen/Scale",
+      "label": "Display > Display Scale",
+      "type": "enum",
+      "values": {
+        "\"0.000000\"": "Stretch",
+        "\"1.000000\"": "1X",
+        "\"2.000000\"": "2X",
+        "\"3.000000\"": "3X",
+        "\"4.000000\"": "4X"
+      },
+      "default": "\"0.000000\"",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "Fullscreen allows 0-4 (0 = Stretch); windowed 1-4."
+    },
+    "vsync": {
+      "file": "config",
+      "key": "Screen/VSync",
+      "label": "Display > VSync",
+      "type": "enum",
+      "values": {
+        "\"0.000000\"": "Off",
+        "\"1.000000\"": "On"
+      },
+      "default": "\"0.000000\"",
+      "per_game": false,
+      "verified_on_device": true
+    },
+    "fullscreen": {
+      "file": "config",
+      "key": "Screen/Fullscreen",
+      "label": "Display > Fullscreen",
+      "type": "enum",
+      "values": {
+        "\"0.000000\"": "Off",
+        "\"1.000000\"": "On"
+      },
+      "default": "\"0.000000\"",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "Android is always fullscreen; the menu still stores it."
+    },
+    "sensitivity_mode": {
+      "file": "config",
+      "key": "Screen/SensitivityMode",
+      "label": "Display > Sensitivity Mode",
+      "type": "enum",
+      "values": {
+        "\"0.000000\"": "Off",
+        "\"1.000000\"": "On"
+      },
+      "default": "\"0.000000\"",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "Lowers the intensity of some lighting effects."
+    },
+    "show_hud": {
+      "file": "config",
+      "key": "Screen/ShowHUD",
+      "label": "Display > HUD Display",
+      "type": "enum",
+      "values": {
+        "\"0.000000\"": "Off",
+        "\"1.000000\"": "On"
+      },
+      "default": "\"1.000000\"",
+      "per_game": false,
+      "verified_on_device": true
+    },
+    "show_hud_map": {
+      "file": "config",
+      "key": "Screen/ShowHUDMap",
+      "label": "Display > HUD Map",
+      "type": "enum",
+      "values": {
+        "\"0.000000\"": "Off",
+        "\"1.000000\"": "On"
+      },
+      "default": "\"1.000000\"",
+      "per_game": false,
+      "verified_on_device": true
+    },
+    "metroid_counter": {
+      "file": "config",
+      "key": "Screen/ShowHUDCounter",
+      "label": "Display > Metroid Counter",
+      "type": "enum",
+      "values": {
+        "\"0.000000\"": "Disabled",
+        "\"1.000000\"": "Local",
+        "\"2.000000\"": "Global"
+      },
+      "default": "\"1.000000\"",
+      "per_game": false,
+      "verified_on_device": true
+    },
+    "show_hints": {
+      "file": "config",
+      "key": "Screen/ShowHints",
+      "label": "Display > In-Game Hints",
+      "type": "enum",
+      "values": {
+        "\"0.000000\"": "Off",
+        "\"1.000000\"": "On"
+      },
+      "default": "\"1.000000\"",
+      "per_game": false,
+      "verified_on_device": true
+    },
+    "scan_notifications": {
+      "file": "config",
+      "key": "Screen/ShowLogMessage",
+      "label": "Display > Scan Notifications",
+      "type": "enum",
+      "values": {
+        "\"0.000000\"": "Off",
+        "\"1.000000\"": "On"
+      },
+      "default": "\"1.000000\"",
+      "per_game": false,
+      "verified_on_device": true
+    },
+    "low_energy_style": {
+      "file": "config",
+      "key": "Screen/LowEnergyNotificationStyle",
+      "label": "(ini only)",
+      "type": "float",
+      "default": "\"0.000000\"",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "oplowhpstyle; 0 default. Meaning not traced."
+    },
+    "music_volume": {
+      "file": "config",
+      "key": "Sound/MusicVolume",
+      "label": "Sound > Music Volume",
+      "type": "float",
+      "default": "\"70.000000\"",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "0-100."
+    },
+    "sound_volume": {
+      "file": "config",
+      "key": "Sound/SoundVolume",
+      "label": "Sound > Sound Volume",
+      "type": "float",
+      "default": "\"70.000000\"",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "0-100."
+    },
+    "aim_style": {
+      "file": "config",
+      "key": "Control/AimStyle",
+      "label": "Controls > Aiming Style",
+      "type": "enum",
+      "values": {
+        "\"0.000000\"": "1 Button",
+        "\"1.000000\"": "2 Buttons"
+      },
+      "default": "\"0.000000\"",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "Zero Mission (1) vs Super Metroid (2) aiming."
+    },
+    "missile_style": {
+      "file": "config",
+      "key": "Control/MissileStyle",
+      "label": "Controls > Missile Select Style",
+      "type": "enum",
+      "values": {
+        "\"0.000000\"": "Hold",
+        "\"1.000000\"": "Toggle"
+      },
+      "default": "\"0.000000\"",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": ""
+    },
+    "classic_morph_ball": {
+      "file": "config",
+      "key": "Control/MorphStyle",
+      "label": "Controls > Classic Morph Ball",
+      "type": "enum",
+      "values": {
+        "\"0.000000\"": "Off",
+        "\"1.000000\"": "On"
+      },
+      "default": "\"0.000000\"",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": ""
+    },
+    "spiderball_style": {
+      "file": "config",
+      "key": "Control/SpiderballStyle",
+      "label": "Controls > Spiderball Activation",
+      "type": "enum",
+      "values": {
+        "\"0.000000\"": "Toggle ([Aim])",
+        "\"1.000000\"": "Classic ([Down] / [Jump])",
+        "\"2.000000\"": "Hold ([Aim])"
+      },
+      "default": "\"0.000000\"",
+      "per_game": false,
+      "verified_on_device": true
+    },
+    "auto_climb": {
+      "file": "config",
+      "key": "Control/AutoClimb",
+      "label": "Controls > Auto-Climb",
+      "type": "enum",
+      "values": {
+        "\"0.000000\"": "Off",
+        "\"1.000000\"": "On"
+      },
+      "default": "\"0.000000\"",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": ""
+    },
+    "auto_morph": {
+      "file": "config",
+      "key": "Control/AutoMorph",
+      "label": "Controls > Auto-Morph",
+      "type": "enum",
+      "values": {
+        "\"0.000000\"": "Off",
+        "\"1.000000\"": "On"
+      },
+      "default": "\"0.000000\"",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": ""
+    },
+    "analog_walk": {
+      "file": "config",
+      "key": "Control/AnalogWalk",
+      "label": "Controls > Analog Walking",
+      "type": "enum",
+      "values": {
+        "\"0.000000\"": "Off",
+        "\"1.000000\"": "On"
+      },
+      "default": "\"1.000000\"",
+      "per_game": false,
+      "verified_on_device": true
+    },
+    "touch_scale": {
+      "file": "config",
+      "key": "Control/TouchScale",
+      "label": "Controls > Touch Control Scale",
+      "type": "enum",
+      "values": {
+        "\"1.000000\"": "menu shows 8",
+        "\"2.000000\"": "menu shows 7",
+        "\"3.000000\"": "menu shows 6",
+        "\"4.000000\"": "menu shows 5",
+        "\"5.000000\"": "menu shows 4",
+        "\"6.000000\"": "menu shows 3",
+        "\"7.000000\"": "menu shows 2",
+        "\"8.000000\"": "menu shows 1"
+      },
+      "default": "\"4.000000\"",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "1-8; the menu displays 9 minus the stored value (8 shows as 1)."
+    },
+    "compatibility_mode": {
+      "file": "config",
+      "key": "Control/CompatibilityMode",
+      "label": "Controls > Compatibility Mode",
+      "type": "enum",
+      "values": {
+        "\"0.000000\"": "Off",
+        "\"1.000000\"": "On"
+      },
+      "default": "\"0.000000\"",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "Read input as physical rather than virtual keycodes."
+    },
+    "xinput_vibration": {
+      "file": "config",
+      "key": "Control/XBJoypadVibration",
+      "label": "Joypad > Vibration",
+      "type": "enum",
+      "values": {
+        "\"0.000000\"": "Off",
+        "\"1.000000\"": "On"
+      },
+      "default": "\"1.000000\"",
+      "per_game": false,
+      "verified_on_device": true
+    },
+    "xinput_deadzone": {
+      "file": "config",
+      "key": "Control/XBJoypadDeadzone",
+      "label": "Joypad > Deadzone",
+      "type": "float",
+      "default": "\"20.000000\"",
+      "per_game": false,
+      "verified_on_device": true
+    },
+    "insanity_mode": {
+      "file": "config",
+      "key": "GameplayMenu/InsanityMode",
+      "label": "Gameplay > Insanity Mode",
+      "type": "enum",
+      "values": {
+        "\"0.000000\"": "Off",
+        "\"1.000000\"": "On"
+      },
+      "default": "\"0.000000\"",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "Disables save stations, adds Power Bombs to enemy drops."
+    },
+    "fusion_suit_msr": {
+      "file": "config",
+      "key": "Extras/FusionSuitMSR",
+      "label": "Extras > Fusion Suit Style",
+      "type": "enum",
+      "values": {
+        "\"0.000000\"": "Off",
+        "\"1.000000\"": "On"
+      },
+      "default": "\"0.000000\"",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "Fusion-mode suit colours."
+    },
+    "early_baby": {
+      "file": "config",
+      "key": "Extras/EarlyBaby",
+      "label": "Extras > Early Baby Metroid",
+      "type": "enum",
+      "values": {
+        "\"0.000000\"": "Off",
+        "\"1.000000\"": "On"
+      },
+      "default": "\"0.000000\"",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "Baby Metroid follows you anywhere."
+    },
+    "extreme_lab_metroids": {
+      "file": "config",
+      "key": "Extras/ExtremeLabMonsters",
+      "label": "Extras > Extreme Lab Metroids",
+      "type": "enum",
+      "values": {
+        "\"0.000000\"": "Off",
+        "\"1.000000\"": "On"
+      },
+      "default": "\"0.000000\"",
+      "per_game": false,
+      "verified_on_device": true
+    },
+    "display_igt": {
+      "file": "config",
+      "key": "Extras/DisplayIGT",
+      "label": "Extras > IGT Display",
+      "type": "enum",
+      "values": {
+        "\"0.000000\"": "Off",
+        "\"1.000000\"": "On"
+      },
+      "default": "\"0.000000\"",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "In-game timer on the HUD."
+    },
+    "low_health_alarm": {
+      "file": "config",
+      "key": "Extras/LowHealthWarning",
+      "label": "Extras > Low Health Alarm",
+      "type": "enum",
+      "values": {
+        "\"0.000000\"": "Off",
+        "\"1.000000\"": "On"
+      },
+      "default": "\"1.000000\"",
+      "per_game": false,
+      "verified_on_device": true
+    },
+    "map_items_collected": {
+      "file": "config",
+      "key": "Extras/MapItemsCollected",
+      "label": "(remembered map setting)",
+      "type": "enum",
+      "values": {
+        "\"0.000000\"": "Off",
+        "\"1.000000\"": "On"
+      },
+      "default": "\"0.000000\"",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "Show collected items on the map."
+    },
+    "controller_prompts": {
+      "file": "config",
+      "key": "Extras/Controller",
+      "label": "Display > Controller Tips",
+      "type": "enum",
+      "values": {
+        "\"0.000000\"": "XBox",
+        "\"1.000000\"": "Playstation",
+        "\"2.000000\"": "Nintendo Pro",
+        "\"3.000000\"": "Colored SNES",
+        "\"4.000000\"": "MOGA",
+        "\"5.000000\"": "OUYA"
+      },
+      "default": "\"0.000000\"",
+      "per_game": false,
+      "verified_on_device": true,
+      "notes": "Which button glyphs on-screen tips use. Nintendo Pro matches the Thor's labels."
+    }
+  }
+}

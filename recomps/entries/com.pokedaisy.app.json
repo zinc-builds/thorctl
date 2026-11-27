@@ -1,0 +1,39 @@
+{
+ "package": "com.pokedaisy.app",
+ "name": "PokeDaisy",
+ "original": {
+  "title": "Pokemon Game Boy, Game Boy Color, GBA and DS games and ROM hacks",
+  "platform": "GB / GBC / GBA / Nintendo DS",
+  "year": null
+ },
+ "kind": "wrapper",
+ "project": {
+  "name": "PokeDaisy",
+  "repo": null,
+  "android_repo": null,
+  "license": null
+ },
+ "version_checked": "1.6.1",
+ "update": {
+  "channel": "manual APK from pokedaisy.com (latest listed there: 1.6.2.2)",
+  "url": "https://pokedaisy.com/"
+ },
+ "assets": {
+  "needs": "Your own Pokemon ROMs (.gb/.gbc/.gba/.nds) and ROM hacks.",
+  "location": "Scans the folders in prefs key roms_folders (one entry per ROM folder, e.g. /storage/<sd-card>/Roms/GBA). Cocoon also lists it as a player, so it can be launched with a ROM file.",
+  "notes": "files/rom-titles.tsv lists the games it recognises; other ROMs in the scanned folders are marked unsupported (U) in rom-folder-scan.tsv."
+ },
+ "settings": {
+  "adapter": "pokedaisy",
+  "files": [
+   "/data/data/com.pokedaisy.app/shared_prefs/pokedaisy.xml"
+  ],
+  "in_app_menu": "Library > Settings (tabs), plus a quick menu in game.",
+  "summary": "Picture aspect (Original/Stretch/Expand; Expand is stored as WIDE), smoothing (xBRZ/xBR/ScaleFX), screen filter (LCD/scanlines/CRT), DS layout, DS resolution 1-8x, DS core (Auto/melonDS/DSperate), fast-forward and rewind, swap screens, single-screen mode, and many Pokemon-specific helpers (instant text, EXP share, level cap, HM-free, reusable TMs, shiny odds, day/night, follower)."
+ },
+ "controls": "Built-in controller support with hotkeys (hotkeys_enabled), on-screen touch controls with skins, layouts and opacity.",
+ "display": "Made for dual-screen handhelds: game on the top screen and a live companion (party, battle info, boxes) on the bottom screen; DS games can use both screens in several layouts; single_screen and swap_screens options.",
+ "saves": "/sdcard/Android/data/com.pokedaisy.app/files/saves/ by default, or the folder in saves_dir_override; extra_save_dirs adds more. Save backups (save_backups_keep, default 10).",
+ "notes": "The prefs file counts launches (app_open_count). It can hold secrets once you sign in (ra_token, ra_web_api_key, ss_password, steamgriddb_api_key): never print them. Firebase Crashlytics is bundled (crash_reports_enabled, off by default). GitHub source: a search result named lidor30/pokedaisy but the GitHub API returns 404 for it (deleted or private); github.com/tommiperfect31/pokedaisy has the same description but no releases or license, so its relation is unconfirmed. No repo URL recorded.",
+ "verified": "Device: dumpsys, prefs file, files/*.tsv, external folders. APK: jadx of Prefs, NewFeatures, enums (GameAspect, Smoothing, ScreenFilter, GridStrength, FfMode, DsCore, DsLayout), SavesLocation. Web: pokedaisy.com (version), GitHub search. Not checked: the repo, the license."
+}

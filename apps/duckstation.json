@@ -1,0 +1,778 @@
+{
+ "name": "duckstation",
+ "package": "com.github.stenzek.duckstation",
+ "aliases": [
+  "psx",
+  "ps1",
+  "psone",
+  "playstation"
+ ],
+ "category": "emulator",
+ "version_checked": "0.1-8974-g1efe969f7",
+ "stop_before_write": true,
+ "files": {
+  "prefs": {
+   "path": "/data/data/com.github.stenzek.duckstation/shared_prefs/com.github.stenzek.duckstation_preferences.xml",
+   "format": "prefs",
+   "notes": "Every global setting (the native core reads it through JNI from the app's in-memory SharedPreferences: AndroidSettingsInterface). Keys are 'Section/Key' exactly as in desktop DuckStation's settings.ini. Keep each key's XML element type: list settings are <string> even when numeric (GPU/ResolutionScale is \"5\"), switches are <boolean>, spin boxes are <int> or <float>; a wrong type makes the Java preference screen throw ClassCastException or the native read fall back to the default. Read once per process start (SharedPreferences cache); the app rewrites the whole file on every settings change. Root only. Holds controller bindings (Pad1/* string sets) and RetroAchievements switches."
+  },
+  "game": {
+   "path": "/sdcard/Android/data/com.github.stenzek.duckstation/files/gamesettings/{game}.ini",
+   "format": "ini",
+   "notes": "Per-game overrides, see per_game."
+  },
+  "playtime": {
+   "path": "/sdcard/Android/data/com.github.stenzek.duckstation/files/playtime.dat",
+   "format": "other",
+   "notes": "Play time per serial (binary/text written by the app). Read-only for adapters."
+  }
+ },
+ "per_game": {
+  "path": "/sdcard/Android/data/com.github.stenzek.duckstation/files/gamesettings/{game}.ini",
+  "format": "ini",
+  "game_id": "Disc serial with dash, e.g. SLUS-00553 (the PS1 boot executable name). For multi-disc sets listed in the game database the file is named after the FIRST disc's serial (Chrono Cross = SLUS-01041 for both discs) unless that file sets [Main] UseSeparateConfigForDiscSet = true. Serials of scanned games are in /data/data/com.github.stenzek.duckstation/cache/gamelist.cache (binary; grep -a for S[CL][UEP][SM]-[0-9]{5}).",
+  "create": true,
+  "notes": "Plain INI ([Section] / Key = value), written by the Java ini4j library on every change in Game Properties and deleted when it becomes empty. Keys are the global prefs keys split at the LAST '/': GPU/ResolutionScale -> [GPU] ResolutionScale = 5. VALUES ARE PLAIN TEXT: strip the JSON quotes the glossary uses for prefs strings (write ResolutionScale = 5, Renderer = Vulkan, WidescreenHack = true). Bools are written true/false. A missing key means 'use global' (the UI's tri-state switches remove the key). Loaded from disk by the native core when a game boots (System::GetGameSettingsInterface), so it can be created by hand; needs Main/ApplyGameSettings true (the default). Only keys marked per_game appear in the Game Properties UI, but the core reads any core key from it."
+ },
+ "keys": {
+  "renderer": {
+   "file": "prefs",
+   "key": "GPU/Renderer",
+   "label": "Settings > Graphics > GPU Renderer",
+   "type": "enum",
+   "values": {
+    "\"Automatic\"": "Automatic",
+    "\"OpenGL\"": "Hardware (OpenGL)",
+    "\"Vulkan\"": "Hardware (Vulkan)",
+    "\"Software\"": "Software"
+   },
+   "default": "\"Automatic\"",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Stored as <string>. Core default is Automatic (Settings::DEFAULT_GPU_RENDERER); the preference XML lists OpenGL as the UI default. Changing it mid-game takes effect on the next game start. Per-game: [GPU] Renderer = <plain value, no JSON quotes> in gamesettings/<serial>.ini."
+  },
+  "resolution_scale": {
+   "file": "prefs",
+   "key": "GPU/ResolutionScale",
+   "label": "Settings > Graphics > Internal Resolution",
+   "type": "enum",
+   "values": {
+    "\"1\"": "1x",
+    "\"2\"": "2x",
+    "\"3\"": "3x (for 720p)",
+    "\"4\"": "4x",
+    "\"5\"": "5x (for 1080p)",
+    "\"6\"": "6x (for 1440p)",
+    "\"7\"": "7x",
+    "\"8\"": "8x",
+    "\"9\"": "9x (for 4K)",
+    "\"10\"": "10x",
+    "\"11\"": "11x",
+    "\"12\"": "12x",
+    "\"13\"": "13x",
+    "\"14\"": "14x",
+    "\"15\"": "15x",
+    "\"16\"": "16x"
+   },
+   "default": "\"1\"",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Stored as <string>. Multiplier of native PS1 resolution. Hardware renderers only. Per-game: [GPU] ResolutionScale = <plain value, no JSON quotes> in gamesettings/<serial>.ini."
+  },
+  "texture_filter": {
+   "file": "prefs",
+   "key": "GPU/TextureFilter",
+   "label": "Settings > Graphics > Texture Filtering",
+   "type": "enum",
+   "values": {
+    "\"Nearest\"": "Nearest-Neighbor",
+    "\"Bilinear\"": "Bilinear",
+    "\"BilinearBinAlpha\"": "Bilinear (No Edge Blending)",
+    "\"JINC2\"": "JINC2",
+    "\"JINC2BinAlpha\"": "JINC2 (No Edge Blending)",
+    "\"xBR\"": "xBR",
+    "\"xBRBinAlpha\"": "xBR (No Edge Blending)",
+    "\"Scale2x\"": "Scale2x (EPX)",
+    "\"Scale3x\"": "Scale3x (Slow)",
+    "\"MMPX\"": "MMPX (Slow)"
+   },
+   "default": "\"Nearest\"",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Stored as <string>. Per-game: [GPU] TextureFilter = <plain value, no JSON quotes> in gamesettings/<serial>.ini."
+  },
+  "sprite_texture_filter": {
+   "file": "prefs",
+   "key": "GPU/SpriteTextureFilter",
+   "label": "Settings > Graphics > Sprite Texture Filtering",
+   "type": "enum",
+   "values": {
+    "\"Nearest\"": "Nearest-Neighbor",
+    "\"Bilinear\"": "Bilinear",
+    "\"BilinearBinAlpha\"": "Bilinear (No Edge Blending)",
+    "\"JINC2\"": "JINC2",
+    "\"JINC2BinAlpha\"": "JINC2 (No Edge Blending)",
+    "\"xBR\"": "xBR",
+    "\"xBRBinAlpha\"": "xBR (No Edge Blending)",
+    "\"Scale2x\"": "Scale2x (EPX)",
+    "\"Scale3x\"": "Scale3x (Slow)",
+    "\"MMPX\"": "MMPX (Slow)"
+   },
+   "default": "\"Nearest\"",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Stored as <string>. Filter used for 2D sprites. Per-game: [GPU] SpriteTextureFilter = <plain value, no JSON quotes> in gamesettings/<serial>.ini."
+  },
+  "dithering": {
+   "file": "prefs",
+   "key": "GPU/DitheringMode",
+   "label": "Settings > Graphics > Dithering",
+   "type": "enum",
+   "values": {
+    "\"Unscaled\"": "Unscaled",
+    "\"UnscaledShaderBlend\"": "Unscaled (Shader Blending)",
+    "\"Scaled\"": "Scaled",
+    "\"ScaledShaderBlend\"": "Scaled (Shader Blending)",
+    "\"TrueColor\"": "True Color",
+    "\"TrueColorFull\"": "True Color (Full)"
+   },
+   "default": "\"TrueColor\"",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Stored as <string>. Per-game: [GPU] DitheringMode = <plain value, no JSON quotes> in gamesettings/<serial>.ini."
+  },
+  "widescreen_hack": {
+   "file": "prefs",
+   "key": "GPU/WidescreenHack",
+   "label": "Settings > Graphics > Widescreen Rendering",
+   "type": "bool",
+   "values": {
+    "true": "On: widens the 3D field of view to the display aspect ratio",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Stored as <boolean>. Pair with aspect_ratio 16:9 (or 20:9 for the Thor's panel). The game database disables it for games with the DisableWidescreen trait unless Apply Compatibility Settings is off. Per-game: [GPU] WidescreenHack = <plain value, no JSON quotes> in gamesettings/<serial>.ini."
+  },
+  "pgxp": {
+   "file": "prefs",
+   "key": "GPU/PGXPEnable",
+   "label": "Settings > Graphics > PGXP Geometry Correction",
+   "type": "bool",
+   "values": {
+    "true": "On: reduces wobbly polygons and warping textures",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Stored as <boolean>. Hardware renderers only. The PGXP sub-options below only act when this is on. Per-game: [GPU] PGXPEnable = <plain value, no JSON quotes> in gamesettings/<serial>.ini."
+  },
+  "pgxp_culling": {
+   "file": "prefs",
+   "key": "GPU/PGXPCulling",
+   "label": "Settings > Advanced > PGXP Culling Correction",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "true",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Stored as <boolean>. Per-game: [GPU] PGXPCulling = <plain value, no JSON quotes> in gamesettings/<serial>.ini."
+  },
+  "pgxp_texture_correction": {
+   "file": "prefs",
+   "key": "GPU/PGXPTextureCorrection",
+   "label": "Settings > Advanced > PGXP Texture Perspective Correction",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "true",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Stored as <boolean>. Per-game: [GPU] PGXPTextureCorrection = <plain value, no JSON quotes> in gamesettings/<serial>.ini."
+  },
+  "pgxp_color_correction": {
+   "file": "prefs",
+   "key": "GPU/PGXPColorCorrection",
+   "label": "Settings > Advanced > PGXP Color Perspective Correction",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Stored as <boolean>. Per-game: [GPU] PGXPColorCorrection = <plain value, no JSON quotes> in gamesettings/<serial>.ini."
+  },
+  "pgxp_depth_buffer": {
+   "file": "prefs",
+   "key": "GPU/PGXPDepthBuffer",
+   "label": "Settings > Graphics > PGXP Depth Buffer",
+   "type": "bool",
+   "values": {
+    "true": "On: depth testing to reduce Z-fighting (low game compatibility)",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Stored as <boolean>. Needs pgxp on. Per-game: [GPU] PGXPDepthBuffer = <plain value, no JSON quotes> in gamesettings/<serial>.ini."
+  },
+  "pgxp_cpu": {
+   "file": "prefs",
+   "key": "GPU/PGXPCPU",
+   "label": "Settings > Advanced > PGXP CPU Mode",
+   "type": "bool",
+   "values": {
+    "true": "On: track vertices through the CPU (very slow; some games need it)",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Stored as <boolean>. Games with the ForcePGXPCPUMode trait get it from the game database anyway. Per-game: [GPU] PGXPCPU = <plain value, no JSON quotes> in gamesettings/<serial>.ini."
+  },
+  "msaa": {
+   "file": "prefs",
+   "key": "GPU/MSAA",
+   "label": "Settings > Advanced > Multisample Antialiasing",
+   "type": "enum",
+   "values": {
+    "\"1\"": "Disabled",
+    "\"2\"": "2x MSAA",
+    "\"4\"": "4x MSAA",
+    "\"8\"": "8x MSAA",
+    "\"2-ssaa\"": "2x SSAA",
+    "\"4-ssaa\"": "4x SSAA",
+    "\"8-ssaa\"": "8x SSAA"
+   },
+   "default": "\"1\"",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Stored as <string>. Android-only key: the native layer turns it into GPU/Multisamples (the number) and GPU/PerSampleShading (true for -ssaa). Edit MSAA, not Multisamples. Per-game: [GPU] MSAA = <plain value, no JSON quotes> in gamesettings/<serial>.ini."
+  },
+  "aspect_ratio": {
+   "file": "prefs",
+   "key": "Display/AspectRatio",
+   "label": "Settings > Graphics > Aspect Ratio",
+   "type": "enum",
+   "values": {
+    "\"Auto (Game Native)\"": "Auto (Game Native)",
+    "\"Auto (Match Window)\"": "Auto (Match Display)",
+    "\"Custom\"": "Custom (uses Display/CustomAspectRatioNumerator and Denominator, ints)",
+    "\"4:3\"": "4:3",
+    "\"16:9\"": "16:9",
+    "\"19:9\"": "19:9",
+    "\"20:9\"": "20:9",
+    "\"PAR 1:1\"": "PAR 1:1 (square pixels)"
+   },
+   "default": "\"Auto (Game Native)\"",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Stored as <string>. Per-game: [Display] AspectRatio = <plain value, no JSON quotes> in gamesettings/<serial>.ini."
+  },
+  "crop_mode": {
+   "file": "prefs",
+   "key": "Display/CropMode",
+   "label": "Settings > Graphics > Crop Mode",
+   "type": "enum",
+   "values": {
+    "\"None\"": "None",
+    "\"Overscan\"": "Only Overscan Area",
+    "\"OverscanUncorrected\"": "Only Overscan Area (Aspect Uncorrected)",
+    "\"Borders\"": "All Borders",
+    "\"BordersUncorrected\"": "All Borders (Aspect Uncorrected)"
+   },
+   "default": "\"Overscan\"",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Stored as <string>. Per-game: [Display] CropMode = <plain value, no JSON quotes> in gamesettings/<serial>.ini."
+  },
+  "scaling": {
+   "file": "prefs",
+   "key": "Display/Scaling",
+   "label": "Settings > Graphics > Scaling",
+   "type": "enum",
+   "values": {
+    "\"Nearest\"": "Nearest-Neighbor",
+    "\"NearestInteger\"": "Nearest-Neighbor (Integer)",
+    "\"BilinearSmooth\"": "Bilinear (Smooth)",
+    "\"BilinearSharp\"": "Bilinear (Sharp)",
+    "\"BilinearInteger\"": "Bilinear (Integer)",
+    "\"Lanczos\"": "Lanczos (Sharp/Slow)"
+   },
+   "default": "\"BilinearSmooth\"",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Stored as <string>. How the final image is scaled to the screen. Per-game: [Display] Scaling = <plain value, no JSON quotes> in gamesettings/<serial>.ini."
+  },
+  "stretch": {
+   "file": "prefs",
+   "key": "Display/Stretch",
+   "label": "Settings > Graphics > Stretch To Fill",
+   "type": "bool",
+   "values": {
+    "true": "On: stretch the image to fill the screen",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Stored as <boolean>. Per-game: [Display] Stretch = <plain value, no JSON quotes> in gamesettings/<serial>.ini."
+  },
+  "force_4_3_fmv": {
+   "file": "prefs",
+   "key": "Display/Force4_3For24Bit",
+   "label": "Settings > Graphics > Force 4:3 For FMVs",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Stored as <boolean>. Per-game: [Display] Force4_3For24Bit = <plain value, no JSON quotes> in gamesettings/<serial>.ini."
+  },
+  "vsync": {
+   "file": "prefs",
+   "key": "Display/VSync",
+   "label": "Settings > System > Vertical Sync (VSync)",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Stored as <boolean>. Per-game: [Display] VSync = <plain value, no JSON quotes> in gamesettings/<serial>.ini."
+  },
+  "optimal_frame_pacing": {
+   "file": "prefs",
+   "key": "Display/OptimalFramePacing",
+   "label": "Settings > System > Optimal Frame Pacing",
+   "type": "bool",
+   "values": {
+    "true": "On: present every frame, pin threads to big cores",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Stored as <boolean>. Android UI default false (the desktop core default is true). Per-game: [Display] OptimalFramePacing = <plain value, no JSON quotes> in gamesettings/<serial>.ini."
+  },
+  "skip_duplicate_frames": {
+   "file": "prefs",
+   "key": "Display/SkipPresentingDuplicateFrames",
+   "label": "Settings > System > Skip Presenting Duplicate Frames",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Stored as <boolean>. Per-game: [Display] SkipPresentingDuplicateFrames = <plain value, no JSON quotes> in gamesettings/<serial>.ini."
+  },
+  "sync_to_host_refresh": {
+   "file": "prefs",
+   "key": "Main/SyncToHostRefreshRate",
+   "label": "Settings > System > Sync To Host Refresh Rate",
+   "type": "bool",
+   "values": {
+    "true": "On: adjust speed so the console refresh matches the screen",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Stored as <boolean>. Per-game: [Main] SyncToHostRefreshRate = <plain value, no JSON quotes> in gamesettings/<serial>.ini."
+  },
+  "emulation_speed": {
+   "file": "prefs",
+   "key": "Main/EmulationSpeed",
+   "label": "Settings > System > Emulation Speed",
+   "type": "enum",
+   "values": {
+    "\"0\"": "Unlimited",
+    "\"0.1\"": "10%",
+    "\"0.2\"": "20%",
+    "\"0.3\"": "30%",
+    "\"0.4\"": "40%",
+    "\"0.5\"": "50%",
+    "\"0.6\"": "60%",
+    "\"0.7\"": "70%",
+    "\"0.8\"": "80%",
+    "\"0.9\"": "90%",
+    "\"1\"": "100% (60 FPS NTSC / 50 FPS PAL)",
+    "\"1.25\"": "125%",
+    "\"1.5\"": "150%",
+    "\"1.75\"": "175%",
+    "\"2\"": "200%",
+    "\"2.5\"": "250%",
+    "\"3\"": "300%",
+    "\"3.5\"": "350%",
+    "\"4.\"": "400% (the app's own value is '4.' with a trailing dot)",
+    "\"4.5\"": "450%",
+    "\"5\"": "500%",
+    "\"6\"": "600%",
+    "\"7\"": "700%",
+    "\"8\"": "800%",
+    "\"9\"": "900%",
+    "\"10\"": "1000%"
+   },
+   "default": "\"1\"",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Stored as <string>. Float stored as a string. Any decimal string parses; the UI shows only these. Per-game: [Main] EmulationSpeed = <plain value, no JSON quotes> in gamesettings/<serial>.ini."
+  },
+  "fast_forward_speed": {
+   "file": "prefs",
+   "key": "Main/FastForwardSpeed",
+   "label": "Settings > System > Fast Forward Speed",
+   "type": "enum",
+   "values": {
+    "\"0\"": "Unlimited",
+    "\"0.1\"": "10%",
+    "\"0.2\"": "20%",
+    "\"0.3\"": "30%",
+    "\"0.4\"": "40%",
+    "\"0.5\"": "50%",
+    "\"0.6\"": "60%",
+    "\"0.7\"": "70%",
+    "\"0.8\"": "80%",
+    "\"0.9\"": "90%",
+    "\"1\"": "100% (60 FPS NTSC / 50 FPS PAL)",
+    "\"1.25\"": "125%",
+    "\"1.5\"": "150%",
+    "\"1.75\"": "175%",
+    "\"2\"": "200%",
+    "\"2.5\"": "250%",
+    "\"3\"": "300%",
+    "\"3.5\"": "350%",
+    "\"4.\"": "400% (the app's own value is '4.' with a trailing dot)",
+    "\"4.5\"": "450%",
+    "\"5\"": "500%",
+    "\"6\"": "600%",
+    "\"7\"": "700%",
+    "\"8\"": "800%",
+    "\"9\"": "900%",
+    "\"10\"": "1000%"
+   },
+   "default": "\"0\"",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Stored as <string>. Per-game: [Main] FastForwardSpeed = <plain value, no JSON quotes> in gamesettings/<serial>.ini."
+  },
+  "runahead": {
+   "file": "prefs",
+   "key": "Main/RunaheadFrameCount",
+   "label": "Settings > System > Runahead",
+   "type": "enum",
+   "values": {
+    "\"0\"": "Disabled",
+    "\"1\"": "1 Frame",
+    "\"2\"": "2 Frames",
+    "\"3\"": "3 Frames",
+    "\"4\"": "4 Frames",
+    "\"5\"": "5 Frames"
+   },
+   "default": "\"0\"",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Stored as <string>. Global only in the Android UI (not in the per-game screens)."
+  },
+  "cpu_overclock": {
+   "file": "prefs",
+   "key": "CPU/Overclock",
+   "label": "Settings > System > CPU Overclocking (Can Break Games)",
+   "type": "enum",
+   "values": {
+    "\"25\"": "25% (8MHz)",
+    "\"50\"": "50% (16MHz)",
+    "\"75\"": "75% (24MHz)",
+    "\"100\"": "100% (33MHz, Default)",
+    "\"125\"": "125% (41MHz)",
+    "\"150\"": "150% (49MHz)",
+    "\"175\"": "175% (57MHz)",
+    "\"200\"": "200% (66MHz)",
+    "\"225\"": "225% (74MHz)",
+    "\"250\"": "250% (82MHz)",
+    "\"275\"": "275% (90MHz)",
+    "\"300\"": "300% (99MHz)",
+    "\"350\"": "350% (115MHz)",
+    "\"400\"": "400% (132MHz)",
+    "\"450\"": "450% (148MHz)",
+    "\"500\"": "500% (165MHz)",
+    "\"600\"": "600% (198MHz)",
+    "\"700\"": "700% (231MHz)",
+    "\"800\"": "800% (264MHz)",
+    "\"900\"": "900% (297MHz)",
+    "\"1000\"": "1000% (330MHz)"
+   },
+   "default": "\"100\"",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Stored as <string>. Android-only key: the native layer converts the percentage to CPU/OverclockNumerator and OverclockDenominator and enables overclock when it is not 100 (behaviour of the last open-source Android code; the closed build was not tested). Edit Overclock, not the numerator keys. Per-game: [CPU] Overclock = <plain value, no JSON quotes> in gamesettings/<serial>.ini."
+  },
+  "cpu_execution_mode": {
+   "file": "prefs",
+   "key": "CPU/ExecutionMode",
+   "label": "Settings > Advanced > CPU Execution Mode",
+   "type": "enum",
+   "values": {
+    "\"Interpreter\"": "Interpreter (Slowest)",
+    "\"CachedInterpreter\"": "Cached Interpreter (Faster)",
+    "\"Recompiler\"": "Recompiler (Fastest)"
+   },
+   "default": "\"Recompiler\"",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Stored as <string>. Per-game: [CPU] ExecutionMode = <plain value, no JSON quotes> in gamesettings/<serial>.ini."
+  },
+  "cpu_icache": {
+   "file": "prefs",
+   "key": "CPU/RecompilerICache",
+   "label": "Settings > Advanced > CPU Recompiler ICache",
+   "type": "bool",
+   "values": {
+    "true": "On (more accurate; fixes games that run too fast)",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Stored as <boolean>. Games with the ForceRecompilerICache trait get it from the game database anyway. Per-game: [CPU] RecompilerICache = <plain value, no JSON quotes> in gamesettings/<serial>.ini."
+  },
+  "cdrom_read_speedup": {
+   "file": "prefs",
+   "key": "CDROM/ReadSpeedup",
+   "label": "Settings > System > CD-ROM Read Speedup",
+   "type": "enum",
+   "values": {
+    "\"1\"": "None (Double Speed)",
+    "\"2\"": "2x (Quad Speed)",
+    "\"3\"": "3x (6x Speed)",
+    "\"4\"": "4x (8x Speed)",
+    "\"5\"": "5x (10x Speed)",
+    "\"6\"": "6x (12x Speed)",
+    "\"7\"": "7x (14x Speed)",
+    "\"8\"": "8x (16x Speed)",
+    "\"9\"": "9x (18x Speed)",
+    "\"10\"": "10x (20x Speed)",
+    "\"0\"": "Maximum"
+   },
+   "default": "\"1\"",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Stored as <string>. Shorter loading; can break some games. Per-game: [CDROM] ReadSpeedup = <plain value, no JSON quotes> in gamesettings/<serial>.ini."
+  },
+  "fast_boot": {
+   "file": "prefs",
+   "key": "BIOS/PatchFastBoot",
+   "label": "Settings > System > Fast Boot",
+   "type": "bool",
+   "values": {
+    "true": "On: skip the BIOS boot animation",
+    "false": "Off"
+   },
+   "default": "true",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Stored as <boolean>. Per-game: [BIOS] PatchFastBoot = <plain value, no JSON quotes> in gamesettings/<serial>.ini."
+  },
+  "audio_backend": {
+   "file": "prefs",
+   "key": "Audio/Backend",
+   "label": "Settings > Audio > Audio Backend",
+   "type": "enum",
+   "values": {
+    "\"Null\"": "Null (No Output)",
+    "\"AAudio\"": "AAudio (Android 8+, recommended)",
+    "\"OpenSLES\"": "OpenSL ES (Android 7)"
+   },
+   "default": "\"AAudio\"",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Stored as <string>. Per-game: [Audio] Backend = <plain value, no JSON quotes> in gamesettings/<serial>.ini."
+  },
+  "audio_stretch_mode": {
+   "file": "prefs",
+   "key": "Audio/StretchMode",
+   "label": "Settings > Audio > Stretch Mode",
+   "type": "enum",
+   "values": {
+    "\"None\"": "None (Pops/Crackles)",
+    "\"Resample\"": "Resampling (Pitch Change)",
+    "\"TimeStretch\"": "Time Stretching (Tempo Change/Best Sound)"
+   },
+   "default": "\"TimeStretch\"",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Stored as <string>. Per-game: [Audio] StretchMode = <plain value, no JSON quotes> in gamesettings/<serial>.ini."
+  },
+  "audio_buffer_ms": {
+   "file": "prefs",
+   "key": "Audio/BufferMS",
+   "label": "Settings > Audio > Buffer Size",
+   "type": "int",
+   "values": {},
+   "default": "100",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Stored as <int>. Milliseconds, 10-1000. Smaller = lower latency, more crackle risk. Per-game: [Audio] BufferMS = <plain value, no JSON quotes> in gamesettings/<serial>.ini."
+  },
+  "audio_output_latency_ms": {
+   "file": "prefs",
+   "key": "Audio/OutputLatencyMS",
+   "label": "Settings > Audio > Output Latency",
+   "type": "int",
+   "values": {},
+   "default": "20",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Stored as <int>. Milliseconds, 10-1000. Audio/OutputLatencyMinimal (bool, not in the Android UI) overrides it with the device minimum. Per-game: [Audio] OutputLatencyMS = <plain value, no JSON quotes> in gamesettings/<serial>.ini."
+  },
+  "volume": {
+   "file": "prefs",
+   "key": "Audio/OutputVolume",
+   "label": "Settings > Audio > Volume",
+   "type": "int",
+   "values": {},
+   "default": "100",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Stored as <int>. Percent, 0-100. Per-game: [Audio] OutputVolume = <plain value, no JSON quotes> in gamesettings/<serial>.ini."
+  },
+  "show_fps": {
+   "file": "prefs",
+   "key": "Display/ShowFPS",
+   "label": "Settings > General > Show FPS",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Stored as <boolean>. Global only (not in the per-game screens)."
+  },
+  "show_speed": {
+   "file": "prefs",
+   "key": "Display/ShowSpeed",
+   "label": "Settings > General > Show Emulation Speed",
+   "type": "bool",
+   "values": {
+    "true": "On",
+    "false": "Off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Stored as <boolean>. Global only."
+  },
+  "post_processing": {
+   "file": "prefs",
+   "key": "PostProcessing/Enabled",
+   "label": "In-game menu > Post-Processing (shader chain on/off)",
+   "type": "bool",
+   "values": {
+    "true": "Shader chain on",
+    "false": "Shader chain off"
+   },
+   "default": "false",
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Stored as <boolean>. Global only. The chain is PostProcessing/StageCount (int) plus PostProcessing/Stage<N>/ShaderName for N = 1..StageCount."
+  },
+  "post_shader_1": {
+   "file": "prefs",
+   "key": "PostProcessing/Stage1/ShaderName",
+   "label": "Post-Processing > Stage 1 shader",
+   "type": "enum",
+   "values": {
+    "\"dolphinfx/crt/CRT-HYLLIAN\"": "CRT Hyllian",
+    "\"dolphinfx/edge-smoothing/DDT\"": "DDT edge smoothing",
+    "\"dolphinfx/edge-smoothing/XBR\"": "xBR edge smoothing",
+    "\"dolphinfx/pixel-art/PIXELLATE\"": "Pixellate",
+    "\"dolphinfx/scanlines\"": "Scanlines",
+    "\"crt-lottes\"": "CRT Lottes",
+    "\"Cccalibrator\"": "Cccalibrator",
+    "\"simple-brightness\"": "Brightness",
+    "\"simple-gamma\"": "Gamma",
+    "\"simple-sharpen\"": "Sharpen",
+    "\"simple-flip\"": "Flip",
+    "\"CRT-NewPixie\"": "ReShade CRT-NewPixie",
+    "\"CRTLottes2\"": "ReShade CRT Lottes 2",
+    "\"anti-aliasing/fxaa\"": "ReShade FXAA",
+    "\"edge-smoothing/super-xbr\"": "ReShade Super-xBR",
+    "\"interpolation/bicubic\"": "ReShade bicubic",
+    "\"ntsc/ntsc-adaptive-lite\"": "ReShade NTSC adaptive lite",
+    "\"scanlines-abs\"": "ReShade scanlines-abs",
+    "\"Deband\"": "ReShade Deband",
+    "\"FilmGrain2\"": "ReShade film grain",
+    "\"Daltonize\"": "ReShade Daltonize"
+   },
+   "default": null,
+   "per_game": false,
+   "verified_on_device": true,
+   "notes": "Stored as <string>. Shader names are the path under assets/shaders (GLSL) or shaders/reshade/Shaders (ReShade .fx) without the extension, as PostProcessing::GetAvailableShaderNames builds them. Needs PostProcessing/Enabled true and PostProcessing/StageCount >= 1. Shader options are stored as PostProcessing/Stage1/<OptionName>. GLSL names verified against the device value and APK assets; ReShade names follow the desktop source and were not tested on Android. Global only."
+  },
+  "max_queued_frames": {
+   "file": "prefs",
+   "key": "GPU/MaxQueuedFrames",
+   "label": "Settings > Advanced > Maximum Queued Frames",
+   "type": "enum",
+   "values": {
+    "\"0\"": "Run Synchronously",
+    "\"1\"": "1 Frame",
+    "\"2\"": "2 Frames",
+    "\"3\"": "3 Frames",
+    "\"4\"": "4 Frames",
+    "\"5\"": "5 Frames"
+   },
+   "default": "\"3\"",
+   "per_game": true,
+   "verified_on_device": true,
+   "notes": "Stored as <string>. Lower = less input latency, more stutter risk. Per-game: [GPU] MaxQueuedFrames = <plain value, no JSON quotes> in gamesettings/<serial>.ini."
+  },
+  "apply_game_settings": {
+   "file": "prefs",
+   "key": "Main/ApplyGameSettings",
+   "label": "Settings > Advanced > Apply Game Settings",
+   "type": "bool",
+   "values": {
+    "true": "Per-game ini files are used",
+    "false": "Per-game ini files are ignored"
+   },
+   "default": "true",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "May be absent from the prefs file (default applies); the app stores it as <boolean>. Global only. Must stay true for any per-game edit to apply."
+  },
+  "apply_compatibility_settings": {
+   "file": "prefs",
+   "key": "Main/ApplyCompatibilitySettings",
+   "label": "Settings > Advanced > Apply Compatibility Settings",
+   "type": "bool",
+   "values": {
+    "true": "Game database traits may disable enhancements (widescreen, true color...) per game",
+    "false": "Ignore game database traits"
+   },
+   "default": "true",
+   "per_game": true,
+   "verified_on_device": false,
+   "notes": "May be absent from the prefs file (default applies); the app stores it as <boolean>. Per-game: [Main] ApplyCompatibilitySettings = <plain value, no JSON quotes> in gamesettings/<serial>.ini."
+  }
+ }
+}

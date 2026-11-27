@@ -1,0 +1,455 @@
+{
+  "name": "smwr",
+  "package": "com.example.supermarioworldremasteredplus",
+  "aliases": [
+    "smw",
+    "super-mario-world",
+    "smw-remastered"
+  ],
+  "category": "recomp",
+  "version_checked": "1.0.0",
+  "stop_before_write": true,
+  "files": {
+    "settings": {
+      "path": "/data/data/com.example.supermarioworldremasteredplus/files/settings.cfg",
+      "format": "json",
+      "notes": "Godot user://settings.cfg, JSON despite the extension (SettingsManager.gd: JSON.stringify with tab indent). Created on first launch; on every launch the game reads it, adds missing keys from its template and writes it back (verify_settings), and it rewrites it when options change, so stop the app first. Godot parses all JSON numbers as floats, so after the first rewrite integers appear as 0.0 / 1.0; both forms work. resolution is stored as a string like \"(1440, 810)\". Template {} is safe: the game fills in every missing key (not tested).",
+      "template": "{}\n"
+    }
+  },
+  "per_game": null,
+  "keys": {
+    "window_type": {
+      "file": "settings",
+      "key": "window_type",
+      "label": "Display > Window Type",
+      "type": "int",
+      "values": {
+        "0": "Windowed",
+        "1": "Borderless",
+        "2": "Fullscreen"
+      },
+      "default": "0",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "On Android set Fullscreen (2): Windowed leaves the status and navigation bars over the game (BTFighter v1.1 release notes)."
+    },
+    "resolution": {
+      "file": "settings",
+      "key": "resolution",
+      "label": "Display > Window Resolution",
+      "type": "enum",
+      "values": {
+        "\"(480, 270)\"": "480x270",
+        "\"(960, 540)\"": "960x540",
+        "\"(1440, 810)\"": "1440x810",
+        "\"(1920, 1080)\"": "1920x1080",
+        "\"(2560, 1440)\"": "2560x1440",
+        "\"(3840, 2160)\"": "3840x2160"
+      },
+      "default": "\"(1440, 810)\"",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "Window size; with Fullscreen on Android the window fills the panel anyway. Parsed by stripping '(', ')' and spaces, so decimals like (1440.0, 810.0) also work."
+    },
+    "vsync_enabled": {
+      "file": "settings",
+      "key": "vsync_enabled",
+      "label": "Display > VSync",
+      "type": "bool",
+      "values": {
+        "false": "Off",
+        "true": "On"
+      },
+      "default": "false",
+      "per_game": false,
+      "verified_on_device": false
+    },
+    "drop_shadows": {
+      "file": "settings",
+      "key": "drop_shadows",
+      "label": "Display > Drop Shadows",
+      "type": "bool",
+      "values": {
+        "false": "Off",
+        "true": "On"
+      },
+      "default": "false",
+      "per_game": false,
+      "verified_on_device": false
+    },
+    "master_volume": {
+      "file": "settings",
+      "key": "master_volume",
+      "label": "Audio > Master",
+      "type": "float",
+      "default": "0.5",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "Linear 0.0-1.0."
+    },
+    "music_volume": {
+      "file": "settings",
+      "key": "music_volume",
+      "label": "Audio > Music",
+      "type": "float",
+      "default": "0.5",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "Linear 0.0-1.0."
+    },
+    "sfx_volume": {
+      "file": "settings",
+      "key": "sfx_volume",
+      "label": "Audio > SFX",
+      "type": "float",
+      "default": "0.5",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "Linear 0.0-1.0."
+    },
+    "ui_volume": {
+      "file": "settings",
+      "key": "ui_volume",
+      "label": "Audio > UI",
+      "type": "float",
+      "default": "0.5",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "Linear 0.0-1.0."
+    },
+    "lives_system": {
+      "file": "settings",
+      "key": "modified_life_decrement",
+      "label": "Gameplay > Lives System",
+      "type": "bool",
+      "values": {
+        "false": "Off",
+        "true": "On"
+      },
+      "default": "true",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "false = Classic, true = Mario Maker (in co-op all players must die to lose a life)."
+    },
+    "level_layout_type": {
+      "file": "settings",
+      "key": "level_layout_type",
+      "label": "Gameplay > Level Layouts",
+      "type": "int",
+      "values": {
+        "0": "SNES",
+        "1": "GBA"
+      },
+      "default": "0",
+      "per_game": false,
+      "verified_on_device": false
+    },
+    "disable_auto_scroll": {
+      "file": "settings",
+      "key": "disable_auto_scroll",
+      "label": "Gameplay > Disable auto scroll",
+      "type": "bool",
+      "values": {
+        "false": "Off",
+        "true": "On"
+      },
+      "default": "false",
+      "per_game": false,
+      "verified_on_device": false
+    },
+    "timer_enabled": {
+      "file": "settings",
+      "key": "timer_enabled",
+      "label": "Gameplay > Speedrun Timer",
+      "type": "bool",
+      "values": {
+        "false": "Off",
+        "true": "On"
+      },
+      "default": "false",
+      "per_game": false,
+      "verified_on_device": false
+    },
+    "timer_type": {
+      "file": "settings",
+      "key": "timer_type",
+      "label": "Gameplay > Speedrun Timer Type",
+      "type": "int",
+      "values": {
+        "0": "Per-Save",
+        "1": "Per-Level"
+      },
+      "default": "0",
+      "per_game": false,
+      "verified_on_device": false
+    },
+    "camera_shake": {
+      "file": "settings",
+      "key": "camera_shake",
+      "label": "Gameplay > Camera Shake",
+      "type": "bool",
+      "values": {
+        "false": "Off",
+        "true": "On"
+      },
+      "default": "true",
+      "per_game": false,
+      "verified_on_device": false
+    },
+    "autumn_type": {
+      "file": "settings",
+      "key": "autumn_type",
+      "label": "Gameplay > Autumn (Fall) Style",
+      "type": "int",
+      "values": {
+        "0": "Overhaul",
+        "1": "Classic"
+      },
+      "default": "0",
+      "per_game": false,
+      "verified_on_device": false
+    },
+    "character_specific_physics": {
+      "file": "settings",
+      "key": "character_specific_physics",
+      "label": "Gameplay > Unique Character Physics",
+      "type": "bool",
+      "values": {
+        "false": "Off",
+        "true": "On"
+      },
+      "default": "false",
+      "per_game": false,
+      "verified_on_device": false
+    },
+    "player_damage_style": {
+      "file": "settings",
+      "key": "player_damage_style",
+      "label": "Gameplay > Player Damage Style",
+      "type": "int",
+      "values": {
+        "0": "Modern",
+        "1": "Classic"
+      },
+      "default": "0",
+      "per_game": false,
+      "verified_on_device": false
+    },
+    "yoshi_spawn_pause": {
+      "file": "settings",
+      "key": "yoshi_spawn_pause",
+      "label": "Gameplay > Yoshi Spawn Pause",
+      "type": "bool",
+      "values": {
+        "false": "Off",
+        "true": "On"
+      },
+      "default": "false",
+      "per_game": false,
+      "verified_on_device": false
+    },
+    "fast_map_unlock_speed": {
+      "file": "settings",
+      "key": "fast_map_unlock_speed",
+      "label": "Gameplay > Faster Map Unlock Speed",
+      "type": "bool",
+      "values": {
+        "false": "Off",
+        "true": "On"
+      },
+      "default": "false",
+      "per_game": false,
+      "verified_on_device": false
+    },
+    "edible_dolphins": {
+      "file": "settings",
+      "key": "edible_dolphins",
+      "label": "Gameplay > Edible Dolphins",
+      "type": "bool",
+      "values": {
+        "false": "Off",
+        "true": "On"
+      },
+      "default": "false",
+      "per_game": false,
+      "verified_on_device": false
+    },
+    "holding_spin_jump": {
+      "file": "settings",
+      "key": "holding_spin_jump",
+      "label": "Gameplay > Spin Jump While Holding",
+      "type": "bool",
+      "values": {
+        "false": "Off",
+        "true": "On"
+      },
+      "default": "false",
+      "per_game": false,
+      "verified_on_device": false
+    },
+    "auto_item_drop": {
+      "file": "settings",
+      "key": "auto_item_drop",
+      "label": "Gameplay > Auto Reserve Item Drop",
+      "type": "bool",
+      "values": {
+        "false": "Off",
+        "true": "On"
+      },
+      "default": "true",
+      "per_game": false,
+      "verified_on_device": false
+    },
+    "show_level_start_text": {
+      "file": "settings",
+      "key": "show_level_start_text",
+      "label": "Gameplay > Show Level Start Text",
+      "type": "bool",
+      "values": {
+        "false": "Off",
+        "true": "On"
+      },
+      "default": "true",
+      "per_game": false,
+      "verified_on_device": false
+    },
+    "wall_jump": {
+      "file": "settings",
+      "key": "wall_jump",
+      "label": "Moveset > Wall Jump",
+      "type": "bool",
+      "values": {
+        "false": "Off",
+        "true": "On"
+      },
+      "default": "false",
+      "per_game": false,
+      "verified_on_device": false
+    },
+    "ground_pound": {
+      "file": "settings",
+      "key": "ground_pound",
+      "label": "Moveset > Ground Pound",
+      "type": "bool",
+      "values": {
+        "false": "Off",
+        "true": "On"
+      },
+      "default": "false",
+      "per_game": false,
+      "verified_on_device": false
+    },
+    "air_twirl": {
+      "file": "settings",
+      "key": "air_twirl",
+      "label": "Moveset > Air Twirl",
+      "type": "bool",
+      "values": {
+        "false": "Off",
+        "true": "On"
+      },
+      "default": "false",
+      "per_game": false,
+      "verified_on_device": false
+    },
+    "dive": {
+      "file": "settings",
+      "key": "dive",
+      "label": "Moveset > Dive",
+      "type": "bool",
+      "values": {
+        "false": "Off",
+        "true": "On"
+      },
+      "default": "false",
+      "per_game": false,
+      "verified_on_device": false
+    },
+    "air_flutter": {
+      "file": "settings",
+      "key": "air_flutter",
+      "label": "Moveset > Yoshi Flutter Jump",
+      "type": "bool",
+      "values": {
+        "false": "Off",
+        "true": "On"
+      },
+      "default": "false",
+      "per_game": false,
+      "verified_on_device": false
+    },
+    "jump_buffer": {
+      "file": "settings",
+      "key": "jump_buffer",
+      "label": "Moveset > Jump Buffer",
+      "type": "bool",
+      "values": {
+        "false": "Off",
+        "true": "On"
+      },
+      "default": "true",
+      "per_game": false,
+      "verified_on_device": false
+    },
+    "coyote_time": {
+      "file": "settings",
+      "key": "coyote_time",
+      "label": "Moveset > Coyote Time",
+      "type": "bool",
+      "values": {
+        "false": "Off",
+        "true": "On"
+      },
+      "default": "false",
+      "per_game": false,
+      "verified_on_device": false
+    },
+    "fast_swim_accel": {
+      "file": "settings",
+      "key": "fast_swim_accel",
+      "label": "Moveset > Fast Swimming",
+      "type": "bool",
+      "values": {
+        "false": "Off",
+        "true": "On"
+      },
+      "default": "false",
+      "per_game": false,
+      "verified_on_device": false
+    },
+    "fast_climb": {
+      "file": "settings",
+      "key": "fast_climb",
+      "label": "Moveset > Faster Climbing",
+      "type": "bool",
+      "values": {
+        "false": "Off",
+        "true": "On"
+      },
+      "default": "false",
+      "per_game": false,
+      "verified_on_device": false
+    },
+    "hud_dragon_coin_style": {
+      "file": "settings",
+      "key": "hud_dragon_coin_style",
+      "label": "(not in the option scenes checked)",
+      "type": "int",
+      "default": "0",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "SettingsResource exports it as Classic/Compact."
+    },
+    "soundtrack_type": {
+      "file": "settings",
+      "key": "soundtrack_type",
+      "label": "(not in the option scenes checked)",
+      "type": "int",
+      "default": "0",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "Values not traced."
+    }
+  }
+}

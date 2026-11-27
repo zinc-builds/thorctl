@@ -1,0 +1,219 @@
+{
+  "name": "dualsouls",
+  "package": "igawa6.dualsouls",
+  "aliases": [
+    "hollow-knight",
+    "hk",
+    "hk-dual-souls"
+  ],
+  "category": "recomp",
+  "version_checked": "1.0.3",
+  "stop_before_write": true,
+  "files": {
+    "options": {
+      "path": "/sdcard/Android/data/igawa6.dualsouls/files/hkds_options.json",
+      "format": "json",
+      "notes": "Unity JsonUtility, flat: {\"dualScreen\":1,\"touch\":\"auto\"}. Written by the two rows the port adds to Hollow Knight's own Options screens; read once per run (cached), so force-stop before editing. When present it wins over hkds_layout.json for these two settings.",
+      "template": "{\"dualScreen\":1,\"touch\":\"auto\"}"
+    },
+    "layout": {
+      "path": "/sdcard/Android/data/igawa6.dualsouls/files/hkds_layout.json",
+      "format": "json",
+      "notes": "Hand-edited dual-screen runtime config (HKLayout, ~150 flat fields). The app never writes it: it hot-reloads on mtime about 3 times a second, so edits apply live without a restart. Include only the keys you change; unknown keys are ignored (logged once). JsonUtility needs flat name-keyed fields; an empty or half-written file keeps the previous config. stop_before_write is not needed for this file.",
+      "template": "{}"
+    },
+    "tweaks": {
+      "path": "/sdcard/Android/data/igawa6.dualsouls/files/tweaks.json",
+      "format": "json",
+      "notes": "Mod-menu (QoL/cheat) state, with per-save snapshots. Edit in the bottom-screen mod pane, not here."
+    }
+  },
+  "per_game": null,
+  "keys": {
+    "dual_screen": {
+      "file": "options",
+      "key": "dualScreen",
+      "label": "Options > Game > Dual Screen",
+      "type": "enum",
+      "values": {
+        "1": "On (HUD and companion on the bottom screen)",
+        "0": "Off (HUD on top, bottom blank)"
+      },
+      "default": "1",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "Once this file exists it overrides hkds_layout.json dualScreen. Forced 0 when no second display is detected. From igawa6/dualsouls Assets/*.cs at main (newer than the 1.0.3 release checked); not checked against a written file."
+    },
+    "touch_controls": {
+      "file": "options",
+      "key": "touch",
+      "label": "Options > Controller > Touch Controls",
+      "type": "enum",
+      "values": {
+        "\"auto\"": "Auto (only without a gamepad)",
+        "\"on\"": "On",
+        "\"off\"": "Off"
+      },
+      "default": "\"auto\"",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "Overrides hkds_layout.json touchControls. From igawa6/dualsouls Assets/*.cs at main (newer than the 1.0.3 release checked); not checked against a written file."
+    },
+    "companion": {
+      "file": "layout",
+      "key": "companion",
+      "label": "Bottom-screen companion (Map/Inventory/Charms)",
+      "type": "enum",
+      "values": {
+        "1": "On",
+        "0": "Off"
+      },
+      "default": "1",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "Also toggled at runtime with L3+R3. From igawa6/dualsouls Assets/*.cs at main (newer than the 1.0.3 release checked); not checked against a written file."
+    },
+    "swap_face_buttons": {
+      "file": "layout",
+      "key": "swapFaceButtons",
+      "label": "Swap A/B and X/Y",
+      "type": "enum",
+      "values": {
+        "1": "Swap (Thor's Nintendo layout)",
+        "0": "No swap"
+      },
+      "default": "1",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "From igawa6/dualsouls Assets/*.cs at main (newer than the 1.0.3 release checked); not checked against a written file."
+    },
+    "controller_type": {
+      "file": "layout",
+      "key": "forceType",
+      "label": "Controller glyphs",
+      "type": "enum",
+      "values": {
+        "\"AUTO\"": "Detect",
+        "\"NINTENDO\"": "Nintendo",
+        "\"XBOX\"": "Xbox 360",
+        "\"XBOX_ONE\"": "Xbox One",
+        "\"PS4\"": "PS4",
+        "\"PS5\"": "PS5",
+        "\"NONE\"": "None"
+      },
+      "default": "\"AUTO\"",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "From igawa6/dualsouls Assets/*.cs at main (newer than the 1.0.3 release checked); not checked against a written file."
+    },
+    "western_accept": {
+      "file": "layout",
+      "key": "westernAccept",
+      "label": "Menu accept button",
+      "type": "enum",
+      "values": {
+        "0": "Hollow Knight native (Switch layout: Japanese accept)",
+        "1": "Western (A = Submit with Nintendo glyphs)"
+      },
+      "default": "0",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "From igawa6/dualsouls Assets/*.cs at main (newer than the 1.0.3 release checked); not checked against a written file."
+    },
+    "touch_alpha": {
+      "file": "layout",
+      "key": "touchAlpha",
+      "label": "Virtual controller opacity",
+      "type": "float",
+      "default": "0.32",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "0-1. From igawa6/dualsouls Assets/*.cs at main (newer than the 1.0.3 release checked); not checked against a written file."
+    },
+    "stats": {
+      "file": "layout",
+      "key": "compStats",
+      "label": "Bottom-screen FPS + battery readout",
+      "type": "enum",
+      "values": {
+        "1": "On",
+        "0": "Off"
+      },
+      "default": "1",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "Build-time knob: needs a frame rebuild (scene change) to apply. From igawa6/dualsouls Assets/*.cs at main (newer than the 1.0.3 release checked); not checked against a written file."
+    },
+    "popup_black": {
+      "file": "layout",
+      "key": "compPopupBlack",
+      "label": "Dialogue on clean black",
+      "type": "enum",
+      "values": {
+        "1": "On",
+        "0": "Off"
+      },
+      "default": "1",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "From igawa6/dualsouls Assets/*.cs at main (newer than the 1.0.3 release checked); not checked against a written file."
+    },
+    "dim_sync": {
+      "file": "layout",
+      "key": "compDimSync",
+      "label": "Mirror top-screen fades on the bottom",
+      "type": "enum",
+      "values": {
+        "1": "On",
+        "0": "Off",
+        "2": "Force 55% (test)"
+      },
+      "default": "1",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "From igawa6/dualsouls Assets/*.cs at main (newer than the 1.0.3 release checked); not checked against a written file."
+    },
+    "kill_donut": {
+      "file": "layout",
+      "key": "killDonut",
+      "label": "Remove Knight ring light",
+      "type": "enum",
+      "values": {
+        "1": "Removed",
+        "0": "Original"
+      },
+      "default": "1",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "From igawa6/dualsouls Assets/*.cs at main (newer than the 1.0.3 release checked); not checked against a written file."
+    },
+    "kill_blue_flash": {
+      "file": "layout",
+      "key": "killBlueFlash",
+      "label": "Soften lifeblood screen flash",
+      "type": "enum",
+      "values": {
+        "1": "Soften (flashAlpha)",
+        "0": "Original"
+      },
+      "default": "1",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "Peak opacity in flashAlpha (float, 0.35). From igawa6/dualsouls Assets/*.cs at main (newer than the 1.0.3 release checked); not checked against a written file."
+    },
+    "mods_enabled": {
+      "file": "layout",
+      "key": "modsEnabled",
+      "label": "Skins/asset mods master switch",
+      "type": "enum",
+      "values": {
+        "1": "On",
+        "0": "Off (originals restored live)"
+      },
+      "default": "1",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "From igawa6/dualsouls Assets/*.cs at main (newer than the 1.0.3 release checked); not checked against a written file."
+    }
+  }
+}

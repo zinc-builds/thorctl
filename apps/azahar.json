@@ -1,0 +1,649 @@
+{
+  "name": "azahar",
+  "package": "io.github.lime3ds.android",
+  "aliases": [
+    "3ds",
+    "lime3ds",
+    "citra",
+    "n3ds"
+  ],
+  "category": "emulator",
+  "version_checked": "2127.0.1-googleplay",
+  "stop_before_write": true,
+  "files": {
+    "global": {
+      "path": "/sdcard/Azahar/config/config.ini",
+      "format": "ini",
+      "notes": "All emulator settings. Plain INI (inih for the core, ini4j for the app): '[Section]' then 'key = value', '#' comments, no Qt \\default flags. Section names have spaces as-is ([Data Storage]). The core reads keys only from the section in the glossary; the app's settings layer ignores sections (last non-empty value wins). An empty value or a missing key means the default. Never put the same key twice in one section (inih joins them with a newline and the value becomes invalid). Bools: write true/false. The core re-reads this file at every game boot and settings reload, but the app's Kotlin layer keeps its own copy from process start and rewrites the whole file when global settings are saved, so edit only while the app is stopped. File lives in the SAF user folder (content://...tree/primary:Azahar); on disk it is owned by MediaProvider (u0_a<N>:media_rw 660); write it through the /sdcard path as root so FUSE keeps owner and label."
+    },
+    "prefs": {
+      "path": "/data/data/io.github.lime3ds.android/shared_prefs/io.github.lime3ds.android_preferences.xml",
+      "format": "prefs",
+      "notes": "Not emulator settings: user-folder URI (CITRA_DIRECTORY), ROM folder (game_path), game library cache (Games set with titleId in decimal), legacy input mappings (InputMapping_*, migrated into config.ini [Controls] on first 2127 launch, then InputMapping_Migrated=true), overlay button positions, EmulationMenuSettings_ShowOverlay. Needs root. Read-only for adapters."
+    },
+    "installed_driver_meta": {
+      "path": "/data/data/io.github.lime3ds.android/files/gpu_driver/meta.json",
+      "format": "json",
+      "notes": "Metadata of the custom Vulkan driver currently extracted to files/gpu_driver/ (meta.json + library). This directory IS the driver selection: there is no config key. Empty or missing directory = system driver. Global only, read at app start (GpuDriverHelper.initializeDriverParameters). Zips live in /sdcard/Azahar/gpu_drivers/. Change drivers in the Driver Manager, not by file. Needs root."
+    }
+  },
+  "per_game": {
+    "path": "/sdcard/Azahar/config/custom/{game}.ini",
+    "format": "ini",
+    "game_id": "16-digit uppercase hex title ID, zero-padded (String.format(\"%016X\")), e.g. 00040000001CB400. Get it from the Games set in the prefs file (titleId is decimal there; convert to %016X), or from file names in /sdcard/Azahar/states/ and folder names in /sdcard/Azahar/load/textures/. Titles with ID 0 (e.g. stray '._' AppleDouble files) get no per-game file.",
+    "create": true,
+    "notes": "Holds only the overridden keys, same sections and 'key = value' form as config.ini. A key that is present overrides global; a missing key uses global; to go back to global, delete the line (the app deletes the whole file when the last override is removed). Do not leave empty values: the core then uses the built-in default, not the global value. Any glossary key can be overridden. If the directory config/custom/ does not exist, the app creates it on the first per-game save, and a hand-made folder and file work too. Read at every game boot by the core and at game launch by the app (both for game-list launches and external launch intents)."
+  },
+  "keys": {
+    "graphics_api": {
+      "file": "global",
+      "key": "Renderer/graphics_api",
+      "label": "Graphics API",
+      "type": "enum",
+      "values": {
+        "1": "OpenGLES",
+        "2": "Vulkan"
+      },
+      "default": "2",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Core enum GraphicsAPI also has 0=Software; the Android menu offers only 1 and 2. Not editable while a game runs."
+    },
+    "resolution": {
+      "file": "global",
+      "key": "Renderer/resolution_factor",
+      "label": "Internal Resolution",
+      "type": "enum",
+      "values": {
+        "0": "Auto (Screen Size)",
+        "1": "Native (400x240)",
+        "2": "2x Native (800x480)",
+        "3": "3x Native (1200x720)",
+        "4": "4x Native (1600x960)",
+        "5": "5x Native (2000x1200)",
+        "6": "6x Native (2400x1440)",
+        "7": "7x Native (2800x1680)",
+        "8": "8x Native (3200x1920)",
+        "9": "9x Native (3600x2160)",
+        "10": "10x Native (4000x2400)",
+        "11": "11x Native (4400x2640)",
+        "12": "12x Native (4800x2880)",
+        "13": "13x Native (5200x3120)",
+        "14": "14x Native (5600x3360)",
+        "15": "15x Native (6000x3600)",
+        "16": "16x Native (6400x3840)",
+        "17": "17x Native (6800x4080)",
+        "18": "18x Native (7200x4320)"
+      },
+      "default": "1",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Core range 0-18 (clamped)."
+    },
+    "async_shaders": {
+      "file": "global",
+      "key": "Renderer/async_shader_compilation",
+      "label": "Enable Asynchronous Shader Compilation",
+      "type": "bool",
+      "values": {
+        "true": "On (compile in background; temporary glitches)",
+        "false": "Off"
+      },
+      "default": "false",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "The comment in config.ini says default On; the effective Android default is false (Kotlin BooleanSetting.ASYNC_SHADERS, pushed to native). Vulkan only. Not editable while a game runs."
+    },
+    "disable_spirv_optimizer": {
+      "file": "global",
+      "key": "Renderer/disable_spirv_optimizer",
+      "label": "Disable SPIR-V Optimizer",
+      "type": "bool",
+      "values": {
+        "true": "Optimizer disabled (less stutter)",
+        "false": "Optimizer enabled"
+      },
+      "default": "true",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Vulkan only."
+    },
+    "hw_shader": {
+      "file": "global",
+      "key": "Renderer/use_hw_shader",
+      "label": "Enable Hardware Shader",
+      "type": "bool",
+      "values": {
+        "true": "Hardware (GPU) shaders",
+        "false": "Software shaders"
+      },
+      "default": "true",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Debug menu."
+    },
+    "accurate_mul": {
+      "file": "global",
+      "key": "Renderer/shaders_accurate_mul",
+      "label": "Accurate Multiplication",
+      "type": "bool",
+      "values": {
+        "true": "On (more accurate, slower)",
+        "false": "Off"
+      },
+      "default": "false",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Core default is true but the Android default is false (Kotlin). Only matters with hardware shaders. Not editable while a game runs."
+    },
+    "disk_shader_cache": {
+      "file": "global",
+      "key": "Renderer/use_disk_shader_cache",
+      "label": "Disk Shader Cache",
+      "type": "bool",
+      "values": {
+        "true": "On",
+        "false": "Off"
+      },
+      "default": "true",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Caches in /sdcard/Azahar/shaders/{opengl,vulkan}."
+    },
+    "texture_filter": {
+      "file": "global",
+      "key": "Renderer/texture_filter",
+      "label": "Texture Filter",
+      "type": "enum",
+      "values": {
+        "0": "None",
+        "1": "Anime4K (OpenGL only)",
+        "2": "Bicubic",
+        "3": "ScaleForce",
+        "4": "xBRZ",
+        "5": "MMPX"
+      },
+      "default": "0",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Core enum TextureFilter. With graphics_api=2 (Vulkan) and texture_filter=1, the app resets the value to 0 at game launch, saves it and shows a dialog."
+    },
+    "texture_sampling": {
+      "file": "global",
+      "key": "Renderer/texture_sampling",
+      "label": "Texture Sampling",
+      "type": "enum",
+      "values": {
+        "0": "Game Controlled",
+        "1": "Nearest Neighbor",
+        "2": "Linear"
+      },
+      "default": "0",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": ""
+    },
+    "linear_filtering": {
+      "file": "global",
+      "key": "Renderer/filter_mode",
+      "label": "Linear Filtering",
+      "type": "bool",
+      "values": {
+        "true": "Linear (smooth output)",
+        "false": "Nearest"
+      },
+      "default": "true",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Filtering of the final screen image."
+    },
+    "integer_scaling": {
+      "file": "global",
+      "key": "Renderer/use_integer_scaling",
+      "label": "Integer Scaling",
+      "type": "bool",
+      "values": {
+        "true": "On",
+        "false": "Off"
+      },
+      "default": "false",
+      "per_game": true,
+      "verified_on_device": false,
+      "notes": "Used when the layout allows. Added after 2126, so a config.ini last written by 2126 lacks it."
+    },
+    "vsync": {
+      "file": "global",
+      "key": "Renderer/use_vsync",
+      "label": "Enable V-Sync",
+      "type": "bool",
+      "values": {
+        "true": "On",
+        "false": "Off"
+      },
+      "default": "false",
+      "per_game": true,
+      "verified_on_device": false,
+      "notes": "Debug menu. Not editable while a game runs. A config.ini from 2126 or earlier still has the stale keys use_vsync_new and vsync_enabled; 2127 reads only use_vsync."
+    },
+    "speed_limit_enabled": {
+      "file": "global",
+      "key": "Renderer/use_frame_limit",
+      "label": "Limit Speed",
+      "type": "bool",
+      "values": {
+        "true": "Limited to frame_limit %",
+        "false": "Unlimited"
+      },
+      "default": "true",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "When false, native forces frame_limit=0 (unlimited)."
+    },
+    "speed_limit": {
+      "file": "global",
+      "key": "Renderer/frame_limit",
+      "label": "Limit Speed Percent",
+      "type": "int",
+      "values": {
+        "1-200": "Percent of normal speed (menu slider range); core clamps 0-1000"
+      },
+      "default": "100",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Written as an integer by the app; read by the core as a double."
+    },
+    "turbo_limit": {
+      "file": "global",
+      "key": "Core/turbo_limit",
+      "label": "Turbo Speed Limit",
+      "type": "int",
+      "values": {
+        "100-400": "Percent used while Turbo is active (menu slider range)"
+      },
+      "default": "200",
+      "per_game": true,
+      "verified_on_device": false,
+      "notes": "Kotlin-only (TurboHelper). The app writes it under [Core]; the [Renderer] turbo_limit line from the default file is not used by the app."
+    },
+    "skip_duplicate_frames": {
+      "file": "global",
+      "key": "Renderer/use_skip_duplicate_frames",
+      "label": "Skip Presenting Duplicate Frames",
+      "type": "bool",
+      "values": {
+        "true": "On",
+        "false": "Off"
+      },
+      "default": "false",
+      "per_game": true,
+      "verified_on_device": false,
+      "notes": "config.ini comment says default On; the Android default is false (Kotlin)."
+    },
+    "limit_frames_ahead_of_gpu": {
+      "file": "global",
+      "key": "Renderer/use_limit_frames_ahead_of_gpu",
+      "label": "Limit frames ahead of GPU",
+      "type": "bool",
+      "values": {
+        "true": "On (lower latency, maybe slower)",
+        "false": "Off"
+      },
+      "default": "false",
+      "per_game": true,
+      "verified_on_device": false,
+      "notes": ""
+    },
+    "simulate_gpu_timings": {
+      "file": "global",
+      "key": "Renderer/simulate_3ds_gpu_timings",
+      "label": "Simulate 3DS GPU Timings",
+      "type": "bool",
+      "values": {
+        "true": "On (stabilizes dynamic-FPS games)",
+        "false": "Off"
+      },
+      "default": "false",
+      "per_game": true,
+      "verified_on_device": false,
+      "notes": "config.ini comment says default 1; the core and Kotlin default is false. Debug menu."
+    },
+    "delay_render_thread": {
+      "file": "global",
+      "key": "Renderer/delay_game_render_thread_us",
+      "label": "Delay Game Render Thread",
+      "type": "int",
+      "values": {
+        "0-16000": "Microseconds of delay (0 = none)"
+      },
+      "default": "0",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Only useful for dynamic-FPS games."
+    },
+    "layout": {
+      "file": "global",
+      "key": "Layout/layout_option",
+      "label": "Landscape Screen Layout",
+      "type": "enum",
+      "values": {
+        "0": "Original",
+        "1": "Single Screen",
+        "2": "Large Screen",
+        "3": "Side by Side Screens",
+        "4": "Hybrid Screens",
+        "5": "Custom Layout"
+      },
+      "default": "2",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Layout of the main (built-in top) display. On Android the core enum has no SeparateWindows, so 4=Hybrid and 5=Custom. Changed live from the in-game quick menu. On the Thor, 1 (Single Screen) with secondary_display_layout=2 puts the bottom screen on the second display."
+    },
+    "swap_screens": {
+      "file": "global",
+      "key": "Layout/swap_screen",
+      "label": "Swap Screens",
+      "type": "bool",
+      "values": {
+        "true": "Bottom screen is prominent",
+        "false": "Top screen is prominent"
+      },
+      "default": "false",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "With Single Screen, true shows the bottom screen on the main display. The opposite-screen secondary layout follows it. Quick-menu toggle."
+    },
+    "upright": {
+      "file": "global",
+      "key": "Layout/upright_screen",
+      "label": "Rotate Screen Upright",
+      "type": "bool",
+      "values": {
+        "true": "Screens rotated upright",
+        "false": "Not rotated"
+      },
+      "default": "false",
+      "per_game": true,
+      "verified_on_device": false,
+      "notes": ""
+    },
+    "aspect_ratio": {
+      "file": "global",
+      "key": "Layout/aspect_ratio",
+      "label": "Aspect Ratio",
+      "type": "enum",
+      "values": {
+        "0": "Default",
+        "1": "16:9",
+        "2": "4:3",
+        "3": "21:9",
+        "4": "16:10",
+        "5": "Stretch"
+      },
+      "default": "0",
+      "per_game": true,
+      "verified_on_device": false,
+      "notes": "Aspect ratio of the emulated screens."
+    },
+    "small_screen_position": {
+      "file": "global",
+      "key": "Layout/small_screen_position",
+      "label": "Small Screen Position",
+      "type": "enum",
+      "values": {
+        "0": "Top Right",
+        "1": "Middle Right",
+        "2": "Bottom Right",
+        "3": "Top Left",
+        "4": "Middle Left",
+        "5": "Bottom Left",
+        "6": "Above",
+        "7": "Below"
+      },
+      "default": "0",
+      "per_game": true,
+      "verified_on_device": false,
+      "notes": "Large Screen layout only. The menu labels 2 as 'Bottom Right (Default)' and the core default is 2, but the Android default actually applied is 0 (Kotlin IntSetting default, pushed to native)."
+    },
+    "large_screen_proportion": {
+      "file": "global",
+      "key": "Layout/large_screen_proportion",
+      "label": "Large Screen Proportion",
+      "type": "float",
+      "values": {
+        "1.0-5.0": "Large:small size ratio (menu range); core clamps 1-16"
+      },
+      "default": "2.25",
+      "per_game": true,
+      "verified_on_device": false,
+      "notes": "Large Screen layout only. Stored as a float, e.g. 2.25."
+    },
+    "screen_gap": {
+      "file": "global",
+      "key": "Layout/screen_gap",
+      "label": "Screen Gap",
+      "type": "int",
+      "values": {
+        "0-480": "Gap in px relative to the 240px height of the larger screen"
+      },
+      "default": "0",
+      "per_game": true,
+      "verified_on_device": false,
+      "notes": "All two-screen layouts."
+    },
+    "screen_orientation": {
+      "file": "global",
+      "key": "Layout/screen_orientation",
+      "label": "Screen Orientation",
+      "type": "enum",
+      "values": {
+        "2": "Automatic",
+        "0": "Landscape",
+        "8": "Reverse Landscape",
+        "1": "Portrait",
+        "9": "Reverse Portrait"
+      },
+      "default": "2",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Android ActivityInfo orientation constant, applied by the Kotlin layer (EmulationActivity). A config.ini created from the default file also has an empty screen_orientation line under [Storage]; leave it empty."
+    },
+    "portrait_layout": {
+      "file": "global",
+      "key": "Layout/portrait_layout_option",
+      "label": "Portrait Screen Layout",
+      "type": "enum",
+      "values": {
+        "0": "Default",
+        "2": "Original",
+        "1": "Custom Layout"
+      },
+      "default": "0",
+      "per_game": true,
+      "verified_on_device": false,
+      "notes": "Used only when the main display is in portrait. Core enum PortraitLayoutOption {0 TopFullWidth, 1 Custom, 2 Original}."
+    },
+    "secondary_display": {
+      "file": "global",
+      "key": "Layout/enable_secondary_display",
+      "label": "Enable Secondary Display",
+      "type": "bool",
+      "values": {
+        "true": "Azahar draws on an extra display (the Thor's second screen) using secondary_display_layout",
+        "false": "Android manages connected displays (mirror)"
+      },
+      "default": "true",
+      "per_game": true,
+      "verified_on_device": false,
+      "notes": "Kotlin-only (SecondaryDisplay.kt). Which display is used is chosen in the in-game quick menu and kept in memory only. Added after 2126."
+    },
+    "secondary_display_layout": {
+      "file": "global",
+      "key": "Layout/secondary_display_layout",
+      "label": "Secondary Display Layout",
+      "type": "enum",
+      "values": {
+        "4": "Opposite Screen",
+        "1": "Top Screen",
+        "2": "Bottom Screen",
+        "3": "Side by Side Screens",
+        "5": "Original",
+        "6": "Hybrid Screens",
+        "7": "Large Screen",
+        "0": "None (legacy; no longer offered)"
+      },
+      "default": "4",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "What the second display shows. On the Thor this is the lower built-in screen. 4 shows whichever screen is not prominent on the main display. Core enum SecondaryDisplayLayout."
+    },
+    "perf_overlay": {
+      "file": "global",
+      "key": "Layout/performance_overlay_enable",
+      "label": "Enable Performance Overlay",
+      "type": "bool",
+      "values": {
+        "true": "Shown",
+        "false": "Hidden"
+      },
+      "default": "false",
+      "per_game": true,
+      "verified_on_device": false,
+      "notes": "Kotlin-only. Toggling it in the in-game menu saves it immediately (SettingsFile.saveSetting)."
+    },
+    "perf_overlay_position": {
+      "file": "global",
+      "key": "Layout/performance_overlay_position",
+      "label": "Overlay Position",
+      "type": "enum",
+      "values": {
+        "0": "Top Left",
+        "1": "Center Top",
+        "2": "Top Right",
+        "3": "Bottom Left",
+        "4": "Center Bottom",
+        "5": "Bottom Right"
+      },
+      "default": "0",
+      "per_game": true,
+      "verified_on_device": false,
+      "notes": "Kotlin-only. The app writes it under [Layout]; the empty line under [Storage] from the default file is unused."
+    },
+    "perf_overlay_show_fps": {
+      "file": "global",
+      "key": "Layout/performance_overlay_show_fps",
+      "label": "Show FPS",
+      "type": "bool",
+      "values": {
+        "true": "Shown",
+        "false": "Hidden"
+      },
+      "default": "true",
+      "per_game": true,
+      "verified_on_device": false,
+      "notes": "Kotlin-only. Sibling keys: performance_overlay_show_frame_time, _show_speed, _show_app_ram_usage, _show_available_ram, _show_battery_temp (default false), performance_overlay_background (default false)."
+    },
+    "cpu_clock": {
+      "file": "global",
+      "key": "Core/cpu_clock_percentage",
+      "label": "CPU Clock Speed",
+      "type": "int",
+      "values": {
+        "25-400": "Percent of the 3DS CPU clock (menu slider range); core clamps 5-400"
+      },
+      "default": "100",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Debug menu. Underclocking can speed up heavy games at the risk of freezes; overclocking can remove console-native lag."
+    },
+    "new_3ds": {
+      "file": "global",
+      "key": "System/is_new_3ds",
+      "label": "New 3DS Mode",
+      "type": "bool",
+      "values": {
+        "true": "New 3DS",
+        "false": "Old 3DS"
+      },
+      "default": "true",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Not editable while a game runs."
+    },
+    "region": {
+      "file": "global",
+      "key": "System/region_value",
+      "label": "Region",
+      "type": "enum",
+      "values": {
+        "-1": "Auto-Select",
+        "0": "JPN",
+        "1": "USA",
+        "2": "EUR",
+        "3": "AUS",
+        "4": "CHN",
+        "5": "KOR",
+        "6": "TWN"
+      },
+      "default": "-1",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "Not editable while a game runs. The system language is not in config.ini; it lives in the emulated system save (nand), set in System settings."
+    },
+    "audio_emulation": {
+      "file": "global",
+      "key": "Audio/audio_emulation",
+      "label": "(no Android menu entry)",
+      "type": "enum",
+      "values": {
+        "0": "HLE",
+        "1": "LLE",
+        "2": "LLE Multithreaded"
+      },
+      "default": "0",
+      "per_game": true,
+      "verified_on_device": false,
+      "notes": "Read by the core on Android but not exposed in the Android menu; the app never writes it, so a file edit stays. Replaces the stale enable_dsp_lle / enable_dsp_lle_thread keys that older config files still have. LLE is far slower."
+    },
+    "audio_stretching": {
+      "file": "global",
+      "key": "Audio/enable_audio_stretching",
+      "label": "Audio Stretching",
+      "type": "bool",
+      "values": {
+        "true": "On (smoother audio when slow, more latency)",
+        "false": "Off"
+      },
+      "default": "false",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": "config.ini comment says default 1; the Android default is false."
+    },
+    "volume": {
+      "file": "global",
+      "key": "Audio/volume",
+      "label": "Volume",
+      "type": "float",
+      "values": {
+        "0.0-1.0": "Raw volume, 1.0 = 100% (the menu shows 0-100 and divides by 100 when saving)"
+      },
+      "default": "1.0",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": ""
+    },
+    "custom_textures": {
+      "file": "global",
+      "key": "Utility/custom_textures",
+      "label": "Custom Textures",
+      "type": "bool",
+      "values": {
+        "true": "Load PNGs from load/textures/<TITLEID>/",
+        "false": "Off"
+      },
+      "default": "false",
+      "per_game": true,
+      "verified_on_device": true,
+      "notes": ""
+    }
+  }
+}

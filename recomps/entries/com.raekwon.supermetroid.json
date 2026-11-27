@@ -1,0 +1,40 @@
+{
+ "package": "com.raekwon.supermetroid",
+ "name": "Super Metroid",
+ "original": {
+  "title": "Super Metroid",
+  "platform": "SNES",
+  "year": 1994
+ },
+ "kind": "decompilation",
+ "project": {
+  "name": "snesrev/sm (Super Metroid Android dual-screen fork)",
+  "repo": "https://github.com/snesrev/sm",
+  "android_repo": "https://github.com/Raekwon1603/super_metroid-android",
+  "license": null
+ },
+ "version_checked": "0.1",
+ "update": {
+  "channel": "GitHub releases",
+  "url": "https://github.com/Raekwon1603/super_metroid-android/releases"
+ },
+ "assets": {
+  "needs": "Super Metroid (Japan, USA) (En,Ja) SNES ROM. Picked once with the document picker on first launch; the app copies it to sm.smc.",
+  "location": "/sdcard/Android/data/com.raekwon.supermetroid/files/sm.smc (AndroidImpl_GetRomPath = SDL external storage path + /sm.smc).",
+  "notes": "The first start right after import shows a black screen; later starts work."
+ },
+ "settings": {
+  "adapter": "supermetroid",
+  "files": [
+   "/sdcard/Android/data/com.raekwon.supermetroid/files/sm.ini",
+   "/data/data/com.raekwon.supermetroid/shared_prefs/secondscreen.xml"
+  ],
+  "in_app_menu": "Bottom screen > Setup tab (status strip on map, hide main HUD, save states, clear map markers, autosave on exit). Everything else only in sm.ini.",
+  "summary": "sm.ini (snesrev format) is copied from the APK on first launch and read once at game start: NewRenderer, EnhancedMode7, NoSpriteLimits, IgnoreAspectRatio, LinearFiltering, audio rate/buffer, DisableFrameDelay, Autosave, gamepad map, quicksave/quickload combos (L1+R1+Start / L1+R1+Back). Android ignores OutputMethod (always SDL_Renderer), Fullscreen and WindowSize; AutoRun currently does nothing (gameplay runs on the bundled SNES emulator core). Bottom-screen toggles are in SharedPreferences 'secondscreen'. No widescreen option."
+ },
+ "controls": "SDL2 gamepad. On the Thor, A/B are remapped to the Nintendo-style layout in main.c, and L2/R2 cycle the armed ammo (handled in MainActivity.dispatchKeyEvent, keycodes 104/105). Quicksave L1+R1+Start, quickload L1+R1+Back (slot 0). No touch controls for gameplay; the bottom screen is touch.",
+ "display": "Game on the top screen (immersive fullscreen, 4:3). Bottom screen is an Android Presentation with Map (live explored map, HP/ammo strip, markers), Items and Setup tabs. Known issue from the README: an occasional black screen when launched right after another game from Cocoon; closing and relaunching fixes it.",
+ "saves": "/sdcard/Android/data/com.raekwon.supermetroid/files/saves/ (sm.srm in-game SRAM plus sm.srm.bak, save%d.sav save states, autosave_thumb.bin).",
+ "notes": "The v1.1 (Super.Metroid.Dual.Screen.apk) and v1.2 (app-debug.apk) release assets share SHA-256 57dddd0b...; v1.2 (2026-09-08) is the latest. The author has stopped work on this repo and moved to MetroidArch, a dual-screen RetroArch fork (https://github.com/Raekwon1603/RetroArch, branch metroidarch-dual-screen, package com.metroidarch.app.aarch64). Gameplay runs on snesrev/sm's bundled 65816/SPC700 emulator core rather than the decompiled C. Known open bug: rapid uncharged beam shots are silent after the first.",
+ "verified": "Device: version, install time, data dir, ROM location. APK: SHA-256 against GitHub releases, sm.ini asset, jadx of MainActivity/SetupActivity/MapStatusView (paths, prefs keys), libmain.so strings. GitHub: README, src/config.c and src/main.c (ini parsing, sm.user.ini precedence, chdir to external files dir). Not checked: running the game."
+}

@@ -1,0 +1,259 @@
+{
+  "name": "supermetroid",
+  "package": "com.raekwon.supermetroid",
+  "aliases": [
+    "sm",
+    "super-metroid",
+    "metroid"
+  ],
+  "category": "recomp",
+  "version_checked": "0.1",
+  "stop_before_write": true,
+  "files": {
+    "ini": {
+      "path": "/sdcard/Android/data/com.raekwon.supermetroid/files/sm.ini",
+      "format": "ini",
+      "notes": "snesrev/sm config (src/config.c). Copied from the APK by SetupActivity on first launch when missing; the native code chdirs to the external files dir and reads sm.ini once at game start, and never writes it. If sm.user.ini exists in the same folder it is read INSTEAD of sm.ini (not merged). The template below is the APK's sm.ini, so editing before the first launch is safe: the app only copies its own when the file is missing.",
+      "template": "[General]\n# Automatically save state on quit and reload on start\nAutosave = 0\n\n# Disable the SDL_Delay that happens each frame (Gives slightly better perf if your\n# display is set to exactly 60hz)\nDisableFrameDelay = 0\n\n# Currently has no effect: gameplay on Android runs on the bundled\n# byte-accurate CPU emulator core rather than this project's decompiled C\n# game logic (see README.md), and this option was only ever implemented as\n# a decompiled-C hook. Left here as a placeholder in case it's reimplemented\n# at the emulator/input layer.\nAutoRun = 1\n\n[Graphics]\n# Window size ( Auto or WidthxHeight )\nWindowSize = Auto\n\n# Fullscreen mode (0=windowed, 1=desktop fullscreen, 2=fullscreen w/mode change)\n# Irrelevant on Android - MainActivity already forces the Activity fullscreen/immersive.\nFullscreen = 0\n\n# Window scale (1=100%, 2=200%, 3=300%, etc.)\nWindowScale = 3\n\n# Use an optimized (but potentially more buggy) SNES PPU implementation\nNewRenderer = 1\n\n# Display the world map with higher resolution\nEnhancedMode7 = 1\n\n# Don't keep the aspect ratio\nIgnoreAspectRatio = 0\n\n# Enable this option to remove the sprite limits per scan line\nNoSpriteLimits = 1\n\n# Android always uses the SDL_Renderer backend regardless of this setting\n# (see the __ANDROID__ guard in main.c - opengl.c isn't even compiled in).\nOutputMethod = SDL\n\n# Set to true to use linear filtering. Gives less crisp pixels.\nLinearFiltering = 0\n\n[Sound]\nEnableAudio = 1\n\n# DSP frequency in samples per second (e.g. 48000, 44100, 32000, 22050, 11025)\nAudioFreq = 32000\n\n# number of separate sound channels (1=mono, 2=stereo)\nAudioChannels = 2\n\n# Audio buffer size in samples (power of 2; e.g., 4096, 2048, 1024) [try 1024 if sound is crackly].\nAudioSamples = 512\n\n[GamepadMap]\n# Any keys used in KeyMap can be used also in this section.\n# The shoulder button is called L1/Lb and L2, and the thumbstick button is called L3\nControls = DpadUp, DpadDown, DpadLeft, DpadRight, Back, Start, B, A, Y, X, Lb, Rb\n\n# No physical keyboard on Android, so the desktop's F1-F10 quicksave/load\n# keys are unreachable there - bind a gamepad combo instead. Hold L1+R1 and\n# press Start to quicksave, or Back/Select to quickload (slot 0).\nSave = L1+R1+Start\nLoad = L1+R1+Back\n\n# Cycle the currently-armed ammo (Missile/Super/Power Bomb/none) without\n# needing to open the second screen's AMMO tab - same effect as pressing\n# Select on the controller repeatedly (skips any type with 0 owned), just\n# reachable from a single button instead. L2/R2 aren't used by SM itself\n# (SNES only has 8 real buttons), so they're free for this.\n# NOTE (Android/Thor build specifically): this binding only takes effect on\n# gamepads where SDL actually reports L2/R2 as SDL_CONTROLLERAXISMOTION\n# trigger events. The Thor's own built-in controller reports them as plain\n# digital key events instead (AKEYCODE_BUTTON_L2/R2), which SDL's Android\n# joystick layer maps to raw joystick button indices outside the\n# SDL_GameController button enum - main.c's gamepad event loop never sees\n# them, so this line is a no-op on that specific hardware. For the Thor,\n# L2/R2 are instead intercepted directly at the Android KeyEvent level in\n# MainActivity.dispatchKeyEvent (see its own comment) - kept independent of\n# this config file/section entirely.\nCycleAmmoNext = R2\nCycleAmmoPrev = L2\n"
+    },
+    "prefs": {
+      "path": "/data/data/com.raekwon.supermetroid/shared_prefs/secondscreen.xml",
+      "format": "prefs",
+      "notes": "SharedPreferences 'secondscreen' written by the bottom screen's Setup tab (MapStatusView). Absent until the Setup tab is used. Also holds mapPins (string)."
+    }
+  },
+  "per_game": null,
+  "keys": {
+    "new_renderer": {
+      "file": "ini",
+      "key": "Graphics/NewRenderer",
+      "label": "(ini only)",
+      "type": "enum",
+      "values": {
+        "0": "Off",
+        "1": "On"
+      },
+      "default": "1",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "Optimised SNES PPU renderer. ParseBool accepts 0/1/true/false/yes/no/on/off."
+    },
+    "enhanced_mode7": {
+      "file": "ini",
+      "key": "Graphics/EnhancedMode7",
+      "label": "(ini only)",
+      "type": "enum",
+      "values": {
+        "0": "Off",
+        "1": "On"
+      },
+      "default": "1",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "Higher-resolution Mode 7 (Ceres/intro rotation). ParseBool accepts 0/1/true/false/yes/no/on/off."
+    },
+    "no_sprite_limits": {
+      "file": "ini",
+      "key": "Graphics/NoSpriteLimits",
+      "label": "(ini only)",
+      "type": "enum",
+      "values": {
+        "0": "Off",
+        "1": "On"
+      },
+      "default": "1",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "Remove the per-scanline sprite limit. ParseBool accepts 0/1/true/false/yes/no/on/off."
+    },
+    "ignore_aspect_ratio": {
+      "file": "ini",
+      "key": "Graphics/IgnoreAspectRatio",
+      "label": "(ini only)",
+      "type": "enum",
+      "values": {
+        "0": "Off",
+        "1": "On"
+      },
+      "default": "0",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "1 = stretch to fill the screen. ParseBool accepts 0/1/true/false/yes/no/on/off."
+    },
+    "linear_filtering": {
+      "file": "ini",
+      "key": "Graphics/LinearFiltering",
+      "label": "(ini only)",
+      "type": "enum",
+      "values": {
+        "0": "Off",
+        "1": "On"
+      },
+      "default": "0",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "Bilinear filtering. ParseBool accepts 0/1/true/false/yes/no/on/off."
+    },
+    "enable_audio": {
+      "file": "ini",
+      "key": "Sound/EnableAudio",
+      "label": "(ini only)",
+      "type": "enum",
+      "values": {
+        "0": "Off",
+        "1": "On"
+      },
+      "default": "1",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "ParseBool accepts 0/1/true/false/yes/no/on/off."
+    },
+    "disable_frame_delay": {
+      "file": "ini",
+      "key": "General/DisableFrameDelay",
+      "label": "(ini only)",
+      "type": "enum",
+      "values": {
+        "0": "Off",
+        "1": "On"
+      },
+      "default": "0",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "Skip the per-frame SDL_Delay. ParseBool accepts 0/1/true/false/yes/no/on/off."
+    },
+    "autosave": {
+      "file": "ini",
+      "key": "General/Autosave",
+      "label": "(ini only; see autosave_on_exit)",
+      "type": "enum",
+      "values": {
+        "0": "Off",
+        "1": "On"
+      },
+      "default": "0",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "Engine save-state on quit / load on start. Parsed with strtol: use 0/1. The Setup tab's 'Autosave on exit' is a separate pref."
+    },
+    "auto_run": {
+      "file": "ini",
+      "key": "General/AutoRun",
+      "label": "(ini only)",
+      "type": "enum",
+      "values": {
+        "0": "Off",
+        "1": "On"
+      },
+      "default": "1",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "Has no effect in this build: gameplay runs on the bundled emulator core and AutoRun was a decompiled-C hook (README, sm.ini comment)."
+    },
+    "audio_freq": {
+      "file": "ini",
+      "key": "Sound/AudioFreq",
+      "label": "(ini only)",
+      "type": "enum",
+      "values": {
+        "48000": "48 kHz",
+        "44100": "44.1 kHz",
+        "32000": "32 kHz (shipped)",
+        "22050": "22 kHz",
+        "11025": "11 kHz"
+      },
+      "default": "32000",
+      "per_game": false,
+      "verified_on_device": false
+    },
+    "audio_samples": {
+      "file": "ini",
+      "key": "Sound/AudioSamples",
+      "label": "(ini only)",
+      "type": "enum",
+      "values": {
+        "256": "256",
+        "512": "512",
+        "1024": "1024 (try if audio crackles)",
+        "2048": "2048",
+        "4096": "4096"
+      },
+      "default": "512",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "Power of two."
+    },
+    "gamepad_controls": {
+      "file": "ini",
+      "key": "GamepadMap/Controls",
+      "label": "(ini only)",
+      "type": "string",
+      "default": "DpadUp, DpadDown, DpadLeft, DpadRight, Back, Start, B, A, Y, X, Lb, Rb",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "SNES order Up, Down, Left, Right, Select, Start, A, B, X, Y, L, R. main.c additionally swaps A/B for the Thor (RemapSdlButton under __ANDROID__), so the shipped line already gives the Nintendo layout."
+    },
+    "quicksave_combo": {
+      "file": "ini",
+      "key": "GamepadMap/Save",
+      "label": "(ini only)",
+      "type": "string",
+      "default": "L1+R1+Start",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "Save state slot 0."
+    },
+    "quickload_combo": {
+      "file": "ini",
+      "key": "GamepadMap/Load",
+      "label": "(ini only)",
+      "type": "string",
+      "default": "L1+R1+Back",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "Load state slot 0."
+    },
+    "show_status_on_map": {
+      "file": "prefs",
+      "key": "showStatusOnMap",
+      "label": "Setup > Status on map",
+      "type": "bool",
+      "values": {
+        "false": "Off",
+        "true": "On"
+      },
+      "default": "false",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "HP/missile/super/power-bomb strip along the top of the Map tab. getBoolean default false."
+    },
+    "hide_main_hud": {
+      "file": "prefs",
+      "key": "hideMainHud",
+      "label": "Setup > Hide main HUD",
+      "type": "bool",
+      "values": {
+        "false": "Off",
+        "true": "On"
+      },
+      "default": "false",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "Hide the game's HUD on the top screen."
+    },
+    "autosave_on_exit": {
+      "file": "prefs",
+      "key": "autosaveOnExit",
+      "label": "Setup > Autosave on exit",
+      "type": "bool",
+      "values": {
+        "false": "Off",
+        "true": "On"
+      },
+      "default": "",
+      "per_game": false,
+      "verified_on_device": false,
+      "notes": "Update the AUTOSAVE state slot when the app closes. Absent = never chosen (the app treats it as unset, state -1)."
+    }
+  }
+}

@@ -1,0 +1,40 @@
+{
+ "package": "com.ff7recomp",
+ "name": "Final Fantasy VII",
+ "original": {
+  "title": "Final Fantasy VII",
+  "platform": "PC (current Steam release; game first released on PS1 1997, PC 1998)",
+  "year": 1998
+ },
+ "kind": "static recompilation",
+ "project": {
+  "name": "FF7Recomp (pcrecomp-style x86 to C, FFNx renderer, 7th Heaven-style mod launcher)",
+  "repo": "https://github.com/bhuiyah/ff7-recomp-android",
+  "android_repo": "https://github.com/bhuiyah/ff7-recomp-android",
+  "license": "GPL-3.0"
+ },
+ "version_checked": "1.1.63",
+ "update": {
+  "channel": "GitHub releases (the launcher also checks for updates itself; pref update_checked)",
+  "url": "https://github.com/bhuiyah/ff7-recomp-android/releases"
+ },
+ "assets": {
+  "needs": "FINAL FANTASY VII (current Steam release, not the 2013 Edition) game files: downloaded by the launcher from the user's Steam account (QR sign-in, ~3.3 GB) or imported from an install folder. The launcher then recompiles ff7_en.exe on the device (once, ~8-10 min).",
+  "location": "/sdcard/Android/data/com.ff7recomp/files/game (ff7_en.exe + data/); compiled game /data/data/com.ff7recomp/files/game/libff7.so.",
+  "notes": "After an app update, the launcher's 'Update the game' relinks the compiled game."
+ },
+ "settings": {
+  "adapter": "ff7recomp",
+  "files": [
+   "/data/data/com.ff7recomp/shared_prefs/launcher.xml",
+   "/sdcard/Android/data/com.ff7recomp/files/game/FFNx.toml"
+  ],
+  "in_app_menu": "Launcher > Settings (Frame rate, Performance, Display aspect, Resolution, Renderer, CRT filter, Screen/second screen, On-screen controls, Controller, boosters). Launcher > FFNx settings for raw FFNx.toml overrides.",
+  "summary": "Frame rate (Original / fixed / 30 FPS battles / 60 / 120 experimental / 60 with 30 battles), Performance (Cooler/Balanced/Best), Resolution (Auto or 1-4x), aspect (4:3, 16:9, 16:9 stretched), Vulkan or OpenGL ES, CRT filter, bottom-screen companion, booster speed / no encounters / battle enhancement, EXP/AP/Gil multipliers."
+ },
+ "controls": "Controller support (A confirms, B cancels), any-button swaps in Settings > Controller, keyboard map, on-screen touch controls (Automatic/Always/Off), rumble (None/Light/Strong).",
+ "display": "Game on the top screen; Thor bottom screen shows party status, location, enemy HP, world map with party position, and a touch deck (menu, save/load state, speed, random battles). Option to swap screens or free the bottom screen for Pixel Guide or other apps.",
+ "saves": "/sdcard/Android/data/com.ff7recomp/files/game/save (save00.ff7...save09.ff7). Save states in a savestates folder (SaveStates.java). Optional Steam Cloud sync (cloud_saves).",
+ "notes": "Mods from the 7th Heaven catalogs go in files/mods. FFNx.toml is regenerated from FFNx.template.toml before every start, so edit the launcher prefs, not the toml. Project states it was written with Claude Code and not human-reviewed.",
+ "verified": "On device: dumpsys, launcher.xml, steam.xml key names only, files/game and build.log tail, sdcard layout. APK: LauncherActivity/GameInstall (pref keys, option labels, FFNx.toml writer). Web: GitHub repo README and releases."
+}

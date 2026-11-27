@@ -1,0 +1,41 @@
+{
+ "package": "igawa6.dualsouls",
+ "name": "DualSouls (Hollow Knight)",
+ "original": {
+  "title": "Hollow Knight",
+  "platform": "PC (Steam/GOG v1.5.12620)",
+  "year": 2017
+ },
+ "kind": "source port",
+ "project": {
+  "name": "HK: Dual Souls",
+  "repo": "https://github.com/igawa6/dualsouls",
+  "android_repo": "https://github.com/igawa6/dualsouls",
+  "license": null
+ },
+ "version_checked": "1.0.3",
+ "update": {
+  "channel": "GitHub releases",
+  "url": "https://github.com/igawa6/dualsouls/releases"
+ },
+ "assets": {
+  "needs": "Your own Hollow Knight PC folder (Steam layout hollow_knight_Data or GOG Hollow Knight_Data, v1.5.12620, all 1761 files unmodified) plus hk-android-gog.xdelta from the same release. The app's Import Game screen patches them into its own OBB (~1 GB).",
+  "location": "Source: a Hollow Knight PC folder plus hk-android-gog.xdelta (924 MB), picked in Import Game. Built data: /sdcard/Android/data/igawa6.dualsouls/files/ (main.1.igawa6.dualsouls.obb + hk_data_stamp.txt).",
+  "notes": "Needs Files permission on Android 13+ or Unity will not mount the data. The xdelta must come from the same release as the APK (1.0.3)."
+ },
+ "settings": {
+  "adapter": "dualsouls",
+  "files": [
+   "/sdcard/Android/data/igawa6.dualsouls/files/hkds_options.json",
+   "/sdcard/Android/data/igawa6.dualsouls/files/hkds_layout.json",
+   "/sdcard/Android/data/igawa6.dualsouls/files/tweaks.json"
+  ],
+  "in_app_menu": "Hub screen at launch (Import Game, Save Files, Skins, Mod menu toggle). In game: Hollow Knight's own Options > Game/Controller screens carry two added rows (Dual Screen, Touch Controls); the bottom-screen gear opens the mod pane when Mod menu is ticked.",
+  "summary": "Dual Screen on/off, Touch Controls auto/on/off, controller glyph type and Nintendo face-button swap, bottom-screen companion, FPS/battery readout. Framerate is forced to 120 (vSync off) by the port; Hollow Knight's own video options live in Unity PlayerPrefs."
+ },
+ "controls": "Built-in Thor pad detected (vid 8224 / name 'odin' or 'ayn') and gets Nintendo glyphs with A/B and X/Y swapped by default (swapFaceButtons=1). External Xbox/PS4/PS5/Switch pads get their own glyphs. Touch controls appear when no pad is present. Rumble through the Thor motor.",
+ "display": "Built for the Thor: game on top; bottom screen (Presentation display) shows the HUD mirror plus Map/Inventory/Charms companion panes (touch), dialogue/tutorial overlays, FPS and battery. Set Dual Screen off to put the HUD back on top.",
+ "saves": "/sdcard/Android/data/igawa6.dualsouls/files/ (Hollow Knight's four save slots, per README; file names not checked). Hub > Save Files exports/imports slots. PC saves are not directly compatible. Uninstalling deletes saves and built data; Clear storage is a factory reset.",
+ "notes": "A same-version Unity (il2cpp) rebuild of the game made with AssetRipper; some shaders are hand-reconstructed, cutscenes re-encoded to VP8. Never uninstall to update: install over the top. If release notes say 'game data rebuild required', re-run Build game data with the new patch. Same author (igawa6) maintains a dual-screen Dusklight fork and other Thor ports.",
+ "verified": "On device: dumpsys, data dirs. APK: com.radit.hkaux (HKAux presentation display, HKPicker patch applier, HKController pad detection). Source: igawa6/dualsouls README and Assets/*.cs at main (pushed 2026-11-26, later than the 1.0.3 release of 2026-08-23, so field defaults may have moved). Save file names not checked on device."
+}

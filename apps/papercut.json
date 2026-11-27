@@ -1,0 +1,330 @@
+{
+ "name": "papercut",
+ "package": "dev.ttyd.port.us",
+ "aliases": [
+  "ttyd",
+  "paper-mario",
+  "papercut-eu"
+ ],
+ "category": "recomp",
+ "version_checked": "0.5.1",
+ "stop_before_write": true,
+ "files": {
+  "settings": {
+   "path": "/data/data/dev.ttyd.port.us/files/settings.txt",
+   "format": "kv",
+   "notes": "'key=value' per line, no spaces, no sections (port/src/aurora/settings_aurora.c at v0.5.1). Read once at start; the settings page rewrites the whole file. Ints are clamped to each key's range on read; unknown keys are kept (portSettingsExtraSet). Path is Aurora's user folder (SDL pref path, expected to be the app's internal files dir); not verified on a device. Memory cards live in the same folder. TTYD_SET_<key> environment variables override a key for one run."
+  }
+ },
+ "per_game": null,
+ "keys": {
+  "framerate": {
+   "file": "settings",
+   "key": "framerate",
+   "label": "Video > Frame rate",
+   "type": "enum",
+   "values": {
+    "60": "60 (no in-between frames)",
+    "120": "120",
+    "144": "144",
+    "240": "240",
+    "display": "Display refresh"
+   },
+   "default": "60",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "A string. Frames drawn between the game's own (interpolation)."
+  },
+  "vsync": {
+   "file": "settings",
+   "key": "vsync",
+   "label": "Video > VSync",
+   "type": "bool",
+   "values": {
+    "1": "On",
+    "0": "Off"
+   },
+   "default": "1",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": ""
+  },
+  "widescreen": {
+   "file": "settings",
+   "key": "widescreen",
+   "label": "Video > Widescreen (16:9)",
+   "type": "bool",
+   "values": {
+    "1": "On",
+    "0": "Off"
+   },
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Default -1 = not set yet; the port chooses on first start."
+  },
+  "wide_hud": {
+   "file": "settings",
+   "key": "wide_hud",
+   "label": "Video > HUD at the screen's edges",
+   "type": "bool",
+   "values": {
+    "1": "On",
+    "0": "Off"
+   },
+   "default": "1",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": ""
+  },
+  "resolution": {
+   "file": "settings",
+   "key": "resolution",
+   "label": "Video > Resolution",
+   "type": "enum",
+   "values": {
+    "0": "Window's",
+    "1": "1x (640x480)",
+    "2": "2x",
+    "3": "3x",
+    "4": "4x",
+    "5": "5x",
+    "6": "6x",
+    "7": "7x",
+    "8": "8x"
+   },
+   "default": "0",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": ""
+  },
+  "msaa": {
+   "file": "settings",
+   "key": "msaa",
+   "label": "Video > Anti-aliasing (4x MSAA)",
+   "type": "bool",
+   "values": {
+    "1": "On",
+    "0": "Off"
+   },
+   "default": "0",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "From the next start."
+  },
+  "tex_filter": {
+   "file": "settings",
+   "key": "tex_filter",
+   "label": "Video > Textures",
+   "type": "enum",
+   "values": {
+    "0": "The game's filtering",
+    "1": "Sharp"
+   },
+   "default": "0",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": ""
+  },
+  "no_pop_in": {
+   "file": "settings",
+   "key": "no_pop_in",
+   "label": "Video > No pop-in",
+   "type": "bool",
+   "values": {
+    "1": "On",
+    "0": "Off"
+   },
+   "default": "1",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "Waits for each new GPU pipeline instead of skipping the draw."
+  },
+  "side_bars": {
+   "file": "settings",
+   "key": "side_bars",
+   "label": "Video > Side bars blurred",
+   "type": "bool",
+   "values": {
+    "1": "On",
+    "0": "Off"
+   },
+   "default": "0",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": ""
+  },
+  "fps": {
+   "file": "settings",
+   "key": "fps",
+   "label": "Video > Overlay corner",
+   "type": "enum",
+   "values": {
+    "0": "Off",
+    "1": "Top left",
+    "2": "Top right",
+    "3": "Bottom left",
+    "4": "Bottom right"
+   },
+   "default": "0",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": ""
+  },
+  "volume": {
+   "file": "settings",
+   "key": "volume",
+   "label": "Audio > Volume",
+   "type": "int",
+   "default": "100",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "0-100."
+  },
+  "text_speed": {
+   "file": "settings",
+   "key": "text_speed",
+   "label": "Gameplay > Text speed",
+   "type": "enum",
+   "values": {
+    "0": "Original",
+    "1": "Fast (2x)",
+    "2": "Faster (4x)",
+    "3": "Instant"
+   },
+   "default": "0",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": ""
+  },
+  "skip_intro": {
+   "file": "settings",
+   "key": "skip_intro",
+   "label": "Gameplay > Skip intro",
+   "type": "bool",
+   "values": {
+    "1": "On",
+    "0": "Off"
+   },
+   "default": "0",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": ""
+  },
+  "run_speed": {
+   "file": "settings",
+   "key": "run_speed",
+   "label": "Gameplay > Run speed",
+   "type": "int",
+   "default": "100",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "100-150 %."
+  },
+  "ff_speed": {
+   "file": "settings",
+   "key": "ff_speed",
+   "label": "Gameplay > Fast-forward speed",
+   "type": "int",
+   "default": "3",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "2-8x."
+  },
+  "ac_cue": {
+   "file": "settings",
+   "key": "ac_cue",
+   "label": "Gameplay > Action Command cue",
+   "type": "enum",
+   "values": {
+    "0": "Off",
+    "1": "On screen",
+    "2": "On screen and a tap"
+   },
+   "default": "0",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": ""
+  },
+  "language": {
+   "file": "settings",
+   "key": "language",
+   "label": "Gameplay > Language (EU)",
+   "type": "enum",
+   "values": {
+    "0": "Device language",
+    "1": "English",
+    "2": "German",
+    "3": "French",
+    "4": "Spanish",
+    "5": "Italian"
+   },
+   "default": "0",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "European release only; from the next start."
+  },
+  "pal_50hz": {
+   "file": "settings",
+   "key": "pal_50hz",
+   "label": "Video > 50 Hz (EU)",
+   "type": "bool",
+   "values": {
+    "1": "On",
+    "0": "Off"
+   },
+   "default": "0",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "European release only; from the next start."
+  },
+  "orientation": {
+   "file": "settings",
+   "key": "orientation",
+   "label": "Display > Orientation",
+   "type": "enum",
+   "values": {
+    "0": "Turns with the device",
+    "1": "Landscape",
+    "2": "Portrait"
+   },
+   "default": "1",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": ""
+  },
+  "touch_opacity": {
+   "file": "settings",
+   "key": "touch_opacity",
+   "label": "Controls > Touch opacity",
+   "type": "int",
+   "default": "100",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "20-100 %."
+  },
+  "touch_size": {
+   "file": "settings",
+   "key": "touch_size",
+   "label": "Controls > Touch size",
+   "type": "int",
+   "default": "100",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": "50-200 %."
+  },
+  "launcher_skip": {
+   "file": "settings",
+   "key": "launcher_skip",
+   "label": "Launcher > Start with the last disc",
+   "type": "bool",
+   "values": {
+    "1": "On",
+    "0": "Off"
+   },
+   "default": "0",
+   "per_game": false,
+   "verified_on_device": false,
+   "notes": ""
+  }
+ }
+}

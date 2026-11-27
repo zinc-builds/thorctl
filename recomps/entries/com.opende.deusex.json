@@ -1,0 +1,40 @@
+{
+ "package": "com.opende.deusex",
+ "name": "openDE",
+ "original": {
+  "title": "Deus Ex (Game of the Year Edition)",
+  "platform": "PC",
+  "year": 2000
+ },
+ "kind": "engine reimplementation",
+ "project": {
+  "name": "OpenDE (OpenDE-Android)",
+  "repo": "https://github.com/jarmitage99/OpenDE",
+  "android_repo": "https://github.com/JMAccorsi/OpenDE-Android",
+  "license": "MIT"
+ },
+ "version_checked": "0.7-beta",
+ "update": {
+  "channel": "GitHub releases (built-in updater)",
+  "url": "https://github.com/JMAccorsi/OpenDE-Android/releases"
+ },
+ "assets": {
+  "needs": "Deus Ex GOTY (version 1112fm) game folder: System/, Maps/, Textures/, Sounds/, Music/. The app can also extract a GOG setup_deus_ex_goty*.exe on the device or download from Steam (app 6910) after sign-in.",
+  "location": "Game root chosen in the app and cached in /data/data/com.opende.deusex/shared_prefs/opende_prefs.xml (game_root) and files/opende_game_root.txt. The app overlays its own DeusEx.u and DXController.u in /sdcard/Android/data/com.opende.deusex/files/System.",
+  "notes": "A Steam-style install folder works as the game root (installscript.vdf, GOTY_1/, Maps/, System/ with 85 files, Textures/, Sounds/, Music/, Help/, Manual/)."
+ },
+ "settings": {
+  "adapter": "opende",
+  "files": [
+   "/sdcard/Android/data/com.opende.deusex/files/DeusEx.ini",
+   "/sdcard/Android/data/com.opende.deusex/files/User.ini"
+  ],
+  "in_app_menu": "In-game Options > Display (Anisotropic Filtering, Trilinear, MSAA, FXAA, Smooth Lighting, Detail Distance, VSync, Frame Rate Limit, Limit Texture Animation, Ambient Occlusion, UI Scale, Performance HUD), plus touch-overlay and gyro options. DXController settings for stick curves and deadzones.",
+  "summary": "OpenDE reads the user copies of DeusEx.ini and User.ini from the app's external files dir (config.cc userDirectory), not the ones in the game folder. OpenDE-specific keys sit in [WinDrv.WindowsClient] as menu indices: Anisotropy 0-4, Multisampling 0-3, FXAA, SmoothLightmaps, DetailDistance 0-2, VSync 0-2, FrameRateLimit 0-7, AmbientOcclusion 0-3, UIScale 0-11, PerformanceHUD 0-2, FieldOfViewIndex 0-12, touch overlay and gyro keys. [DXController.ControllerSettings] holds stick deadzones and curves; [DXController.AutoSaveManager] periodic autosaves. User.ini holds HUD/gameplay toggles and key bindings."
+ },
+ "controls": "SDL2 gamepad through DXController (radial weapon/aug wheels, on-screen keyboard, menu navigation). Touch overlay on by default (TouchOverlaysEnabled=1), gyro aim off (GyroAimMode=0). Stick curves: left Power, right Sigmoid, right stick scale 0.4.",
+ "display": "Single screen, OpenGL ES (GlideDrv.GlideRenderDevice is the configured RenderDevice name; the renderer itself is OpenDE's). Hor+ widescreen FOV via FieldOfViewIndex (60 + 5*index degrees, default 3 = 75).",
+ "saves": "/sdcard/Android/data/com.opende.deusex/files/Save/ (savegame.cc: userDirectory/System/<SavePath ..\\Save>). The game folder's own Save/ (only dummy.txt in a Steam install) is not used.",
+ "notes": "v0.5 (2026-11-20) APK SHA-256 3f1fec60.... Newer pre-releases: v0.6, v0.6.1, v0.6.2 and v0.7-beta (2026-11-27), which replaces the Java launcher with an SDL3 launcher. The app's own updater checks api.github.com/repos/JMAccorsi/OpenDE-Android/releases. Built on SDL2 2.32.10 in v0.5. Settings keys and ranges are from the v0.5 source; later versions may change them.",
+ "verified": "Device: version, install time, prefs, both ini files, game folder contents, save folder. APK: SHA-256 against GitHub release, jadx (GameLocator, UpdateChecker, OverlayInstaller), libmain.so strings. Source tarball at tag v0.5: src/game/main.cc (menu keys, ranges, labels), src/core/config.cc (user ini location), src/engine/savegame.cc (save path)."
+}
